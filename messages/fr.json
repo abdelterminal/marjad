@@ -12,7 +12,7 @@
     "myOrders": "Mes commandes",
     "cart": "Panier",
     "emptyCart": "Votre panier est vide",
-    "checkout": "Commander",
+    "checkout": "Passer commande",
     "backToShop": "Retour à la boutique"
   },
   "nav": {
@@ -27,7 +27,45 @@
       "title": "Décorez votre intérieur avec style",
       "subtitle": "Tableaux, lampes, tables et objets artisanaux sélectionnés par MARJAD",
       "cta": "Découvrir la collection"
+    },
+    "featured": {
+      "heading": "Nouveautés",
+      "viewAll": "Voir tout"
+    },
+    "categories": {
+      "heading": "Catégories"
     }
+  },
+  "products": {
+    "title": "Tous les produits",
+    "filters": "Filtres",
+    "sort": "Trier",
+    "sortNewest": "Nouveautés",
+    "sortPriceDesc": "Plus cher",
+    "sortPriceAsc": "Moins cher",
+    "results": "{count} résultat",
+    "results_plural": "{count} résultats",
+    "noResults": "Aucun produit ne correspond à vos filtres.",
+    "resetFilters": "Réinitialiser les filtres",
+    "categories": "Catégories",
+    "priceRange": "Prix (MAD)",
+    "apply": "Appliquer",
+    "reset": "Réinitialiser"
+  },
+  "listing": {
+    "title": "Tous les produits",
+    "filters": "Filtres",
+    "noResults": "Aucun produit ne correspond à vos filtres.",
+    "resetFilters": "Réinitialiser les filtres"
+  },
+  "productDetail": {
+    "breadcrumbHome": "Accueil",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "addToCart": "Ajouter au panier",
+    "viewCart": "Voir le panier",
+    "notFound": "Ce produit n'existe plus.",
+    "backToProducts": "Retour aux produits"
   },
   "product": {
     "inStock": "En stock",
@@ -40,10 +78,78 @@
     "phone": "Téléphone",
     "city": "Ville",
     "address": "Adresse",
+    "notes": "Notes (optionnel)",
     "paymentMethod": "Mode de paiement",
     "cod": "Paiement à la livraison",
     "placeOrder": "Confirmer la commande",
     "orderConfirmed": "Commande confirmée !",
-    "orderConfirmedMsg": "Nous vous contacterons bientôt pour confirmer la livraison."
+    "orderConfirmedMsg": "Nous vous contactons sous 24h pour confirmer la livraison.",
+    "orderNumber": "N° de commande",
+    "estimatedDelivery": "Livraison estimée : 3–5 jours ouvrables (Maroc)",
+    "contactWhatsapp": "Contacter sur WhatsApp",
+    "continueShopping": "Continuer les achats",
+    "viewOrders": "Voir mes commandes",
+    "errorStock": "Le produit n'est plus disponible en quantité suffisante.",
+    "errorGeneric": "Une erreur est survenue. Veuillez réessayer.",
+    "orderNotFound": "Commande introuvable."
+  },
+  "cart": {
+    "title": "Mon panier",
+    "close": "Fermer le panier",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "shippingValue": "Gratuite",
+    "continueShopping": "Continuer les achats",
+    "discoverProducts": "Découvrir les produits",
+    "decrease": "Diminuer la quantité de",
+    "increase": "Augmenter la quantité de",
+    "remove": "Retirer du panier"
+  },
+  "auth": {
+    "loginTitle": "Connexion",
+    "registerTitle": "S'inscrire",
+    "loginTab": "Connexion",
+    "registerTab": "S'inscrire",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "passwordHint": "min. 8 caractères",
+    "name": "Nom complet",
+    "phone": "Téléphone (optionnel)",
+    "loginCta": "Se connecter",
+    "registerCta": "Créer mon compte",
+    "errorInvalidCredentials": "Identifiants incorrects.",
+    "errorEmailTaken": "Cet email est déjà utilisé.",
+    "errorNetwork": "Impossible de se connecter. Vérifiez votre connexion.",
+    "close": "Fermer"
+  },
+  "account": {
+    "title": "Mon compte",
+    "ordersTab": "Mes commandes",
+    "profileTab": "Mon profil",
+    "noOrders": "Vous n'avez pas encore passé de commande.",
+    "discoverProducts": "Découvrir les produits",
+    "orderNumber": "Commande",
+    "orderDate": "Date",
+    "orderStatus": "Statut",
+    "orderTotal": "Total",
+    "orderItems": "Articles",
+    "profileTitle": "Mon profil",
+    "profileName": "Nom complet",
+    "profileEmail": "E-mail",
+    "profilePhone": "Téléphone",
+    "profileEmailReadonly": "L'email ne peut pas être modifié.",
+    "profileSave": "Enregistrer les modifications",
+    "profileSuccess": "Profil mis à jour",
+    "profileError": "Une erreur est survenue.",
+    "logout": "Se déconnecter"
+  },
+  "footer": {
+    "tagline": "Tableaux, lampes et objets décoratifs artisanaux pour sublimer votre intérieur.",
+    "explore": "Explorer",
+    "newsletter": "Rejoindre notre newsletter",
+    "newsletterDesc": "Recevez nos nouveautés et offres exclusives.",
+    "emailPlaceholder": "Votre adresse e-mail",
+    "subscribe": "S'inscrire",
+    "copyright": "© 2025 MARJAD. Tous droits réservés."
   }
 }

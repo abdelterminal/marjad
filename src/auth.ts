@@ -1,5 +1,9 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import { db } from '@/db';
+import { users } from '@/db/schema';
+import { eq } from 'drizzle-orm';
+import bcrypt from 'bcryptjs';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -9,18 +13,33 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        // TODO: implement DB lookup + bcrypt verify
-        return null;
+        if (!credentials?.email || !credentials?.password) return null;
+        const user = await db.query.users.findFirst({
+          where: eq(users.email, credentials.email as string),
+        });
+        if (!user || !user.password) return null;
+        const valid = await bcrypt.compare(credentials.password as string, user.password);
+        if (!valid) return null;
+        return { id: String(user.id), email: user.email, name: user.name, role: user.role };
       },
     }),
   ],
+  session: { strategy: 'jwt' },
   callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = (user as { id: string; email: string | null; name: string | null; role: string }).role;
+      }
+      return token;
+    },
     async session({ session, token }) {
-      if (token.sub) session.user.id = token.sub;
+      if (token) {
+        session.user.id = token.id as string;
+        (session.user as { id: string; role: string }).role = token.role as string;
+      }
       return session;
     },
   },
-  pages: {
-    signIn: '/login',
-  },
+  pages: { signIn: '/login' },
 });

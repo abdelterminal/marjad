@@ -1,26 +1,192 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@custom-variant dark (&:is(.dark *));
+
+/* ── Brand tokens ────────────────────────────────────────── */
+@theme {
+  /* Brand colors */
+  --color-brand-primary:          #C4622D;
+  --color-brand-primary-dark:     #8B3E1A;
+  --color-brand-primary-hover:    #AD5526;
+  --color-brand-primary-light:    #F5E8DF;
+  --color-brand-secondary:        #D4A853;
+  --color-brand-secondary-dark:   #B88A35;
+  --color-brand-secondary-hover:  #BC9347;
+  --color-brand-surface:          #FAF7F2;
+  --color-brand-surface-alt:      #F0EBE1;
+  --color-brand-surface-elevated: #FFFFFF;
+  --color-brand-text:             #1A1A1A;
+  --color-brand-text-muted:       #6B6560;
+  --color-brand-text-subtle:      #9E9791;
+  --color-brand-border:           #E0D9CF;
+  --color-brand-border-focus:     #C4622D;
+  --color-brand-border-error:     #B94040;
+  --color-brand-success:          #5C7A5C;
+  --color-brand-success-light:    #EAF2EA;
+  --color-brand-error:            #B94040;
+  --color-brand-error-light:      #F8EAEA;
+  --color-brand-warning:          #C4862D;
+  --color-brand-warning-light:    #FDF3E4;
+  --color-brand-info:             #3A6EA8;
+  --color-brand-info-light:       #E8EFF8;
+  --color-brand-neutral:          #8A8480;
+  --color-brand-neutral-light:    #F0EEEC;
+  --color-brand-overlay:          rgba(26,26,26,0.5);
+
+  /* Order status colors */
+  --color-status-pending:   #D4A853;
+  --color-status-confirmed: #4A7FA5;
+  --color-status-shipped:   #7B68A6;
+  --color-status-delivered: #5C7A5C;
+  --color-status-cancelled: #B94040;
+
+  /* Typography */
+  --font-display:    'Playfair Display', Georgia, serif;
+  --font-body:       'Inter', system-ui, sans-serif;
+  --font-display-ar: 'Amiri', 'Traditional Arabic', serif;
+  --font-body-ar:    'Cairo', 'Segoe UI', sans-serif;
+
+  /* Text scale */
+  --text-display:    3rem;
+  --text-display-sm: 2.25rem;
+  --text-h1:         1.875rem;
+  --text-h2:         1.5rem;
+  --text-h3:         1.25rem;
+  --text-body:       1rem;
+  --text-body-sm:    0.9375rem;
+  --text-small:      0.875rem;
+  --text-xs:         0.75rem;
+  --text-label:      0.875rem;
+  --text-price:      1.25rem;
+  --text-price-lg:   1.5rem;
+  --text-price-sm:   1rem;
+
+  /* Spacing */
+  --spacing-xs:  0.25rem;
+  --spacing-sm:  0.5rem;
+  --spacing-md:  1rem;
+  --spacing-lg:  1.5rem;
+  --spacing-xl:  2rem;
+  --spacing-2xl: 3rem;
+  --spacing-3xl: 4rem;
+  --spacing-4xl: 6rem;
+
+  /* Containers */
+  --container-sm:      640px;
+  --container-md:      768px;
+  --container-lg:      1024px;
+  --container-xl:      1280px;
+  --container-content: 1200px;
+
+  /* Border radius */
+  --radius-card: 8px;
+  --radius-input: 4px;
+  --radius-pill: 9999px;
+  --radius-btn:  6px;
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+  --radius:      8px;
+
+  /* Shadows */
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.08);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.12);
+  --shadow-xs:  0 1px 2px rgba(26,26,26,0.06);
+  --shadow-sm:  0 1px 4px rgba(26,26,26,0.08), 0 0 0 1px rgba(26,26,26,0.04);
+  --shadow-md:  0 4px 12px rgba(26,26,26,0.10);
+  --shadow-lg:  0 8px 24px rgba(26,26,26,0.12);
+  --shadow-xl:  0 16px 40px rgba(26,26,26,0.14);
+
+  /* Transitions */
+  --transition-fast:   150ms ease;
+  --transition-base:   200ms ease;
+  --transition-slow:   300ms ease;
+  --transition-drawer: 300ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* ── Tailwind color alias mapping ─────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background:         var(--background);
+  --color-foreground:         var(--foreground);
+  --color-primary:            var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary:          var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted:              var(--muted);
+  --color-muted-foreground:   var(--muted-foreground);
+  --color-accent:             var(--accent);
+  --color-accent-foreground:  var(--accent-foreground);
+  --color-destructive:        var(--destructive);
+  --color-border:             var(--border);
+  --color-input:              var(--input);
+  --color-ring:               var(--ring);
+  --color-card:               var(--card);
+  --color-card-foreground:    var(--card-foreground);
+  --color-popover:            var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ── Shadcn/ui CSS variable remapping ────────────────────── */
+:root {
+  --background:             var(--color-brand-surface);
+  --foreground:             var(--color-brand-text);
+  --card:                   var(--color-brand-surface-elevated);
+  --card-foreground:        var(--color-brand-text);
+  --popover:                var(--color-brand-surface-elevated);
+  --popover-foreground:     var(--color-brand-text);
+  --primary:                var(--color-brand-primary);
+  --primary-foreground:     #FFFFFF;
+  --secondary:              var(--color-brand-surface-alt);
+  --secondary-foreground:   var(--color-brand-text);
+  --muted:                  var(--color-brand-surface-alt);
+  --muted-foreground:       var(--color-brand-text-muted);
+  --accent:                 var(--color-brand-primary-light);
+  --accent-foreground:      var(--color-brand-primary);
+  --destructive:            var(--color-brand-error);
+  --destructive-foreground: #FFFFFF;
+  --border:                 var(--color-brand-border);
+  --input:                  var(--color-brand-border);
+  --ring:                   var(--color-brand-primary);
+  --radius:                 8px;
+}
+
+/* ── Arabic font activation ──────────────────────────────── */
+[lang="ar"] {
+  font-family: var(--font-body-ar);
+}
+[lang="ar"] h1,
+[lang="ar"] h2,
+[lang="ar"] h3,
+[lang="ar"] .font-display {
+  font-family: var(--font-display-ar);
+}
+
+/* ── Price always uses Latin font ────────────────────────── */
+.price-display {
+  font-family: var(--font-body);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Reduced motion ──────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ── Base styles ─────────────────────────────────────────── */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    background-color: var(--color-brand-surface);
+    color: var(--color-brand-text);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+  }
 }

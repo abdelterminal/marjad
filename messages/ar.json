@@ -27,7 +27,44 @@
       "title": "زيّن منزلك بأناقة",
       "subtitle": "لوحات، مصابيح، طاولات وتحف أمازيغية مختارة بعناية من مرجاد",
       "cta": "اكتشف المجموعة"
+    },
+    "featured": {
+      "heading": "الجديد",
+      "viewAll": "عرض الكل"
+    },
+    "categories": {
+      "heading": "الفئات"
     }
+  },
+  "products": {
+    "title": "جميع المنتجات",
+    "filters": "الفلاتر",
+    "sort": "ترتيب",
+    "sortNewest": "الأحدث",
+    "sortPriceDesc": "الأعلى سعراً",
+    "sortPriceAsc": "الأقل سعراً",
+    "results": "{count} نتيجة",
+    "noResults": "لا توجد منتجات لهذه الفلاتر.",
+    "resetFilters": "إعادة تعيين الفلاتر",
+    "categories": "الفئات",
+    "priceRange": "السعر (درهم)",
+    "apply": "تطبيق",
+    "reset": "إعادة تعيين"
+  },
+  "listing": {
+    "title": "جميع المنتجات",
+    "filters": "الفلاتر",
+    "noResults": "لا توجد منتجات لهذه الفلاتر.",
+    "resetFilters": "إعادة تعيين الفلاتر"
+  },
+  "productDetail": {
+    "breadcrumbHome": "الرئيسية",
+    "inStock": "متوفر في المخزون",
+    "outOfStock": "نفد المخزون",
+    "addToCart": "أضف إلى السلة",
+    "viewCart": "عرض السلة",
+    "notFound": "هذا المنتج غير متوفر.",
+    "backToProducts": "العودة للمنتجات"
   },
   "product": {
     "inStock": "متوفر",
@@ -40,10 +77,78 @@
     "phone": "رقم الهاتف",
     "city": "المدينة",
     "address": "العنوان",
+    "notes": "ملاحظات (اختياري)",
     "paymentMethod": "طريقة الدفع",
     "cod": "الدفع عند الاستلام",
     "placeOrder": "تأكيد الطلب",
     "orderConfirmed": "تم تأكيد طلبك!",
-    "orderConfirmedMsg": "سنتواصل معك قريباً لتأكيد التوصيل."
+    "orderConfirmedMsg": "سنتواصل معك خلال 24 ساعة لتأكيد التوصيل.",
+    "orderNumber": "رقم الطلب",
+    "estimatedDelivery": "التوصيل المقدر: 3–5 أيام عمل (المغرب)",
+    "contactWhatsapp": "تواصل عبر واتساب",
+    "continueShopping": "مواصلة التسوق",
+    "viewOrders": "عرض طلباتي",
+    "errorStock": "المنتج غير متوفر بالكمية الكافية.",
+    "errorGeneric": "حدث خطأ، يرجى المحاولة مرة أخرى.",
+    "orderNotFound": "الطلب غير موجود."
+  },
+  "cart": {
+    "title": "سلتي",
+    "close": "إغلاق السلة",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "التوصيل",
+    "shippingValue": "مجاني",
+    "continueShopping": "مواصلة التسوق",
+    "discoverProducts": "اكتشف المنتجات",
+    "decrease": "تقليل كمية",
+    "increase": "زيادة كمية",
+    "remove": "إزالة من السلة"
+  },
+  "auth": {
+    "loginTitle": "تسجيل الدخول",
+    "registerTitle": "إنشاء حساب",
+    "loginTab": "تسجيل الدخول",
+    "registerTab": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "passwordHint": "8 أحرف على الأقل",
+    "name": "الاسم الكامل",
+    "phone": "رقم الهاتف (اختياري)",
+    "loginCta": "تسجيل الدخول",
+    "registerCta": "إنشاء حساب",
+    "errorInvalidCredentials": "بيانات غير صحيحة.",
+    "errorEmailTaken": "هذا البريد الإلكتروني مستخدم بالفعل.",
+    "errorNetwork": "تعذر الاتصال. تحقق من اتصالك.",
+    "close": "إغلاق"
+  },
+  "account": {
+    "title": "حسابي",
+    "ordersTab": "طلباتي",
+    "profileTab": "ملفي الشخصي",
+    "noOrders": "لم تقم بأي طلب بعد.",
+    "discoverProducts": "اكتشف منتجاتنا",
+    "orderNumber": "الطلب",
+    "orderDate": "التاريخ",
+    "orderStatus": "الحالة",
+    "orderTotal": "الإجمالي",
+    "orderItems": "المنتجات",
+    "profileTitle": "ملفي الشخصي",
+    "profileName": "الاسم الكامل",
+    "profileEmail": "البريد الإلكتروني",
+    "profilePhone": "رقم الهاتف",
+    "profileEmailReadonly": "لا يمكن تغيير البريد الإلكتروني",
+    "profileSave": "حفظ التغييرات",
+    "profileSuccess": "تم تحديث الملف الشخصي",
+    "profileError": "حدث خطأ.",
+    "logout": "تسجيل الخروج"
+  },
+  "footer": {
+    "tagline": "لوحات، مصابيح وتحف يدوية لتزيين منزلك بأناقة.",
+    "explore": "استكشف",
+    "newsletter": "اشترك في نشرتنا",
+    "newsletterDesc": "احصل على آخر المنتجات والعروض الحصرية.",
+    "emailPlaceholder": "بريدك الإلكتروني",
+    "subscribe": "اشترك",
+    "copyright": "© 2025 MARJAD. جميع الحقوق محفوظة."
   }
 }

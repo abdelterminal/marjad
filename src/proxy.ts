@@ -1,8 +1,32 @@
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
+import { auth } from './auth';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export default createMiddleware(routing);
+const intlMiddleware = createMiddleware(routing);
+
+export default auth(async (req) => {
+  const { pathname } = req.nextUrl;
+
+  // ── Admin route protection at middleware level (defense layer 1) ─────────────
+  // Both admin pages and admin API endpoints are blocked here for unauthenticated
+  // / non-admin sessions. Each handler also calls requireAdminApi() (layer 2).
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
+    const session = req.auth;
+    if (!session?.user || (session.user as { role?: string }).role !== 'admin') {
+      const url = req.nextUrl.clone();
+      url.pathname = '/';
+      return NextResponse.redirect(url);
+    }
+  }
+
+  // ── next-intl locale routing for all other requests ──────────────────────────
+  return intlMiddleware(req as unknown as NextRequest);
+});
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)'],
+  // Match everything except Next.js internals, Vercel internals, and static files.
+  // Keep api/ in scope so the admin API guard above fires.
+  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
 };
