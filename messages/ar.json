@@ -1,0 +1,49 @@
+{
+  "common": {
+    "brand": "مرجاد",
+    "addToCart": "أضف إلى السلة",
+    "viewProduct": "عرض المنتج",
+    "loading": "جاري التحميل...",
+    "search": "بحث...",
+    "login": "تسجيل الدخول",
+    "register": "إنشاء حساب",
+    "logout": "تسجيل الخروج",
+    "myAccount": "حسابي",
+    "myOrders": "طلباتي",
+    "cart": "السلة",
+    "emptyCart": "سلتك فارغة",
+    "checkout": "إتمام الطلب",
+    "backToShop": "العودة للمتجر"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "products": "المنتجات",
+    "categories": "الفئات",
+    "about": "من نحن",
+    "contact": "اتصل بنا"
+  },
+  "home": {
+    "hero": {
+      "title": "زيّن منزلك بأناقة",
+      "subtitle": "لوحات، مصابيح، طاولات وتحف أمازيغية مختارة بعناية من مرجاد",
+      "cta": "اكتشف المجموعة"
+    }
+  },
+  "product": {
+    "inStock": "متوفر",
+    "outOfStock": "نفد المخزون",
+    "currency": "درهم"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "name": "الاسم الكامل",
+    "phone": "رقم الهاتف",
+    "city": "المدينة",
+    "address": "العنوان",
+    "paymentMethod": "طريقة الدفع",
+    "cod": "الدفع عند الاستلام",
+    "placeOrder": "تأكيد الطلب",
+    "orderConfirmed": "تم تأكيد طلبك!",
+    "orderConfirmedMsg": "سنتواصل معك قريباً لتأكيد التوصيل."
+  }
+}

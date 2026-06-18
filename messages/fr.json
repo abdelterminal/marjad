@@ -1,0 +1,49 @@
+{
+  "common": {
+    "brand": "MARJAD",
+    "addToCart": "Ajouter au panier",
+    "viewProduct": "Voir le produit",
+    "loading": "Chargement...",
+    "search": "Rechercher...",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "logout": "Déconnexion",
+    "myAccount": "Mon compte",
+    "myOrders": "Mes commandes",
+    "cart": "Panier",
+    "emptyCart": "Votre panier est vide",
+    "checkout": "Commander",
+    "backToShop": "Retour à la boutique"
+  },
+  "nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "categories": "Catégories",
+    "about": "À propos",
+    "contact": "Contact"
+  },
+  "home": {
+    "hero": {
+      "title": "Décorez votre intérieur avec style",
+      "subtitle": "Tableaux, lampes, tables et objets artisanaux sélectionnés par MARJAD",
+      "cta": "Découvrir la collection"
+    }
+  },
+  "product": {
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock",
+    "currency": "MAD"
+  },
+  "checkout": {
+    "title": "Passer commande",
+    "name": "Nom complet",
+    "phone": "Téléphone",
+    "city": "Ville",
+    "address": "Adresse",
+    "paymentMethod": "Mode de paiement",
+    "cod": "Paiement à la livraison",
+    "placeOrder": "Confirmer la commande",
+    "orderConfirmed": "Commande confirmée !",
+    "orderConfirmedMsg": "Nous vous contacterons bientôt pour confirmer la livraison."
+  }
+}
