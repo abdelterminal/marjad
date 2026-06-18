@@ -21,6 +21,13 @@ export default auth(async (req) => {
     }
   }
 
+  // ── API routes pass through — next-intl must not localize them ──────────────
+  // Without this, /api/auth/session gets redirected to /fr/api/auth/session
+  // and NextAuth receives an HTML 404 instead of handling the request.
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.next();
+  }
+
   // ── next-intl locale routing for all other requests ──────────────────────────
   return intlMiddleware(req as unknown as NextRequest);
 });

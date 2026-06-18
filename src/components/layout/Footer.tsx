@@ -7,143 +7,127 @@ export async function Footer() {
   const locale = await getLocale();
 
   return (
-    <footer
-      className="
-        mt-auto
-        bg-[var(--color-brand-surface-alt)]
-        border-t border-[var(--color-brand-border)]
-      "
-    >
-      <div
-        className="
-          mx-auto max-w-[var(--container-content)]
-          px-4 sm:px-6
-          py-12
-          grid grid-cols-1 md:grid-cols-3 gap-10
-        "
-      >
-        {/* Col 1: Logo + tagline */}
-        <div className="space-y-3">
-          <p
-            className="
-              font-['Playfair_Display',Georgia,serif]
-              text-xl font-bold
-              text-[var(--color-brand-primary)]
-            "
-          >
-            MARJAD
-          </p>
-          <p className="text-sm text-[var(--color-brand-text-muted)] leading-relaxed max-w-xs">
-            {t('footer.tagline')}
-          </p>
-        </div>
+    <footer className="mt-auto bg-[var(--color-brand-text)] text-white">
 
-        {/* Col 2: Nav links */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-[var(--color-brand-text)] uppercase tracking-wider">
-            {t('footer.explore')}
-          </h3>
-          <ul className="space-y-2">
-            <li>
-              <Link
-                href={`/${locale}/products`}
-                className="
-                  text-sm text-[var(--color-brand-text-muted)]
-                  hover:text-[var(--color-brand-primary)]
-                  transition-colors duration-[var(--transition-fast)]
-                "
-              >
-                {t('nav.products')}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="
-                  text-sm text-[var(--color-brand-text-muted)]
-                  hover:text-[var(--color-brand-primary)]
-                  transition-colors duration-[var(--transition-fast)]
-                "
-              >
-                {t('nav.about')}
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="#"
-                className="
-                  text-sm text-[var(--color-brand-text-muted)]
-                  hover:text-[var(--color-brand-primary)]
-                  transition-colors duration-[var(--transition-fast)]
-                "
-              >
-                {t('nav.contact')}
-              </Link>
-            </li>
-          </ul>
-        </div>
+      {/* Main footer body */}
+      <div className="mx-auto max-w-[var(--container-content)] px-4 sm:px-6 lg:px-8 pt-14 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8">
 
-        {/* Col 3: Newsletter placeholder */}
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-[var(--color-brand-text)] uppercase tracking-wider">
-            {t('footer.newsletter')}
-          </h3>
-          <p className="text-sm text-[var(--color-brand-text-muted)]">
-            {t('footer.newsletterDesc')}
-          </p>
-          <div className="flex gap-2 max-w-xs">
-            <input
-              type="email"
-              placeholder={t('footer.emailPlaceholder')}
-              aria-label={t('footer.emailPlaceholder')}
-              className="
-                flex-1 h-10 px-3
-                text-sm
-                bg-[var(--color-brand-surface-elevated)]
-                border border-[var(--color-brand-border)]
-                rounded-[var(--radius-input)]
-                text-[var(--color-brand-text)]
-                placeholder:text-[var(--color-brand-text-subtle)]
-                focus:outline-none
-                focus:ring-2
-                focus:ring-[var(--color-brand-primary)]/30
-                focus:border-[var(--color-brand-border-focus)]
-                transition-colors duration-[var(--transition-fast)]
-              "
-            />
-            <button
-              type="button"
-              className="
-                h-10 px-4
-                rounded-[var(--radius-btn)]
-                bg-[var(--color-brand-primary)]
-                hover:bg-[var(--color-brand-primary-hover)]
-                text-white text-sm font-semibold
-                transition-colors duration-[var(--transition-fast)]
-                focus-visible:outline-none
-                focus-visible:ring-2
-                focus-visible:ring-[var(--color-brand-primary)]
-                focus-visible:ring-offset-2
-                whitespace-nowrap
-              "
-            >
-              {t('footer.subscribe')}
-            </button>
+          {/* Brand column — spans 5 on md */}
+          <div className="md:col-span-5 space-y-4">
+            <p className="font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-secondary)] tracking-wide">
+              MARJAD
+            </p>
+            <p className="text-white/60 text-sm leading-relaxed max-w-[300px]">
+              {t('footer.tagline')}
+            </p>
+            <p className="text-white/35 text-xs font-mono tracking-wider">
+              {t('footer.madeIn')}
+            </p>
           </div>
+
+          {/* Explore column */}
+          <div className="md:col-span-3 space-y-4">
+            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
+              {t('footer.explore')}
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: t('nav.products'), href: `/${locale}/products` },
+                { label: t('nav.about'),    href: `/${locale}/a-propos` },
+                { label: t('nav.contact'),  href: `/${locale}/contact` },
+              ].map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="
+                      text-sm text-white/65
+                      hover:text-[var(--color-brand-secondary)]
+                      transition-colors duration-150
+                      focus-visible:outline-none focus-visible:ring-1
+                      focus-visible:ring-[var(--color-brand-secondary)] rounded-sm
+                    "
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Newsletter column */}
+          <div className="md:col-span-4 space-y-4">
+            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
+              {t('footer.newsletter')}
+            </h3>
+            <p className="text-sm text-white/60 leading-snug">
+              {t('footer.newsletterDesc')}
+            </p>
+            <div className="flex gap-2">
+              <input
+                type="email"
+                placeholder={t('footer.emailPlaceholder')}
+                aria-label={t('footer.emailPlaceholder')}
+                className="
+                  flex-1 h-10 px-3
+                  text-sm text-white
+                  bg-white/10 border border-white/20
+                  rounded-[var(--radius-input)]
+                  placeholder:text-white/35
+                  focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-secondary)]/50
+                  focus:border-[var(--color-brand-secondary)]/60
+                  transition-colors duration-150
+                "
+              />
+              <button
+                type="button"
+                className="
+                  h-10 px-4 flex-shrink-0
+                  rounded-[var(--radius-btn)]
+                  bg-[var(--color-brand-primary)]
+                  hover:bg-[var(--color-brand-primary-hover)]
+                  text-white text-sm font-semibold
+                  transition-colors duration-150
+                  focus-visible:outline-none focus-visible:ring-2
+                  focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-1
+                  focus-visible:ring-offset-[var(--color-brand-text)]
+                "
+              >
+                {t('footer.subscribe')}
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div
-        className="
-          border-t border-[var(--color-brand-border)]
-          px-4 sm:px-6 py-4
-        "
-      >
-        <p className="text-center text-xs text-[var(--color-brand-text-muted)]">
-          {t('footer.copyright')}
-        </p>
+      <div className="border-t border-white/10 px-4 sm:px-6 lg:px-8 py-5">
+        <div className="max-w-[var(--container-content)] mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-white/30">
+            {t('footer.copyright')}
+          </p>
+          <div className="flex items-center gap-4">
+            <a
+              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '212000000000'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
+              aria-label="WhatsApp"
+            >
+              WhatsApp
+            </a>
+            <span className="text-white/15">·</span>
+            <Link
+              href={`/${locale}/contact`}
+              className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
+            >
+              Contact
+            </Link>
+          </div>
+        </div>
       </div>
+
     </footer>
   );
 }

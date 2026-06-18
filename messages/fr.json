@@ -17,32 +17,54 @@
   },
   "nav": {
     "home": "Accueil",
-    "products": "Produits",
+    "products": "Collection",
     "categories": "Catégories",
-    "about": "À propos",
+    "about": "Notre histoire",
     "contact": "Contact"
   },
   "home": {
     "hero": {
-      "title": "Décorez votre intérieur avec style",
-      "subtitle": "Tableaux, lampes, tables et objets artisanaux sélectionnés par MARJAD",
-      "cta": "Découvrir la collection"
+      "title": "L'art de décorer, l'âme du Maroc.",
+      "titleLine1": "L'art de décorer,",
+      "titleLine2": "l'âme du Maroc.",
+      "subtitle": "Des pièces façonnées à la main par des artisans marocains — pour les intérieurs qui ont du caractère.",
+      "cta": "Découvrir la collection",
+      "ctaSecondary": "Notre histoire",
+      "signature": "34°02' N — Maroc"
     },
     "featured": {
+      "eyebrow": "Sélection MARJAD",
       "heading": "Nouveautés",
       "viewAll": "Voir tout"
     },
     "categories": {
-      "heading": "Catégories"
+      "eyebrow": "Explorer",
+      "heading": "Nos catégories",
+      "shopCta": "Voir la collection →"
+    },
+    "story": {
+      "eyebrow": "Notre histoire",
+      "heading": "Chaque pièce a une âme. La vôtre aussi.",
+      "body": "Nous ne vendons pas des objets. Nous mettons à votre portée le travail de mains habiles qui ont tout appris de leurs maîtres. Derrière chaque lampe, chaque tableau, chaque table — un artisan, un atelier, une histoire que nous avons choisi de porter.",
+      "cta": "En savoir plus",
+      "badge": "Fait au Maroc 🇲🇦"
+    },
+    "values": {
+      "craftTitle": "Fait à la main",
+      "craftDesc": "Façonné dans les ateliers du Maroc. Jamais en série, jamais sans âme.",
+      "deliveryTitle": "Livraison au Maroc",
+      "deliveryDesc": "Partout au Maroc en 3 à 5 jours, soigneusement emballé pour arriver intact.",
+      "guaranteeTitle": "Satisfait ou remboursé",
+      "guaranteeDesc": "Votre confiance vaut plus que la vente. On ne discute pas."
     }
   },
   "products": {
-    "title": "Tous les produits",
+    "title": "La collection",
     "filters": "Filtres",
     "sort": "Trier",
     "sortNewest": "Nouveautés",
-    "sortPriceDesc": "Plus cher",
-    "sortPriceAsc": "Moins cher",
+    "sortPriceDesc": "Prix décroissant",
+    "sortPriceAsc": "Prix croissant",
     "results": "{count} résultat",
     "results_plural": "{count} résultats",
     "noResults": "Aucun produit ne correspond à vos filtres.",
@@ -50,7 +72,10 @@
     "categories": "Catégories",
     "priceRange": "Prix (MAD)",
     "apply": "Appliquer",
-    "reset": "Réinitialiser"
+    "reset": "Réinitialiser",
+    "heroEyebrow": "MARJAD",
+    "heroHeading": "La collection",
+    "heroSubtitle": "Chaque pièce, choisie pour vous."
   },
   "listing": {
     "title": "Tous les produits",
@@ -144,12 +169,56 @@
     "logout": "Se déconnecter"
   },
   "footer": {
-    "tagline": "Tableaux, lampes et objets décoratifs artisanaux pour sublimer votre intérieur.",
+    "tagline": "Des pièces façonnées à la main, pour les intérieurs qui ont du caractère.",
     "explore": "Explorer",
-    "newsletter": "Rejoindre notre newsletter",
-    "newsletterDesc": "Recevez nos nouveautés et offres exclusives.",
+    "support": "Aide",
+    "supportContact": "Contactez-nous",
+    "supportDelivery": "Livraison & retours",
+    "newsletter": "Restez inspiré",
+    "newsletterDesc": "Nouvelles pièces, offres exclusives et regards sur les ateliers.",
     "emailPlaceholder": "Votre adresse e-mail",
     "subscribe": "S'inscrire",
-    "copyright": "© 2025 MARJAD. Tous droits réservés."
+    "copyright": "© 2025 MARJAD. Tous droits réservés.",
+    "madeIn": "Fait au Maroc 🇲🇦"
+  },
+  "about": {
+    "eyebrow": "À propos de MARJAD",
+    "title": "Notre histoire",
+    "subtitle": "Chaque pièce a une âme. La vôtre aussi.",
+    "heroBody": "MARJAD est née d'une conviction simple : les objets qui habitent nos espaces ne sont pas de simples achats — ils sont des choix de vie. Nous avons fondé cette maison pour que le travail des artisans marocains trouve sa juste place dans les intérieurs d'aujourd'hui.",
+    "story1": "Nous ne passons pas de commandes à distance. Nous visitons les ateliers — à Fès, Marrakech, Salé, Ouarzazate. Nous rencontrons les maîtres, nous touchons le travail, nous comprenons la technique. Ce n'est qu'ensuite que nous choisissons.",
+    "story2": "De l'atelier à votre salon, chaque pièce traverse un rituel de sélection exigeant. Tableaux qui captivent le regard. Lampes qui transforment la lumière d'une pièce. Tables qui ancrent un espace. Objets du terroir qui racontent une région. Rien n'entre dans notre collection par hasard.",
+    "valuesEyebrow": "Nos engagements",
+    "valuesHeading": "Ce qui nous guide",
+    "value1Title": "Le geste juste",
+    "value1Desc": "Chaque pièce MARJAD est façonnée à la main — au tour du potier, au marteau du ferrailleur, au pinceau du calligraphe. Aucune machine ne peut imiter la précision d'un maître qui a passé vingt ans à perfectionner son geste.",
+    "value2Title": "La sélection implacable",
+    "value2Desc": "Nous avons regardé des centaines de pièces. Nous en avons choisi quelques dizaines. Ce qui ne nous arrête pas dans un atelier ne mérite pas de vous arrêter chez vous. C'est aussi simple que ça.",
+    "value3Title": "L'honnêteté du bout en bout",
+    "value3Desc": "Vous passez commande, nous vous appelons pour confirmer. Nous emballons avec soin. Nous livrons chez vous. Si quelque chose ne va pas, nous le réglons — sans formulaire, sans délai, sans excuse.",
+    "storyQuote": "« Quand quelqu'un choisit mon travail, c'est le geste que j'ai appris de mon père qui continue de vivre. »",
+    "storyQuoteAuthor": "— Hassan, maître ferrailleur, Marrakech",
+    "ctaHeading": "Prêt à transformer votre intérieur ?",
+    "ctaDesc": "Découvrez notre sélection de pièces artisanales — chaque pièce est unique, et la vôtre vous attend.",
+    "cta": "Voir la collection"
+  },
+  "contact": {
+    "eyebrow": "Nous contacter",
+    "title": "Parlons-nous.",
+    "subtitle": "Une question sur une pièce, un projet de décoration, un doute avant de commander ? Nous répondons vite, et nous répondons vraiment.",
+    "whatsappTitle": "WhatsApp",
+    "whatsappDesc": "Le moyen le plus rapide. On est disponibles du lundi au samedi, de 9h à 20h.",
+    "whatsappCta": "Écrire sur WhatsApp",
+    "emailTitle": "E-mail",
+    "emailDesc": "Pour les projets détaillés, les demandes de devis ou le suivi d'une commande.",
+    "emailAddress": "contact@marjad.ma",
+    "locationTitle": "Livraison Maroc",
+    "locationDesc": "Nous livrons dans tout le Maroc sous 3 à 5 jours ouvrables. Emballage soigné, livraison à domicile.",
+    "formTitle": "Laissez-nous un message",
+    "formName": "Votre nom",
+    "formEmail": "Votre e-mail",
+    "formMessage": "Votre message",
+    "formSend": "Envoyer",
+    "formNote": "Nous vous répondrons dans les 24 heures."
   }
 }

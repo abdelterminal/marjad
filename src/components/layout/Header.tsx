@@ -48,39 +48,29 @@ export async function Header() {
 
         {/* Desktop nav (center) */}
         <nav
-          className="hidden md:flex items-center gap-6 ms-8"
+          className="hidden md:flex items-center gap-7 ms-10"
           aria-label="Navigation principale"
         >
-          <Link
-            href={`/${locale}/products`}
-            className="
-              text-sm font-medium text-[var(--color-brand-text-muted)]
-              hover:text-[var(--color-brand-primary)]
-              transition-colors duration-[var(--transition-fast)]
-            "
-          >
-            {t('nav.products')}
-          </Link>
-          <Link
-            href="#"
-            className="
-              text-sm font-medium text-[var(--color-brand-text-muted)]
-              hover:text-[var(--color-brand-primary)]
-              transition-colors duration-[var(--transition-fast)]
-            "
-          >
-            {t('nav.about')}
-          </Link>
-          <Link
-            href="#"
-            className="
-              text-sm font-medium text-[var(--color-brand-text-muted)]
-              hover:text-[var(--color-brand-primary)]
-              transition-colors duration-[var(--transition-fast)]
-            "
-          >
-            {t('nav.contact')}
-          </Link>
+          {[
+            { label: t('nav.products'), href: `/${locale}/products` },
+            { label: t('nav.about'),    href: `/${locale}/a-propos` },
+            { label: t('nav.contact'),  href: `/${locale}/contact` },
+          ].map(({ label, href }) => (
+            <Link
+              key={href}
+              href={href}
+              className="
+                text-sm font-medium
+                text-[var(--color-brand-text-muted)]
+                hover:text-[var(--color-brand-primary)]
+                transition-colors duration-[var(--transition-fast)]
+                focus-visible:outline-none focus-visible:ring-2
+                focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 rounded-sm
+              "
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
 
         {/* Right side actions */}

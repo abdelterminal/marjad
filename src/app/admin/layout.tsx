@@ -1,6 +1,7 @@
 import { requireAdmin } from '@/lib/auth-guards';
 import { AdminSidebar } from '@/components/admin/AdminSidebar';
 import { AdminTopBar } from '@/components/admin/AdminTopBar';
+import '../globals.css';
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   await requireAdmin(); // redirects to / if not admin
