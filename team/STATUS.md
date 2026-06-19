@@ -1,7 +1,7 @@
 # Status Board
 
-**Current phase:** Phase 5 — Ship
-**Last updated:** All 27 tickets done, 5 security/QA blockers cleared
+**Current phase:** Phase 5 — Ship + storefront conversion polish
+**Last updated:** 2026-06-19 — Courier workflow presets added; TypeScript, lint, and build green
 
 ## Phase overview
 
@@ -18,6 +18,34 @@
 ## Open blockers
 
 None.
+
+## Latest improvement pass
+
+- Added conversion-focused COD trust content to the collection page, product detail page, checkout, and confirmation page.
+- Reworked cart hydration patterns to satisfy React lint rules without copying Zustand state into local component state.
+- Cleared lint warnings from small unused imports/variables.
+- Added `/[locale]/livraison-retours` and `/[locale]/faq` from the ecommerce blueprint, wired into the footer support column.
+- Added subtle global interaction helpers for page entrance, premium hover lift, and quiet link motion.
+- Refined product cards, product gallery, add-to-cart button, and cart drawer for clearer COD commerce and minimalist luxury feel.
+- Added demo seed command and 8 Moroccan luxury product visuals; local DB now has 6 categories and 8 published products.
+- Compacted mobile product cards and cart drawer reassurance so the purchase path stays clear without feeling crowded.
+- Added compact mobile menu with access to Collection, About, Delivery & Returns, FAQ, Contact, and account/login actions.
+- Replaced abrupt empty-checkout redirect with a polished empty-cart recovery state; improved product-list no-results state.
+- Added shared MARJAD form styling and applied it to checkout, contact, auth, profile, filters, and footer newsletter surfaces.
+- Added dense admin form styling for product/category forms and one-tap call/WhatsApp actions on admin order detail.
+- Upgraded the admin orders list into a COD work queue with pending highlights, cart context, and one-tap call/WhatsApp actions.
+- Strengthened the homepage with hero proof points, richer category buying paths, and a COD confidence section.
+- Improved product detail conversion with delivery/COD proof cards, scannable trust specs, and a stronger sticky mobile buy bar.
+- Added admin order quick status actions and status-aware WhatsApp message templates for COD confirmation/follow-up.
+- Upgraded the admin dashboard with COD action metrics, confirmation/delivery/cancel rates, today revenue, delivered revenue, and a needs-action queue.
+- Added a public customer order tracking page and limited tracking API requiring order ID plus matching phone number.
+- Added SEO foundations: shared metadata helper, localized page metadata, product Open Graph metadata, product JSON-LD, robots.txt, and sitemap.xml.
+- Added analytics foundation for page views, product views, add-to-cart, checkout start, order submitted, WhatsApp clicks, and call clicks.
+- Added COD protection with a checkout honeypot and fixed-window rate limiting for public order creation and order tracking.
+- Added admin duplicate/fraud hints for repeated phone numbers, repeated addresses, and old pending orders on list/detail views.
+- Added admin CSV export for orders, respecting current status filters for courier/ops handoff.
+- Added compact courier workflow presets on the admin orders page with preset CSV exports for confirmation, shipping, transit, and delivered reconciliation.
+- Verification: `npx tsc --noEmit`, `npm run lint`, and `npm run build` all pass.
 
 ## Ticket board
 

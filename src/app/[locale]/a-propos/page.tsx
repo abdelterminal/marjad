@@ -114,20 +114,25 @@ export default async function AboutPage() {
       </section>
 
       {/* ── QUOTE ────────────────────────────────────────────── */}
-      <section className="py-14 lg:py-20 bg-[var(--color-brand-surface)] border-y border-[var(--color-brand-border)]">
-        <div className="max-w-[680px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="block text-[var(--color-brand-secondary)] text-5xl font-[var(--font-display)] leading-none mb-2" aria-hidden="true">&ldquo;</span>
-          <p className="
-            font-[var(--font-display)]
-            text-[clamp(1.2rem,2.5vw,1.65rem)]
-            text-[var(--color-brand-text)]
-            leading-relaxed
-          ">
-            {t('about.storyQuote')}
-          </p>
-          <p className="mt-5 text-[var(--color-brand-text-muted)] text-sm font-mono tracking-wider uppercase">
-            {t('about.storyQuoteAuthor')}
-          </p>
+      <section className="zellige-texture py-14 lg:py-20 bg-[var(--color-brand-surface-alt)] border-y border-[var(--color-brand-border)]">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-[620px] border-s-4 border-[var(--color-brand-secondary)] ps-7 rtl:border-s-0 rtl:border-e-4 rtl:ps-0 rtl:pe-7">
+            <p className="text-[10px] font-mono tracking-[0.2em] uppercase text-[var(--color-brand-secondary)] mb-4">
+              {isAr ? 'شهادة حرفي' : 'Portrait artisan'}
+            </p>
+            <p className="
+              font-[var(--font-display)]
+              text-[clamp(1.15rem,2.2vw,1.5rem)]
+              text-[var(--color-brand-text)]
+              leading-[1.6]
+              italic
+            ">
+              {t('about.storyQuote')}
+            </p>
+            <p className="mt-5 text-[var(--color-brand-text-muted)] text-sm">
+              {t('about.storyQuoteAuthor')}
+            </p>
+          </div>
         </div>
       </section>
 
@@ -144,22 +149,12 @@ export default async function AboutPage() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {values.map((v) => (
-              <div key={v.number} className="group">
-                {/* Number — large editorial */}
-                <p className="
-                  font-[var(--font-display)]
-                  text-5xl font-bold
-                  text-[var(--color-brand-primary)]/15
-                  leading-none mb-5
-                  select-none
-                ">
-                  {v.number}
-                </p>
+              <div key={v.number} className="border-t-2 border-[var(--color-brand-primary)] pt-6">
                 <h3 className="
                   font-[var(--font-display)]
-                  text-xl font-semibold text-[var(--color-brand-text)]
+                  text-xl font-bold text-[var(--color-brand-text)]
                   mb-3
                 ">
                   {v.title}

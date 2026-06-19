@@ -1,4 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+import { Heart } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { formatMAD } from '@/lib/money';
 import { AddToCartButton } from './AddToCartButton';
@@ -31,29 +35,31 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const categoryName = product.category
     ? (isAr ? product.category.nameAr : product.category.nameFr)
     : null;
-  const mainImage = (product.images ?? [])[0] ?? null;
+  const images = product.images ?? [];
+  const mainImage = images[0] ?? null;
+  const hoverImage = images[1] ?? null;
   const price = parseFloat(product.price);
   const compareAtPrice = product.compareAtPrice ? parseFloat(product.compareAtPrice) : null;
   const hasDiscount = compareAtPrice !== null && compareAtPrice > price;
   const isOutOfStock = product.stock <= 0;
+  const discountPercent = hasDiscount
+    ? Math.round(((compareAtPrice! - price) / compareAtPrice!) * 100)
+    : 0;
+
+  const [wishlisted, setWishlisted] = useState(false);
 
   return (
     <article className="
-      group relative flex flex-col
+      group relative flex flex-col interactive-lift
       bg-[var(--color-brand-surface-elevated)]
-      rounded-[var(--radius-lg)]
+      rounded-[var(--radius-md)]
       overflow-hidden
-      border border-[var(--color-brand-border)]
-      hover:border-[var(--color-brand-border-focus)]/30
-      hover:shadow-[var(--shadow-md)]
-      transition-all duration-300
     ">
-      {/* Image — portrait 3:4 ratio, more editorial */}
       <Link
         href={`/products/${product.slug}`}
         className="
           block relative overflow-hidden
-          aspect-[3/4]
+          aspect-[4/5]
           bg-[var(--color-brand-surface-alt)]
           focus-visible:outline-none focus-visible:ring-2
           focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-inset
@@ -62,13 +68,24 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         aria-label={name}
       >
         {mainImage ? (
-          <Image
-            src={mainImage}
-            alt={name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
+          <>
+            <Image
+              src={mainImage}
+              alt={name}
+              fill
+              className={`object-cover transition-all duration-700 ${hoverImage ? 'group-hover:opacity-0 group-hover:scale-[1.04]' : 'group-hover:scale-[1.035]'}`}
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+            {hoverImage && (
+              <Image
+                src={hoverImage}
+                alt={`${name} — vue 2`}
+                fill
+                className="object-cover opacity-0 scale-[1.04] group-hover:opacity-100 group-hover:scale-100 transition-all duration-700"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              />
+            )}
+          </>
         ) : (
           <div
             className="absolute inset-0 flex items-end p-4"
@@ -81,36 +98,57 @@ export function ProductCard({ product, locale }: ProductCardProps) {
             </span>
           </div>
         )}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-        {/* Category pill — top-start */}
+        {/* Wishlist */}
+        <button
+          type="button"
+          onClick={(e) => { e.preventDefault(); setWishlisted((w) => !w); }}
+          aria-label={isAr ? 'أضف إلى المفضلة' : 'Ajouter aux favoris'}
+          className="
+            absolute top-2.5 end-2.5 z-10
+            flex items-center justify-center
+            w-8 h-8 rounded-full
+            bg-white/80 backdrop-blur-sm
+            opacity-0 group-hover:opacity-100
+            translate-y-1 group-hover:translate-y-0
+            transition-all duration-300
+            hover:bg-white
+            focus-visible:outline-none focus-visible:ring-2
+            focus-visible:ring-[var(--color-brand-primary)]
+          "
+        >
+          <Heart
+            className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-[var(--color-brand-primary)] text-[var(--color-brand-primary)]' : 'text-[var(--color-brand-text-muted)]'}`}
+          />
+        </button>
+
         {categoryName && (
           <span className="
             absolute top-2.5 start-2.5
-            px-2 py-0.5
+            px-2.5 py-1
             rounded-[var(--radius-full)]
-            bg-white/90 backdrop-blur-sm
-            text-[11px] font-medium text-[var(--color-brand-text-muted)]
+            bg-white/85 backdrop-blur-sm
+            text-[10px] font-semibold uppercase tracking-[0.08em] text-[var(--color-brand-text-muted)]
           ">
             {categoryName}
           </span>
         )}
 
-        {/* Discount badge — top-end */}
         {hasDiscount && (
           <span className="
-            absolute top-2.5 end-2.5
-            px-2 py-0.5
+            absolute top-12 end-2.5
+            px-2.5 py-1
             rounded-[var(--radius-full)]
-            bg-[var(--color-brand-secondary)]
-            text-white text-[11px] font-semibold
+            bg-[var(--color-brand-text)]
+            text-white text-[10px] font-semibold
           ">
-            {isAr ? 'تخفيض' : 'Promo'}
+            -{discountPercent}%
           </span>
         )}
 
-        {/* Out-of-stock */}
         {isOutOfStock && (
-          <div className="absolute inset-0 bg-white/55 flex items-center justify-center">
+          <div className="absolute inset-0 bg-white/65 backdrop-blur-[1px] flex items-center justify-center">
             <span className="
               px-3 py-1
               rounded-[var(--radius-full)]
@@ -123,10 +161,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         )}
       </Link>
 
-      {/* Content */}
-      <div className="flex flex-col flex-1 p-3.5 gap-2">
-
-        {/* Product name */}
+      <div className="flex flex-col flex-1 p-3 sm:p-4 gap-2.5 sm:gap-3">
         <Link
           href={`/products/${product.slug}`}
           className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-1 rounded-sm"
@@ -134,29 +169,36 @@ export function ProductCard({ product, locale }: ProductCardProps) {
           aria-hidden="true"
         >
           <h3 className="
-            text-sm font-medium
+            text-[13px] sm:text-sm font-medium
             text-[var(--color-brand-text)]
-            line-clamp-2 leading-snug
+            line-clamp-2 leading-snug sm:min-h-[2.5rem]
           ">
             {name}
           </h3>
         </Link>
 
-        {/* Price */}
-        <div className="flex items-baseline gap-2 mt-auto">
-          <span className="price-display text-base font-bold text-[var(--color-brand-primary)]">
-            {formatMAD(price)}
-          </span>
-          {hasDiscount && (
-            <span className="price-display text-sm text-[var(--color-brand-text-subtle)] line-through">
-              {formatMAD(compareAtPrice!)}
+        <div className="mt-auto space-y-2">
+          <div className="flex items-end justify-between gap-3">
+            <div className="flex flex-wrap items-baseline gap-2">
+              <span className="price-display text-base sm:text-lg font-bold text-[var(--color-brand-text)]">
+                {formatMAD(price)}
+              </span>
+              {hasDiscount && (
+                <span className="price-display text-xs text-[var(--color-brand-text-subtle)] line-through">
+                  {formatMAD(compareAtPrice!)}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:inline text-[10px] font-medium text-[var(--color-brand-text-subtle)]">
+              {isAr ? 'COD' : 'COD'}
             </span>
-          )}
-        </div>
+          </div>
 
-        {/* Add to cart — visible on hover (desktop), always shown (mobile) */}
-        {!isOutOfStock && (
-          <div className="md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+          <p className="hidden sm:block text-[11px] leading-snug text-[var(--color-brand-text-muted)]">
+            {isAr ? 'الدفع عند الاستلام، تأكيد بالهاتف.' : 'Paiement à la livraison, confirmation par appel.'}
+          </p>
+
+          {!isOutOfStock && (
             <AddToCartButton
               product={{
                 id: product.id,
@@ -169,23 +211,23 @@ export function ProductCard({ product, locale }: ProductCardProps) {
               size="sm"
               fullWidth
             />
-          </div>
-        )}
+          )}
 
-        {isOutOfStock && (
-          <button
-            disabled
-            className="
-              w-full h-8
-              rounded-[var(--radius-btn)]
-              bg-[var(--color-brand-surface-alt)]
-              text-xs font-semibold text-[var(--color-brand-text-subtle)]
-              cursor-not-allowed
-            "
-          >
-            {isAr ? 'نفد المخزون' : 'Rupture de stock'}
-          </button>
-        )}
+          {isOutOfStock && (
+            <button
+              disabled
+              className="
+                w-full h-9
+                rounded-[var(--radius-btn)]
+                bg-[var(--color-brand-surface-alt)]
+                text-xs font-semibold text-[var(--color-brand-text-subtle)]
+                cursor-not-allowed
+              "
+            >
+              {isAr ? 'نفد المخزون' : 'Rupture de stock'}
+            </button>
+          )}
+        </div>
       </div>
     </article>
   );

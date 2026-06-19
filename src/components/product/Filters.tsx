@@ -78,7 +78,7 @@ function FilterContent({
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleCategory(cat.slug)}
-                  className="w-4 h-4 accent-[var(--color-brand-primary)] cursor-pointer"
+                className="h-4 w-4 cursor-pointer accent-[var(--color-brand-primary)]"
                 />
                 <span className="text-sm text-[var(--color-brand-text)] group-hover:text-[var(--color-brand-primary)] transition-colors">
                   {catName}
@@ -101,7 +101,7 @@ function FilterContent({
             placeholder={isAr ? 'الحد الأدنى' : 'Min'}
             value={minPrice}
             onChange={(e) => setMinPrice(e.target.value)}
-            className="w-full h-9 px-3 text-sm rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-2 focus:ring-[var(--color-brand-primary)]/20"
+            className="form-input min-h-10"
           />
           <span className="text-[var(--color-brand-text-muted)] text-sm flex-shrink-0">—</span>
           <input
@@ -110,7 +110,7 @@ function FilterContent({
             placeholder={isAr ? 'الحد الأقصى' : 'Max'}
             value={maxPrice}
             onChange={(e) => setMaxPrice(e.target.value)}
-            className="w-full h-9 px-3 text-sm rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white focus:outline-none focus:border-[var(--color-brand-primary)] focus:ring-2 focus:ring-[var(--color-brand-primary)]/20"
+            className="form-input min-h-10"
           />
         </div>
       </div>
@@ -119,13 +119,13 @@ function FilterContent({
       <div className="flex gap-2 mt-auto pt-4 border-t border-[var(--color-brand-border)]">
         <button
           onClick={onReset}
-          className="flex-1 h-10 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text-muted)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
+          className="flex-1 h-10 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] text-sm font-semibold text-[var(--color-brand-text-muted)] hover:border-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary)] transition-colors"
         >
           {isAr ? 'إعادة تعيين' : 'Réinitialiser'}
         </button>
         <button
           onClick={onApply}
-          className="flex-1 h-10 rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white text-sm font-semibold transition-colors"
+          className="form-submit flex-1 min-h-10"
         >
           {isAr ? 'تطبيق' : 'Appliquer'}
         </button>

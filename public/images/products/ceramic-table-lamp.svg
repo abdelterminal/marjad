@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Ceramic table lamp in a calm Moroccan interior</title>
+  <desc id="desc">Minimal luxury product illustration with Moroccan clay and brass tones.</desc>
+  <rect width="900" height="1125" fill="#f7f1e8"/>
+  <rect y="760" width="900" height="365" fill="#e8dccd"/>
+  <path d="M0 0h900v1125H0z" fill="url(#grain)" opacity=".18"/>
+  <circle cx="450" cy="322" r="154" fill="#ead5bf"/>
+  <path d="M313 268h274l-52 178H365z" fill="#f2e7da" stroke="#d9c7b7" stroke-width="7"/>
+  <path d="M431 447h38v208h-38z" fill="#8b3e1a"/>
+  <path d="M356 653c18-118 170-118 188 0l26 158H330z" fill="#c4622d"/>
+  <path d="M377 705c47 33 98 33 146 0" fill="none" stroke="#f5d9c7" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="450" cy="824" rx="168" ry="26" fill="#2a1a0e" opacity=".14"/>
+  <path d="M183 912h534" stroke="#d4a853" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+  <defs>
+    <pattern id="grain" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="4" r="1.2" fill="#8b3e1a"/>
+      <circle cx="18" cy="22" r="1" fill="#d4a853"/>
+    </pattern>
+  </defs>
+</svg>

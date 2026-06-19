@@ -76,16 +76,16 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="admin-form-panel space-y-4 p-5">
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="admin-field">
+          <label className="admin-label">
             Nom (FR) <span className="text-red-500">*</span>
           </label>
           <input
@@ -93,12 +93,12 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
             value={nameFr}
             onChange={(e) => handleNameFrChange(e.target.value)}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="admin-field">
+          <label className="admin-label">
             Nom (AR) <span className="text-red-500">*</span>
           </label>
           <input
@@ -107,12 +107,12 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
             value={nameAr}
             onChange={(e) => setNameAr(e.target.value)}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="admin-field">
+          <label className="admin-label">
             Nom (EN) <span className="text-gray-400 text-xs">(optionnel)</span>
           </label>
           <input
@@ -120,19 +120,19 @@ export function CategoryForm({ category, onSuccess }: CategoryFormProps) {
             value={nameEn}
             onChange={(e) => setNameEn(e.target.value)}
             placeholder={nameFr || 'Identique à FR'}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">Slug</label>
+        <div className="admin-field">
+          <label className="admin-label">Slug</label>
           <input
             type="text"
             value={slug}
             onChange={(e) => setSlug(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm font-mono focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input font-mono"
           />
-          <p className="text-xs text-gray-400">Auto-généré depuis le nom FR</p>
+          <p className="admin-help">Auto-généré depuis le nom FR</p>
         </div>
       </div>
 

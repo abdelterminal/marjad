@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
-import { getLocale } from 'next-intl/server';
 import { MessageCircle, Mail, MapPin } from 'lucide-react';
 import type { Metadata } from 'next';
+import { ContactForm } from '@/components/contact/ContactForm';
 
 export const metadata: Metadata = {
   title: 'Contact — MARJAD',
@@ -10,8 +10,6 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const t = await getTranslations();
-  const locale = await getLocale();
-  const isAr = locale === 'ar';
   const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '212000000000';
 
   return (
@@ -156,116 +154,14 @@ export default async function ContactPage() {
       {/* ── CONTACT FORM ─────────────────────────────────────── */}
       <section className="py-14 lg:py-20 bg-[var(--color-brand-surface-alt)]">
         <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-[560px] mx-auto">
-
-            <h2 className="font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-text)] mb-8">
-              {t('contact.formTitle')}
-            </h2>
-
-            <form className="space-y-5" onSubmit={() => {}}>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="contact-name"
-                    className="text-xs font-semibold text-[var(--color-brand-text)] uppercase tracking-wide"
-                  >
-                    {t('contact.formName')}
-                  </label>
-                  <input
-                    id="contact-name"
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    className="
-                      h-11 px-3 rounded-[var(--radius-input)]
-                      border border-[var(--color-brand-border)]
-                      bg-[var(--color-brand-surface-elevated)]
-                      text-sm text-[var(--color-brand-text)]
-                      placeholder:text-[var(--color-brand-text-subtle)]
-                      focus:outline-none focus:ring-2
-                      focus:ring-[var(--color-brand-primary)]/30
-                      focus:border-[var(--color-brand-border-focus)]
-                      transition-colors duration-150
-                    "
-                  />
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  <label
-                    htmlFor="contact-email"
-                    className="text-xs font-semibold text-[var(--color-brand-text)] uppercase tracking-wide"
-                  >
-                    {t('contact.formEmail')}
-                  </label>
-                  <input
-                    id="contact-email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    className="
-                      h-11 px-3 rounded-[var(--radius-input)]
-                      border border-[var(--color-brand-border)]
-                      bg-[var(--color-brand-surface-elevated)]
-                      text-sm text-[var(--color-brand-text)]
-                      placeholder:text-[var(--color-brand-text-subtle)]
-                      focus:outline-none focus:ring-2
-                      focus:ring-[var(--color-brand-primary)]/30
-                      focus:border-[var(--color-brand-border-focus)]
-                      transition-colors duration-150
-                    "
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label
-                  htmlFor="contact-message"
-                  className="text-xs font-semibold text-[var(--color-brand-text)] uppercase tracking-wide"
-                >
-                  {t('contact.formMessage')}
-                </label>
-                <textarea
-                  id="contact-message"
-                  name="message"
-                  rows={5}
-                  className="
-                    px-3 py-2.5 rounded-[var(--radius-input)]
-                    border border-[var(--color-brand-border)]
-                    bg-[var(--color-brand-surface-elevated)]
-                    text-sm text-[var(--color-brand-text)]
-                    placeholder:text-[var(--color-brand-text-subtle)]
-                    focus:outline-none focus:ring-2
-                    focus:ring-[var(--color-brand-primary)]/30
-                    focus:border-[var(--color-brand-border-focus)]
-                    transition-colors duration-150
-                    resize-none
-                  "
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-4 pt-1">
-                <p className="text-xs text-[var(--color-brand-text-subtle)]">
-                  {t('contact.formNote')}
-                </p>
-                <button
-                  type="submit"
-                  className="
-                    h-11 px-6 flex-shrink-0
-                    rounded-[var(--radius-btn)]
-                    bg-[var(--color-brand-primary)]
-                    hover:bg-[var(--color-brand-primary-hover)]
-                    text-white font-semibold text-sm
-                    transition-colors duration-150
-                    active:scale-[0.98]
-                    focus-visible:outline-none focus-visible:ring-2
-                    focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2
-                  "
-                >
-                  {t('contact.formSend')}
-                </button>
-              </div>
-            </form>
-
-          </div>
+          <ContactForm
+            title={t('contact.formTitle')}
+            nameLabel={t('contact.formName')}
+            emailLabel={t('contact.formEmail')}
+            messageLabel={t('contact.formMessage')}
+            note={t('contact.formNote')}
+            submitLabel={t('contact.formSend')}
+          />
         </div>
       </section>
 

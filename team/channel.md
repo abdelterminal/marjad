@@ -2,6 +2,102 @@
 
 ---
 
+### [BACKEND/FRONTEND] Courier workflow presets — Phase 5
+- Did: added compact admin order presets for COD confirmation, ready-to-ship, in-transit follow-up, and delivered reconciliation.
+- Wrote: `src/app/admin/orders/page.tsx`, `src/app/api/admin/orders/export/route.ts`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should install actual Meta/TikTok/Google pixel scripts behind env vars, since the event layer already exists.
+- Flags: Presets map to existing order statuses instead of adding new lifecycle states; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [BACKEND/FRONTEND] Fulfillment CSV export — Phase 5
+- Did: added admin-only CSV export for all or status-filtered orders, including customer contact, city/address, totals, payment method, items, notes, and creation date.
+- Wrote: `src/app/api/admin/orders/export/route.ts`, `src/lib/queries/orders.ts`, `src/app/admin/orders/page.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add courier-ready status workflow/export presets or actual Meta/TikTok pixel script config.
+- Flags: Export route is admin-guarded, no-store, and limited to 1000 rows; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [SECURITY/BACKEND/FRONTEND] Admin duplicate/fraud hints — Phase 5
+- Did: added non-blocking admin hints for repeated phone numbers, repeated address/city combinations, and old pending orders.
+- Wrote: `src/lib/queries/orders.ts`, `src/app/admin/orders/page.tsx`, `src/app/admin/orders/[id]/page.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add actual Meta/TikTok pixel script configuration or courier/export workflow for fulfillment.
+- Flags: Hints are advisory only; no auto-cancel or order blocking. `npx tsc --noEmit`, `npm run lint`, `npm run build`, and read-only SQL smoke check pass.
+
+---
+
+### [SECURITY/BACKEND] COD protection layer — Phase 5
+- Did: added a checkout honeypot field plus fixed-window IP rate limiting for public order creation and order tracking.
+- Wrote: `src/lib/rate-limit.ts`, `src/lib/validators.ts`, `src/app/api/orders/route.ts`, `src/app/api/orders/track/route.ts`, `src/components/checkout/CheckoutForm.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should be duplicate/fraud hints in admin, or actual Meta/TikTok pixel script config if ad measurement comes first.
+- Flags: Current limiter is in-memory and suitable as a first VPS/PM2 single-process layer; Redis-backed limiter should replace it for multi-process or multi-instance scale. `npx tsc --noEmit`, `npm run lint`, `npm run build`, and rate-limit smoke check pass.
+
+---
+
+### [GROWTH/FRONTEND] Analytics events foundation — Phase 5
+- Did: added a lightweight analytics layer using `window.dataLayer`, with optional Meta/TikTok forwarding when pixels are installed later.
+- Wrote: `src/lib/analytics.ts`, `src/components/analytics/AnalyticsTracker.tsx`, `src/components/analytics/ProductViewEvent.tsx`, layout, product detail, add-to-cart, and checkout wiring.
+- Handoff: Next one-by-one pass should add actual pixel script configuration or rate-limiting/honeypot for COD order protection.
+- Flags: Tracks page_view, product_view, add_to_cart, checkout_start, order_submitted, whatsapp_click, and call_click; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [GROWTH/FRONTEND] SEO metadata foundation — Phase 5
+- Did: added shared SEO helpers, localized home/collection/tracking metadata, product metadata, product JSON-LD, robots.txt, and sitemap.xml.
+- Wrote: `src/lib/seo.ts`, `src/app/robots.ts`, `src/app/sitemap.ts`, `src/app/[locale]/layout.tsx`, home/products/product/tracking pages, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add analytics events for view product, add to cart, checkout start, order submitted, WhatsApp click, and call click.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass; Next build includes `/robots.txt` and `/sitemap.xml`.
+
+---
+
+### [BACKEND/FRONTEND] Customer order tracking — Phase 5
+- Did: added `/[locale]/suivi-commande` plus `POST /api/orders/track` so customers can check status with order ID and matching phone number.
+- Wrote: `src/app/[locale]/suivi-commande/page.tsx`, `src/components/order/TrackOrderForm.tsx`, `src/app/api/orders/track/route.ts`, `src/lib/queries/orders.ts`, `src/lib/validators.ts`, footer/mobile links, messages.
+- Handoff: Next one-by-one pass should be SEO/metadata/schema foundation or analytics events, depending on whether acquisition or measurement comes first.
+- Flags: Tracking API returns limited order data only after ID + phone match; `npx tsc --noEmit`, `npm run lint`, `npm run build`, and a read-only DB smoke check pass.
+
+---
+
+### [BACKEND/FRONTEND] Admin COD dashboard upgrade — Phase 5
+- Did: extended dashboard stats with COD status counts, today/delivered revenue, conversion rates, and a needs-action queue with quick actions.
+- Wrote: `src/lib/queries/orders.ts`, `src/app/admin/page.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add order tracking for customers or SEO/analytics foundations, depending on whether ops or acquisition comes first.
+- Flags: Read-only SQL smoke check passed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [FRONTEND/BACKEND] Admin COD quick actions + WhatsApp templates — Phase 5
+- Did: added compact quick status actions to the admin order queue and replaced generic WhatsApp links with status-aware prefilled COD messages on list and detail views.
+- Wrote: `src/components/admin/OrderQuickActions.tsx`, `src/app/admin/orders/page.tsx`, `src/app/admin/orders/[id]/page.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add a stronger COD dashboard with confirmation/delivery/cancel metrics.
+- Flags: Reused existing guarded PATCH endpoint and transition rules; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [FRONTEND] Product detail conversion polish — Phase 5
+- Did: improved PDP buy-box confidence with delivery/COD proof cards, scannable trust specs, checkout reassurance copy, and a stronger sticky mobile buy bar.
+- Wrote: `src/app/[locale]/products/[slug]/page.tsx`, `src/components/product/StickyMobileCTA.tsx`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should add admin order quick status actions and WhatsApp templates to speed COD confirmation.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass; lint still has only pre-existing script warnings.
+
+---
+
+### [FRONTEND] Homepage conversion layer — Phase 5
+- Did: strengthened the homepage with hero proof points, richer category cards, and a dark COD confidence band that explains order, confirmation, packaging, and support.
+- Wrote: `src/app/[locale]/page.tsx`, `messages/fr.json`, `messages/ar.json`, `team/STATUS.md`.
+- Handoff: Next one-by-one pass should improve product detail conversion: sticky mobile buy CTA, delivery promise near price, and specs/origin trust blocks.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass; lint still has only pre-existing script warnings.
+
+---
+
+### [FRONTEND] Admin COD order queue polish — Phase 5
+- Did: upgraded `/admin/orders` from a passive table into a practical COD queue with pending-order emphasis, cart context, address preview, and one-tap call/WhatsApp actions.
+- Wrote: `src/app/admin/orders/page.tsx`, `team/STATUS.md`
+- Handoff: Admin can now treat pending COD orders faster from the list before opening detail.
+- Flags: No backend or database changes; uses fields already returned by `adminListOrders()`. `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
 ### [DELIVERY LEAD] Phase 0 complete — T2 build starting — Phase 1 kickoff
 
 - Did: Phase 0 scaffold complete — Next.js 16, Tailwind v4, next-intl, Drizzle ORM, PostgreSQL, NextAuth v5 all wired; 7-table schema migrated; dev server green at localhost:3000
@@ -202,3 +298,75 @@
 ### [HANDOFF] Final handoff document written — Phase 6
 - Wrote: HANDOFF.md at project root
 - Covers: stack, local dev, deploy procedure, env vars, first admin, open items, Phase 2 recs
+
+---
+
+### [DELIVERY LEAD] Storefront conversion polish — 2026-06-19
+- Did: added COD trust, delivery, confirmation-call, and privacy reassurance content across collection, product detail, checkout, and confirmation screens; cleaned cart hydration lint blockers.
+- Wrote: `src/app/[locale]/products/page.tsx`, `src/app/[locale]/products/[slug]/page.tsx`, `src/components/checkout/CheckoutForm.tsx`, `src/app/[locale]/checkout/confirmation/[orderId]/page.tsx`, cart/admin cleanup files, `team/STATUS.md`.
+- Handoff: Next useful pass is visual QA in browser and then Phase 2 ops features: COD metrics, WhatsApp/SMS notifications, CAPI, and promo/reviews.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Support pages and interaction polish — 2026-06-19
+- Did: added Delivery & Returns and FAQ pages, footer support navigation, and subtle global interaction helpers for page entrance, premium card lift, and quiet link motion.
+- Wrote: `src/app/[locale]/livraison-retours/page.tsx`, `src/app/[locale]/faq/page.tsx`, `src/components/layout/Footer.tsx`, `src/app/globals.css`, `messages/fr.json`, `messages/ar.json`, `team/STATUS.md`.
+- Handoff: Next pass should refine product cards/gallery/cart drawer visual rhythm and add realistic fake product data/images for visual QA.
+- Flags: New routes `/fr/faq` and `/fr/livraison-retours` return 200; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Shopping surface luxury refinement — 2026-06-19
+- Did: refined product cards, gallery, add-to-cart button, and cart drawer for always-visible purchase actions, tactile image transitions, COD reassurance, and calmer luxury rhythm.
+- Wrote: `src/components/product/ProductCard.tsx`, `src/components/product/Gallery.tsx`, `src/components/product/AddToCartButton.tsx`, `src/components/cart/CartDrawer.tsx`, `team/STATUS.md`.
+- Handoff: Next useful pass is realistic fake product data/images and a browser visual QA pass across mobile/desktop.
+- Flags: `/fr/products` returns 200; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Demo inventory seeded — 2026-06-19
+- Did: added 8 realistic MARJAD demo products, 6 categories, and matching lightweight product visuals for catalogue/product-detail visual QA.
+- Wrote: `scripts/seed-demo.mjs`, `package.json`, `public/images/products/*.svg`, `team/STATUS.md`.
+- Handoff: Storefront now has real-looking inventory. Next pass should be visual QA screenshots across desktop/mobile and tune spacing/image rhythm from what we see.
+- Flags: Ran `npm run db:seed`; local DB has 8 published products. `/fr/products` and `/fr/products/lampe-ceramique-safi` return 200; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Mobile shopping density refinement — 2026-06-19
+- Did: reduced mobile product-card copy density and compacted cart drawer reassurance on small screens while preserving richer desktop treatment.
+- Wrote: `src/components/product/ProductCard.tsx`, `src/components/cart/CartDrawer.tsx`, `team/STATUS.md`.
+- Handoff: Continue with code-only refinements unless the user asks for screenshots; next good target is header/mobile navigation access to support pages.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Mobile navigation added — 2026-06-19
+- Did: added a compact mobile menu so shoppers can reach Collection, About, Delivery & Returns, FAQ, Contact, and account/login actions from the header.
+- Wrote: `src/components/layout/MobileMenu.tsx`, `src/components/layout/Header.tsx`, `team/STATUS.md`.
+- Handoff: Next code-only pass should improve checkout empty-cart handling and product-list empty/error states.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Empty states refined — 2026-06-19
+- Did: replaced empty checkout redirect with a polished recovery screen and consolidated product no-results into a stronger reusable empty state.
+- Wrote: `src/components/checkout/CheckoutForm.tsx`, `src/app/[locale]/products/page.tsx`, `team/STATUS.md`.
+- Handoff: Next code-only target can be admin/order workflow polish or checkout form ergonomics.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [DELIVERY LEAD] Website form system aligned — 2026-06-19
+- Did: added shared MARJAD form utilities and applied them across public/customer forms so inputs, labels, panels, help/error copy, and submit buttons match the luxury design system.
+- Wrote: `src/app/globals.css`, `src/components/checkout/CheckoutForm.tsx`, `src/components/contact/ContactForm.tsx`, `src/components/auth/AuthModal.tsx`, `src/components/account/ProfileForm.tsx`, `src/components/product/Filters.tsx`, `src/components/layout/Footer.tsx`, `src/components/home/TestimonialsSection.tsx`, `team/STATUS.md`.
+- Handoff: Next pass can bring admin CRUD forms onto a denser but related internal form system.
+- Flags: `npx tsc --noEmit` and `npm run build` pass. `npm run lint` has no errors; only pre-existing script warnings remain.
+
+---
+
+### [DELIVERY LEAD] Admin forms and COD contact workflow polished — 2026-06-19
+- Did: added dense admin form utilities, applied them to product/category forms, and added one-tap call/WhatsApp actions on admin order detail.
+- Wrote: `src/app/globals.css`, `src/components/admin/ProductForm.tsx`, `src/components/admin/CategoryForm.tsx`, `src/app/admin/orders/[id]/page.tsx`, `team/STATUS.md`.
+- Handoff: Next admin pass should improve order list workflow: pending-first queue, quick contact/action affordances, and clearer COD status filters.
+- Flags: `npx tsc --noEmit` and `npm run build` pass. `npm run lint` has no errors; only pre-existing script warnings remain.

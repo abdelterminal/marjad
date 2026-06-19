@@ -3,13 +3,38 @@
  * paper-band: light · display-style: high-contrast-serif · accent-hue: warm
  * nav: N1b · footer: Ft5 · enrichment: Tier-C lifestyle photography (see IMAGE_PROMPTS.md)
  */
+import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { listProducts } from '@/lib/queries/products';
 import { listCategories } from '@/lib/queries/categories';
 import { ProductCard } from '@/components/product/ProductCard';
-import { ArrowRight, Sparkles, Truck, ShieldCheck } from 'lucide-react';
+import { MarqueeStrip } from '@/components/home/MarqueeStrip';
+import { TestimonialsSection } from '@/components/home/TestimonialsSection';
+import { ArrowRight, Banknote, Headphones, PackageCheck, ShieldCheck, Truck } from 'lucide-react';
+import { createPageMetadata } from '@/lib/seo';
+
+interface HomePageProps {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: HomePageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const isAr = locale === 'ar';
+
+  return createPageMetadata({
+    locale,
+    path: `/${locale}`,
+    title: isAr
+      ? 'مرجاد — ديكور مغربي مصنوع بعناية'
+      : 'MARJAD — Décoration marocaine artisanale',
+    description: isAr
+      ? 'اكتشف قطع ديكور مغربية مختارة بعناية مع التوصيل داخل المغرب والدفع عند الاستلام.'
+      : 'Découvrez tableaux, lampes, tables et objets décoratifs marocains avec livraison partout au Maroc et paiement à la livraison.',
+    image: '/images/hero-bg.png',
+  });
+}
 
 export default async function HomePage() {
   const t = await getTranslations();
@@ -69,7 +94,7 @@ export default async function HomePage() {
               className="
                 font-[var(--font-display)]
                 text-white
-                text-[clamp(2.4rem,6vw,5.5rem)]
+                text-[clamp(2.8rem,7vw,7rem)]
                 font-bold leading-[1.08] tracking-tight
                 overflow-wrap-anywhere min-w-0
               "
@@ -111,7 +136,6 @@ export default async function HomePage() {
                   h-12 px-7
                   rounded-[var(--radius-btn)]
                   bg-white/10 hover:bg-white/18
-                  border border-white/25
                   text-white font-medium text-sm
                   backdrop-blur-sm
                   transition-colors duration-[var(--transition-base)]
@@ -121,47 +145,61 @@ export default async function HomePage() {
                 {t('home.hero.ctaSecondary')}
               </Link>
             </div>
+
+            <div className="mt-8 grid max-w-[560px] grid-cols-1 gap-2 sm:grid-cols-3">
+              {[
+                t('home.hero.proofCod'),
+                t('home.hero.proofDelivery'),
+                t('home.hero.proofCall'),
+              ].map((proof) => (
+                <div
+                  key={proof}
+                  className="rounded-[var(--radius-md)] border border-white/15 bg-white/[0.08] px-3 py-2 text-xs font-medium text-white/78 backdrop-blur-sm"
+                >
+                  {proof}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
+      <MarqueeStrip />
+
       {/* ── VALUES BAR ─────────────────────────────────────────── */}
-      <section className="bg-[var(--color-brand-surface)] border-b border-[var(--color-brand-border)]">
-        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8 py-7">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 sm:gap-0 sm:divide-x divide-[var(--color-brand-border)] rtl:divide-x-reverse">
+      <section className="zellige-texture bg-[var(--color-brand-surface-alt)] border-b border-[var(--color-brand-border)]">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0">
             {[
               {
-                icon: <Sparkles className="w-4 h-4" />,
                 title: t('home.values.craftTitle'),
                 desc: t('home.values.craftDesc'),
               },
               {
-                icon: <Truck className="w-4 h-4" />,
                 title: t('home.values.deliveryTitle'),
                 desc: t('home.values.deliveryDesc'),
               },
               {
-                icon: <ShieldCheck className="w-4 h-4" />,
                 title: t('home.values.guaranteeTitle'),
                 desc: t('home.values.guaranteeDesc'),
               },
-            ].map((item) => (
+            ].map((item, i) => (
               <div
                 key={item.title}
-                className="flex items-start gap-3.5 sm:px-8 first:ps-0 last:pe-0"
+                className="sm:px-10 first:ps-0 last:pe-0 border-t-2 border-[var(--color-brand-primary)] pt-5"
+                style={{ borderTopWidth: i === 0 ? '2px' : undefined }}
               >
-                <div className="
-                  w-8 h-8 rounded-full flex-shrink-0
-                  bg-[var(--color-brand-primary-light)]
-                  text-[var(--color-brand-primary)]
-                  flex items-center justify-center
+                <p className="
+                  font-[var(--font-display)]
+                  text-lg font-bold
+                  text-[var(--color-brand-text)]
+                  mb-2
                 ">
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--color-brand-text)]">{item.title}</p>
-                  <p className="text-xs text-[var(--color-brand-text-muted)] mt-0.5 leading-snug">{item.desc}</p>
-                </div>
+                  {item.title}
+                </p>
+                <p className="text-sm text-[var(--color-brand-text-muted)] leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
             ))}
           </div>
@@ -266,7 +304,6 @@ export default async function HomePage() {
               <div className="
                 absolute -bottom-4 -start-4
                 bg-[var(--color-brand-surface)]
-                border border-[var(--color-brand-border)]
                 rounded-[var(--radius-md)] px-4 py-3
                 shadow-[var(--shadow-md)]
               ">
@@ -306,6 +343,9 @@ export default async function HomePage() {
             ">
               {categories.slice(0, 4).map((cat) => {
                 const catName = isAr ? cat.nameAr : cat.nameFr;
+                const categoryHint = isAr
+                  ? t('home.categories.hintAr', { category: catName })
+                  : t('home.categories.hintFr', { category: catName });
                 return (
                   <Link
                     key={cat.id}
@@ -341,6 +381,9 @@ export default async function HomePage() {
 
                     {/* Label */}
                     <div className="absolute bottom-4 start-4 end-4">
+                      <p className="mb-2 w-fit rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/75 backdrop-blur-sm">
+                        {t('home.categories.badge')}
+                      </p>
                       <p className="
                         font-[var(--font-display)] text-white
                         text-lg font-semibold
@@ -350,8 +393,12 @@ export default async function HomePage() {
                       ">
                         {catName}
                       </p>
-                      <p className="text-white/60 text-xs mt-1 rtl:text-right">
+                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/68 rtl:text-right">
+                        {categoryHint}
+                      </p>
+                      <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white">
                         {t('home.categories.shopCta')}
+                        <ArrowRight className="size-3 rtl:rotate-180" />
                       </p>
                     </div>
                   </Link>
@@ -362,6 +409,71 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* ── COD CONFIDENCE ────────────────────────────────────── */}
+      <section className="bg-[var(--color-brand-text)] py-14 text-white sm:py-16 lg:py-20">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.5fr] lg:items-end">
+            <div>
+              <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-secondary)]">
+                {t('home.cod.eyebrow')}
+              </p>
+              <h2 className="font-[var(--font-display)] text-[clamp(1.8rem,3.7vw,3rem)] font-bold leading-tight">
+                {t('home.cod.heading')}
+              </h2>
+              <p className="mt-4 max-w-[440px] text-sm leading-7 text-white/66">
+                {t('home.cod.body')}
+              </p>
+              <Link
+                href="/livraison-retours"
+                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-brand-secondary)] transition hover:gap-3 focus-visible:outline-none focus-visible:underline"
+              >
+                {t('home.cod.cta')}
+                <ArrowRight className="size-4 rtl:rotate-180" />
+              </Link>
+            </div>
+
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {[
+                { icon: Banknote, title: t('home.cod.step1Title'), body: t('home.cod.step1Body') },
+                { icon: Headphones, title: t('home.cod.step2Title'), body: t('home.cod.step2Body') },
+                { icon: PackageCheck, title: t('home.cod.step3Title'), body: t('home.cod.step3Body') },
+                { icon: ShieldCheck, title: t('home.cod.step4Title'), body: t('home.cod.step4Body') },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-[var(--radius-md)] border border-white/10 bg-white/[0.06] p-4 transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
+                  >
+                    <Icon className="mb-4 size-5 text-[var(--color-brand-secondary)]" />
+                    <h3 className="text-sm font-semibold text-white">{item.title}</h3>
+                    <p className="mt-2 text-xs leading-5 text-white/58">{item.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="mt-10 grid gap-3 border-t border-white/10 pt-6 sm:grid-cols-3">
+            {[
+              { icon: Truck, text: t('home.cod.statDelivery') },
+              { icon: ShieldCheck, text: t('home.cod.statPackaging') },
+              { icon: Headphones, text: t('home.cod.statSupport') },
+            ].map((item) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.text} className="flex items-center gap-3 text-sm text-white/72">
+                  <Icon className="size-4 text-[var(--color-brand-secondary)]" />
+                  <span>{item.text}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <TestimonialsSection locale={locale} />
 
     </main>
   );

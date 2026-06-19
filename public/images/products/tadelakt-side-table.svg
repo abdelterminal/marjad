@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Tadelakt side table</title>
+  <desc id="desc">Sculptural tadelakt side table in warm neutral tones.</desc>
+  <rect width="900" height="1125" fill="#faf7f2"/>
+  <rect y="720" width="900" height="405" fill="#ece3d7"/>
+  <circle cx="450" cy="450" r="290" fill="#f2e8dc"/>
+  <ellipse cx="450" cy="434" rx="230" ry="56" fill="#cfa47b"/>
+  <path d="M284 432c34 99 76 196 68 365h196c-8-169 34-266 68-365" fill="#d8b18b"/>
+  <ellipse cx="450" cy="797" rx="128" ry="34" fill="#b88a6a"/>
+  <path d="M340 514c67 28 153 28 220 0M353 604c58 20 136 20 194 0" stroke="#f4dfcc" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <ellipse cx="450" cy="839" rx="230" ry="28" fill="#2a1a0e" opacity=".12"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Hand-painted ceramic vase</title>
+  <desc id="desc">Hand-painted ceramic vase with Moroccan blue and clay marks.</desc>
+  <rect width="900" height="1125" fill="#faf5ee"/>
+  <rect y="760" width="900" height="365" fill="#eadfd1"/>
+  <path d="M397 240h106c-16 122 82 154 82 346 0 160-270 160-270 0 0-192 98-224 82-346Z" fill="#f6e9d9" stroke="#d8c5b2" stroke-width="8"/>
+  <path d="M384 250c40 20 92 20 132 0" stroke="#1b4a7a" stroke-width="15" stroke-linecap="round"/>
+  <path d="M350 486c62 48 138 48 200 0M340 612c72 42 148 42 220 0" stroke="#c4622d" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <circle cx="398" cy="548" r="18" fill="#d4a853"/>
+  <circle cx="502" cy="548" r="18" fill="#1b4a7a"/>
+  <ellipse cx="450" cy="786" rx="200" ry="30" fill="#2a1a0e" opacity=".12"/>
+</svg>

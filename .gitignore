@@ -41,8 +41,10 @@ yarn-error.log*
 # vercel
 .vercel
 
-# uploads (product images on VPS)
+# uploads (product images on VPS — never commit)
 /uploads
+/public/uploads/*
+!/public/uploads/.gitkeep
 
 # drizzle migrations (keep schema, not generated sql unless you want to)
 # /drizzle

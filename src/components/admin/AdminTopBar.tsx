@@ -4,7 +4,7 @@ import { ExternalLink } from 'lucide-react';
 export function AdminTopBar() {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-gray-200 bg-white px-6">
-      <div className="text-sm text-gray-500">Panneau d'administration</div>
+      <div className="text-sm text-gray-500">Panneau d&apos;administration</div>
       <Link
         href="/fr"
         target="_blank"

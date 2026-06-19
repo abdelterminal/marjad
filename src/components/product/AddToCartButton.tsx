@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { ShoppingBag, Check, Loader2 } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
+import { useCartToast } from '@/components/ui/cart-toast';
+import { trackAddToCart } from '@/lib/analytics';
 
 interface AddToCartButtonProps {
   product: {
@@ -28,14 +30,15 @@ export function AddToCartButton({
   const locale = useLocale();
   const add = useCartStore((s) => s.add);
   const openCart = useCartStore((s) => s.openCart);
+  const toast = useCartToast();
 
   const [state, setState] = useState<'idle' | 'adding' | 'added'>('idle');
 
-  const label = locale === 'ar' ? 'أضف' : 'Ajouter';
+  const label = locale === 'ar' ? 'أضف إلى السلة' : 'Ajouter au panier';
   const addedLabel = locale === 'ar' ? 'أُضيف ✓' : 'Ajouté ✓';
 
   const sizeClasses = {
-    sm: 'h-8 px-3 text-xs',
+    sm: 'h-9 px-3 text-xs',
     md: 'h-10 px-4 text-sm',
     lg: 'h-12 px-6 text-base',
   }[size];
@@ -55,10 +58,21 @@ export function AddToCartButton({
       },
       1,
     );
+    trackAddToCart({
+      productId: product.id,
+      slug: product.slug,
+      name: locale === 'ar' ? product.nameAr : product.nameFr,
+      price: parseFloat(product.price),
+      quantity: 1,
+    });
 
     // Brief 300ms visual feedback
     await new Promise((r) => setTimeout(r, 300));
     setState('added');
+    toast.show({
+      title: locale === 'ar' ? product.nameAr : product.nameFr,
+      imageUrl: product.image,
+    });
     openCart();
 
     // Reset after 2s
@@ -79,13 +93,13 @@ export function AddToCartButton({
         'inline-flex items-center justify-center gap-2',
         'rounded-[var(--radius-btn)]',
         'font-semibold',
-        'transition-all duration-[var(--transition-fast)]',
+        'transition-all duration-[var(--transition-base)] active:scale-[0.98]',
         'focus-visible:outline-none focus-visible:ring-2',
         'focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2',
         'disabled:opacity-70 disabled:cursor-not-allowed',
         state === 'added'
           ? 'bg-[var(--color-brand-success)] hover:bg-[var(--color-brand-success)] text-white'
-          : 'bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white',
+          : 'bg-[var(--color-brand-text)] hover:bg-[var(--color-brand-primary)] text-white shadow-[var(--shadow-xs)]',
         sizeClasses,
         fullWidth ? 'w-full' : '',
         className,

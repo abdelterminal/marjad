@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CartIcon } from './CartIcon';
 import { HeaderUserMenu } from './HeaderUserMenu';
+import { MobileMenu } from './MobileMenu';
+import { AnnouncementBar } from './AnnouncementBar';
 
 export async function Header() {
   const t = await getTranslations();
@@ -18,6 +20,7 @@ export async function Header() {
         border-b border-[var(--color-brand-border)]
       "
     >
+      <AnnouncementBar />
       <div
         className="
           mx-auto max-w-[var(--container-content)]
@@ -60,6 +63,7 @@ export async function Header() {
               key={href}
               href={href}
               className="
+                quiet-link
                 text-sm font-medium
                 text-[var(--color-brand-text-muted)]
                 hover:text-[var(--color-brand-primary)]
@@ -78,6 +82,7 @@ export async function Header() {
           <LanguageSwitcher />
           <CartIcon />
           <HeaderUserMenu />
+          <MobileMenu />
         </div>
       </div>
     </header>

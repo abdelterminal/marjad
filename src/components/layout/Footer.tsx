@@ -27,7 +27,7 @@ export async function Footer() {
           </div>
 
           {/* Explore column */}
-          <div className="md:col-span-3 space-y-4">
+          <div className="md:col-span-2 space-y-4">
             <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
               {t('footer.explore')}
             </h3>
@@ -55,8 +55,38 @@ export async function Footer() {
             </ul>
           </div>
 
+          {/* Support column */}
+          <div className="md:col-span-2 space-y-4">
+            <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
+              {t('footer.support')}
+            </h3>
+            <ul className="space-y-2.5">
+              {[
+                { label: t('footer.supportDelivery'), href: `/${locale}/livraison-retours` },
+                { label: t('footer.supportTrack'),    href: `/${locale}/suivi-commande` },
+                { label: t('footer.supportFaq'),      href: `/${locale}/faq` },
+                { label: t('footer.supportContact'),  href: `/${locale}/contact` },
+              ].map(({ label, href }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="
+                      text-sm text-white/65
+                      hover:text-[var(--color-brand-secondary)]
+                      transition-colors duration-150
+                      focus-visible:outline-none focus-visible:ring-1
+                      focus-visible:ring-[var(--color-brand-secondary)] rounded-sm
+                    "
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
           {/* Newsletter column */}
-          <div className="md:col-span-4 space-y-4">
+          <div className="md:col-span-3 space-y-4">
             <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
               {t('footer.newsletter')}
             </h3>
@@ -76,6 +106,7 @@ export async function Footer() {
                   placeholder:text-white/35
                   focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-secondary)]/50
                   focus:border-[var(--color-brand-secondary)]/60
+                  hover:border-white/35
                   transition-colors duration-150
                 "
               />
@@ -84,9 +115,9 @@ export async function Footer() {
                 className="
                   h-10 px-4 flex-shrink-0
                   rounded-[var(--radius-btn)]
-                  bg-[var(--color-brand-primary)]
-                  hover:bg-[var(--color-brand-primary-hover)]
-                  text-white text-sm font-semibold
+                  bg-white text-[var(--color-brand-text)]
+                  hover:bg-[var(--color-brand-secondary)]
+                  text-sm font-semibold
                   transition-colors duration-150
                   focus-visible:outline-none focus-visible:ring-2
                   focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-1
@@ -119,10 +150,10 @@ export async function Footer() {
             </a>
             <span className="text-white/15">·</span>
             <Link
-              href={`/${locale}/contact`}
+              href={`/${locale}/livraison-retours`}
               className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
             >
-              Contact
+              {t('footer.supportDelivery')}
             </Link>
           </div>
         </div>

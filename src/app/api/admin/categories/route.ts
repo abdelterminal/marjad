@@ -5,7 +5,7 @@ import { listCategories, createCategory, isCategorySlugTaken } from '@/lib/queri
 import { slugify, ensureUniqueSlug } from '@/lib/slug';
 
 // GET /api/admin/categories
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const guard = await requireAdminApi();
   if (guard.response) return guard.response;
 

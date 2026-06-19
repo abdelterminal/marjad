@@ -4,7 +4,7 @@ import { Link } from '@/i18n/navigation';
 import { auth } from '@/auth';
 import { getOrderById } from '@/lib/queries/orders';
 import { formatMAD } from '@/lib/money';
-import { CheckCircle2, Package, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Package, MessageCircle, PhoneCall, Truck, Banknote } from 'lucide-react';
 import Image from 'next/image';
 
 interface ConfirmationPageProps {
@@ -47,6 +47,23 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   }
 
   const total = parseFloat(order.total);
+  const nextSteps = [
+    {
+      icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
+      title: isAr ? 'سنتصل بك' : 'Nous vous appelons',
+      body: isAr ? 'لتأكيد العنوان والكمية قبل الإرسال.' : "Pour confirmer l'adresse et la quantité avant l'envoi.",
+    },
+    {
+      icon: <Truck className="h-4 w-4" aria-hidden="true" />,
+      title: isAr ? 'نحضر الطلب' : 'Nous préparons la pièce',
+      body: isAr ? 'بتغليف مناسب حتى تصل في حالة ممتازة.' : "Avec un emballage adapté pour l'arrivée en bon état.",
+    },
+    {
+      icon: <Banknote className="h-4 w-4" aria-hidden="true" />,
+      title: isAr ? 'تدفع عند الاستلام' : 'Vous payez à la livraison',
+      body: isAr ? 'لا يوجد أي دفع مطلوب الآن.' : "Aucun paiement n'est demandé maintenant.",
+    },
+  ];
 
   return (
     <main className="max-w-[var(--container-sm)] mx-auto px-4 py-10 text-center">
@@ -69,6 +86,25 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
       <p className="mt-3 text-sm font-semibold text-[var(--color-brand-text-muted)] font-mono">
         {isAr ? `رقم الطلب: #${order.id}` : `N° de commande : #${order.id}`}
       </p>
+
+      <div className="mt-8 grid gap-3 text-start sm:grid-cols-3">
+        {nextSteps.map((step) => (
+          <div
+            key={step.title}
+            className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] p-3"
+          >
+            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
+              {step.icon}
+            </div>
+            <p className="text-xs font-semibold text-[var(--color-brand-text)]">
+              {step.title}
+            </p>
+            <p className="mt-1 text-xs leading-snug text-[var(--color-brand-text-muted)]">
+              {step.body}
+            </p>
+          </div>
+        ))}
+      </div>
 
       {/* Items summary */}
       {order.items && order.items.length > 0 && (

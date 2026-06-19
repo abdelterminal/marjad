@@ -30,6 +30,8 @@
   --color-brand-warning-light:    #FDF3E4;
   --color-brand-info:             #3A6EA8;
   --color-brand-info-light:       #E8EFF8;
+  --color-brand-cobalt:           #1B4A7A; /* Moroccan blue — traditional Fès pigment */
+  --color-brand-cobalt-light:     #E6EEF6;
   --color-brand-neutral:          #8A8480;
   --color-brand-neutral-light:    #F0EEEC;
   --color-brand-overlay:          rgba(26,26,26,0.5);
@@ -79,26 +81,26 @@
   --container-xl:      1280px;
   --container-content: 1200px;
 
-  /* Border radius */
-  --radius-card: 8px;
-  --radius-input: 4px;
+  /* Border radius — sharp/architectural */
+  --radius-card: 2px;
+  --radius-input: 2px;
   --radius-pill: 9999px;
-  --radius-btn:  6px;
-  --radius-sm:   4px;
-  --radius-md:   8px;
-  --radius-lg:   12px;
-  --radius-xl:   16px;
+  --radius-btn:  2px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   6px;
+  --radius-xl:   10px;
   --radius-full: 9999px;
-  --radius:      8px;
+  --radius:      4px;
 
-  /* Shadows */
-  --shadow-card:     0 1px 3px rgba(0,0,0,0.08);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.12);
-  --shadow-xs:  0 1px 2px rgba(26,26,26,0.06);
-  --shadow-sm:  0 1px 4px rgba(26,26,26,0.08), 0 0 0 1px rgba(26,26,26,0.04);
-  --shadow-md:  0 4px 12px rgba(26,26,26,0.10);
-  --shadow-lg:  0 8px 24px rgba(26,26,26,0.12);
-  --shadow-xl:  0 16px 40px rgba(26,26,26,0.14);
+  /* Shadows — flat cards, shadows only for floating/overlay elements */
+  --shadow-card:     none;
+  --shadow-elevated: none;
+  --shadow-xs:       none;
+  --shadow-sm:       none;
+  --shadow-md:  0 6px 20px rgba(26,26,26,0.08);
+  --shadow-lg:  0 12px 32px rgba(26,26,26,0.10);
+  --shadow-xl:  0 20px 48px rgba(26,26,26,0.12);
 
   /* Transitions */
   --transition-fast:   150ms ease;
@@ -150,7 +152,7 @@
   --border:                 var(--color-brand-border);
   --input:                  var(--color-brand-border);
   --ring:                   var(--color-brand-primary);
-  --radius:                 8px;
+  --radius:                 4px;
 }
 
 /* ── Arabic font activation ──────────────────────────────── */
@@ -170,6 +172,320 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ── Zellige texture — diagonal dot grid from Moroccan mosaic tile spacing */
+.zellige-texture {
+  background-image:
+    radial-gradient(rgba(196, 98, 45, 0.10) 1.2px, transparent 1.2px),
+    radial-gradient(rgba(196, 98, 45, 0.10) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+  background-position: 0 0, 13px 13px;
+}
+
+/* ── Premium interaction helpers ─────────────────────────── */
+.page-enter {
+  animation: page-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.interactive-lift {
+  transition:
+    transform var(--transition-base),
+    box-shadow var(--transition-base),
+    border-color var(--transition-base),
+    background-color var(--transition-base);
+}
+
+.interactive-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.quiet-link {
+  position: relative;
+}
+
+.quiet-link::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.2em;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--transition-base);
+}
+
+.quiet-link:hover::after,
+.quiet-link:focus-visible::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ── MARJAD form system ─────────────────────────────────── */
+.form-panel {
+  border: 1px solid var(--color-brand-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(250, 247, 242, 0.92)),
+    var(--color-brand-surface-elevated);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.form-label {
+  color: var(--color-brand-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+  width: 100%;
+  border: 1px solid var(--color-brand-border);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(250, 247, 242, 0.55)),
+    var(--color-brand-surface-elevated);
+  color: var(--color-brand-text);
+  border-radius: var(--radius-sm);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  font-size: 0.92rem;
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    background-color var(--transition-base),
+    transform var(--transition-fast);
+}
+
+.form-input,
+.form-select {
+  min-height: 2.85rem;
+  padding: 0 0.85rem;
+}
+
+.form-textarea {
+  min-height: 6rem;
+  padding: 0.75rem 0.85rem;
+  resize: vertical;
+}
+
+.form-input::placeholder,
+.form-textarea::placeholder {
+  color: var(--color-brand-text-subtle);
+}
+
+.form-input:hover,
+.form-textarea:hover,
+.form-select:hover {
+  border-color: color-mix(in srgb, var(--color-brand-primary) 38%, var(--color-brand-border));
+}
+
+.form-input:focus,
+.form-textarea:focus,
+.form-select:focus {
+  outline: none;
+  border-color: var(--color-brand-primary);
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-brand-primary) 16%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.form-input:disabled,
+.form-textarea:disabled,
+.form-select:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.form-input-error {
+  border-color: var(--color-brand-border-error);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 234, 234, 0.62)),
+    var(--color-brand-error-light);
+}
+
+.form-help {
+  color: var(--color-brand-text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.form-error {
+  color: var(--color-brand-error);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.form-submit {
+  display: inline-flex;
+  min-height: 2.85rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--radius-btn);
+  background: var(--color-brand-text);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0 1.2rem;
+  transition:
+    background-color var(--transition-base),
+    transform var(--transition-fast),
+    opacity var(--transition-fast);
+}
+
+.form-submit:hover {
+  background: var(--color-brand-primary);
+}
+
+.form-submit:active {
+  transform: scale(0.985);
+}
+
+.form-submit:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-primary) 28%, transparent);
+}
+
+.form-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+/* ── Admin form system: denser, operational ──────────────── */
+.admin-form-panel {
+  border: 1px solid rgb(229 231 235);
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.admin-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.admin-label {
+  color: rgb(55 65 81);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.admin-input,
+.admin-textarea,
+.admin-select {
+  width: 100%;
+  border: 1px solid rgb(209 213 219);
+  background: rgb(255 255 255);
+  color: rgb(17 24 39);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.admin-input,
+.admin-select {
+  min-height: 2.5rem;
+  padding: 0 0.75rem;
+}
+
+.admin-textarea {
+  min-height: 6.5rem;
+  padding: 0.65rem 0.75rem;
+  resize: vertical;
+}
+
+.admin-input:hover,
+.admin-textarea:hover,
+.admin-select:hover {
+  border-color: rgb(156 163 175);
+}
+
+.admin-input:focus,
+.admin-textarea:focus,
+.admin-select:focus {
+  outline: none;
+  border-color: rgb(31 41 55);
+  box-shadow: 0 0 0 3px rgba(31, 41, 55, 0.1);
+}
+
+.admin-help {
+  color: rgb(107 114 128);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.admin-toggle {
+  display: flex;
+  min-height: 2.75rem;
+  cursor: pointer;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.65rem;
+  background: rgb(249 250 251);
+  padding: 0.6rem 0.75rem;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.admin-toggle:hover {
+  border-color: rgb(156 163 175);
+  background: white;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-toast-in {
+  animation: toast-in 280ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee-scroll 32s linear infinite;
+  will-change: transform;
+}
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -180,9 +496,6 @@
 
 /* ── Base styles ─────────────────────────────────────────── */
 @layer base {
-  * {
-    @apply border-border;
-  }
   body {
     background-color: var(--color-brand-surface);
     color: var(--color-brand-text);

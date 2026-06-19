@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { ChevronLeft } from 'lucide-react';
+import { AlertTriangle, ChevronLeft, MessageCircle, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { getOrderById } from '@/lib/queries/orders';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
@@ -21,6 +21,29 @@ const STATUS_LABELS: Record<string, string> = {
 
 const STATUS_FLOW = ['pending', 'confirmed', 'shipped', 'delivered'];
 
+function getWhatsappMessage(order: NonNullable<Awaited<ReturnType<typeof getOrderById>>>) {
+  const total = formatMAD(parseFloat(order.total));
+  const firstItem = order.items[0]?.product?.nameFr ?? 'votre commande';
+
+  if (order.status === 'confirmed') {
+    return `Bonjour ${order.customerName}, votre commande MARJAD #${order.id} (${total}) est confirmée. Nous la préparons avec soin et vous informerons dès son expédition.`;
+  }
+
+  if (order.status === 'shipped') {
+    return `Bonjour ${order.customerName}, votre commande MARJAD #${order.id} est en route vers ${order.city}. Paiement à la livraison : ${total}. Merci de garder votre téléphone disponible.`;
+  }
+
+  if (order.status === 'delivered') {
+    return `Bonjour ${order.customerName}, merci pour votre commande MARJAD #${order.id}. Nous espérons que la pièce vous plaît. Notre équipe reste disponible si besoin.`;
+  }
+
+  if (order.status === 'cancelled') {
+    return `Bonjour ${order.customerName}, nous vous contactons au sujet de votre commande MARJAD #${order.id}. Dites-nous si vous souhaitez la réactiver ou modifier les informations.`;
+  }
+
+  return `Bonjour ${order.customerName}, c'est MARJAD. Nous vous contactons pour confirmer votre commande #${order.id} : ${firstItem} (${total}), livraison à ${order.city}. Pouvez-vous confirmer l'adresse : ${order.address} ?`;
+}
+
 export default async function AdminOrderDetailPage({ params }: PageProps) {
   const { id } = await params;
   const orderId = parseInt(id);
@@ -32,9 +55,14 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
   if (!order) notFound();
 
   const currentStatusIndex = STATUS_FLOW.indexOf(order.status);
+  const normalizedPhone = order.customerPhone.replace(/[^\d+]/g, '');
+  const whatsappPhone = normalizedPhone.startsWith('0')
+    ? `212${normalizedPhone.slice(1)}`
+    : normalizedPhone.replace(/^\+/, '');
+  const whatsappMessage = encodeURIComponent(getWhatsappMessage(order));
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-[56rem]">
       {/* Header */}
       <div>
         <Link
@@ -171,6 +199,24 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               <div>
                 <dt className="text-gray-500">Téléphone</dt>
                 <dd className="font-medium text-gray-900">{order.customerPhone}</dd>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  <a
+                    href={`tel:${normalizedPhone}`}
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 text-xs font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-white"
+                  >
+                    <Phone className="size-3.5" />
+                    Appeler
+                  </a>
+                  <a
+                    href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 text-xs font-semibold text-green-700 transition-colors hover:bg-white"
+                  >
+                    <MessageCircle className="size-3.5" />
+                    WhatsApp
+                  </a>
+                </div>
               </div>
               <div>
                 <dt className="text-gray-500">Ville</dt>
@@ -194,6 +240,32 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               )}
             </dl>
           </div>
+
+          {order.riskHints.length > 0 && (
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+              <div className="flex items-start gap-3">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                  <AlertTriangle className="size-4" />
+                </div>
+                <div>
+                  <h2 className="font-semibold text-amber-950">À vérifier avant confirmation</h2>
+                  <p className="mt-1 text-xs leading-5 text-amber-800">
+                    Cette commande ressemble à une commande déjà passée. Confirmez le téléphone, l&apos;adresse et le nombre d&apos;articles pendant l&apos;appel.
+                  </p>
+                </div>
+              </div>
+              <div className="mt-4 space-y-2">
+                {order.riskHints.map((hint) => (
+                  <div
+                    key={`${hint.type}-${hint.label}`}
+                    className="rounded-lg border border-amber-200 bg-white/70 px-3 py-2 text-sm font-medium text-amber-900"
+                  >
+                    {hint.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Actions */}
           <OrderActions orderId={order.id} status={order.status} />

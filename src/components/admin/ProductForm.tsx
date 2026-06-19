@@ -103,17 +103,17 @@ export function ProductForm({ product }: ProductFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="admin-form-panel w-full max-w-[46rem] space-y-6 p-5">
       {error && (
         <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {error}
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Nom FR */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="admin-field">
+          <label className="admin-label">
             Nom (FR) <span className="text-red-500">*</span>
           </label>
           <input
@@ -121,13 +121,13 @@ export function ProductForm({ product }: ProductFormProps) {
             value={nameFr}
             onChange={(e) => setNameFr(e.target.value)}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
         {/* Nom AR */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="admin-field">
+          <label className="admin-label">
             Nom (AR) <span className="text-red-500">*</span>
           </label>
           <input
@@ -136,36 +136,36 @@ export function ProductForm({ product }: ProductFormProps) {
             value={nameAr}
             onChange={(e) => setNameAr(e.target.value)}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
         {/* Description FR */}
-        <div className="space-y-1 sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Description (FR)</label>
+        <div className="admin-field sm:col-span-2">
+          <label className="admin-label">Description (FR)</label>
           <textarea
             value={descriptionFr}
             onChange={(e) => setDescriptionFr(e.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-textarea"
           />
         </div>
 
         {/* Description AR */}
-        <div className="space-y-1 sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Description (AR)</label>
+        <div className="admin-field sm:col-span-2">
+          <label className="admin-label">Description (AR)</label>
           <textarea
             dir="rtl"
             value={descriptionAr}
             onChange={(e) => setDescriptionAr(e.target.value)}
             rows={4}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-textarea"
           />
         </div>
 
         {/* Prix */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">
+        <div className="admin-field">
+          <label className="admin-label">
             Prix (MAD) <span className="text-red-500">*</span>
           </label>
           <input
@@ -175,43 +175,43 @@ export function ProductForm({ product }: ProductFormProps) {
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             required
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
         {/* Prix barré */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">Prix barré (MAD)</label>
+        <div className="admin-field">
+          <label className="admin-label">Prix barré (MAD)</label>
           <input
             type="number"
             step="0.01"
             min="0"
             value={compareAtPrice}
             onChange={(e) => setCompareAtPrice(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
         {/* Stock */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">Stock</label>
+        <div className="admin-field">
+          <label className="admin-label">Stock</label>
           <input
             type="number"
             min="0"
             step="1"
             value={stock}
             onChange={(e) => setStock(parseInt(e.target.value) || 0)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500"
+            className="admin-input"
           />
         </div>
 
         {/* Catégorie */}
-        <div className="space-y-1">
-          <label className="block text-sm font-medium text-gray-700">Catégorie</label>
+        <div className="admin-field">
+          <label className="admin-label">Catégorie</label>
           <select
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-gray-500 focus:outline-none focus:ring-1 focus:ring-gray-500 bg-white"
+            className="admin-select"
           >
             <option value="">— Aucune catégorie —</option>
             {categories.map((cat) => (
@@ -223,14 +223,14 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
 
         {/* Images */}
-        <div className="space-y-1 sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">Images</label>
+        <div className="admin-field sm:col-span-2">
+          <label className="admin-label">Images</label>
           <ImageUploader images={images} onChange={setImages} />
         </div>
 
         {/* Toggles */}
-        <div className="space-y-3 sm:col-span-2">
-          <label className="flex items-center gap-3 cursor-pointer">
+        <div className="grid gap-3 sm:col-span-2 sm:grid-cols-2">
+          <label className="admin-toggle">
             <input
               type="checkbox"
               checked={isPublished}
@@ -239,7 +239,7 @@ export function ProductForm({ product }: ProductFormProps) {
             />
             <span className="text-sm font-medium text-gray-700">Publié</span>
           </label>
-          <label className="flex items-center gap-3 cursor-pointer">
+          <label className="admin-toggle">
             <input
               type="checkbox"
               checked={isFeatured}

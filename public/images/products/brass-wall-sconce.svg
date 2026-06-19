@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Brass wall sconce</title>
+  <desc id="desc">Elegant brass wall sconce against a plaster wall.</desc>
+  <rect width="900" height="1125" fill="#f8f2ea"/>
+  <path d="M0 0h900v1125H0z" fill="url(#pattern)" opacity=".22"/>
+  <rect x="392" y="240" width="116" height="430" rx="58" fill="#d4a853"/>
+  <path d="M450 248c95 104 99 286 0 418-99-132-95-314 0-418Z" fill="#f5dfb7" opacity=".75"/>
+  <circle cx="450" cy="456" r="82" fill="#fff4d8" opacity=".85"/>
+  <rect x="414" y="660" width="72" height="104" rx="36" fill="#8b3e1a"/>
+  <ellipse cx="450" cy="804" rx="150" ry="25" fill="#2a1a0e" opacity=".1"/>
+  <defs>
+    <pattern id="pattern" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M40 0v80M0 40h80" stroke="#d4a853" stroke-width="1"/>
+    </pattern>
+  </defs>
+</svg>

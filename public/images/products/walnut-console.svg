@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Carved walnut console</title>
+  <desc id="desc">Minimal walnut console with subtle carved Moroccan arch detail.</desc>
+  <rect width="900" height="1125" fill="#f5eee5"/>
+  <rect y="724" width="900" height="401" fill="#e9ded0"/>
+  <rect x="180" y="456" width="540" height="86" rx="10" fill="#8b3e1a"/>
+  <rect x="220" y="542" width="62" height="280" rx="22" fill="#6b2f15"/>
+  <rect x="618" y="542" width="62" height="280" rx="22" fill="#6b2f15"/>
+  <path d="M330 542c28 70 212 70 240 0v120H330z" fill="#7c3819"/>
+  <path d="M378 592c34 34 110 34 144 0" stroke="#d4a853" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <path d="M214 498h472" stroke="#d4a853" stroke-width="5" opacity=".55"/>
+  <ellipse cx="450" cy="852" rx="320" ry="32" fill="#2a1a0e" opacity=".13"/>
+</svg>

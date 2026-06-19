@@ -30,7 +30,10 @@
       "subtitle": "Des pièces façonnées à la main par des artisans marocains — pour les intérieurs qui ont du caractère.",
       "cta": "Découvrir la collection",
       "ctaSecondary": "Notre histoire",
-      "signature": "34°02' N — Maroc"
+      "signature": "34°02' N — Maroc",
+      "proofCod": "Paiement à la livraison",
+      "proofDelivery": "Livraison 3–5 jours au Maroc",
+      "proofCall": "Confirmation par téléphone"
     },
     "featured": {
       "eyebrow": "Sélection MARJAD",
@@ -40,7 +43,10 @@
     "categories": {
       "eyebrow": "Explorer",
       "heading": "Nos catégories",
-      "shopCta": "Voir la collection →"
+      "shopCta": "Voir la collection",
+      "badge": "Ambiance",
+      "hintFr": "Des pièces choisies pour donner du relief à votre espace.",
+      "hintAr": "Des pièces choisies pour donner du relief à votre espace."
     },
     "story": {
       "eyebrow": "Notre histoire",
@@ -56,6 +62,23 @@
       "deliveryDesc": "Partout au Maroc en 3 à 5 jours, soigneusement emballé pour arriver intact.",
       "guaranteeTitle": "Satisfait ou remboursé",
       "guaranteeDesc": "Votre confiance vaut plus que la vente. On ne discute pas."
+    },
+    "cod": {
+      "eyebrow": "Achat simple, livraison sereine",
+      "heading": "Commandez maintenant. Payez quand la pièce arrive.",
+      "body": "MARJAD fonctionne comme les meilleurs achats COD au Maroc : vous choisissez vos pièces, nous confirmons par téléphone, puis votre commande part soigneusement emballée vers votre ville.",
+      "cta": "Voir livraison & retours",
+      "step1Title": "Commande COD",
+      "step1Body": "Aucune carte nécessaire. Vous validez votre panier en quelques champs.",
+      "step2Title": "Appel de confirmation",
+      "step2Body": "Notre équipe confirme la ville, l'adresse et les détails avant l'expédition.",
+      "step3Title": "Emballage soigné",
+      "step3Body": "Les pièces fragiles sont protégées pour arriver propres et intactes.",
+      "step4Title": "Confiance d'abord",
+      "step4Body": "Besoin d'aide ? WhatsApp et téléphone restent ouverts avant et après achat.",
+      "statDelivery": "Livraison partout au Maroc",
+      "statPackaging": "Protection renforcée pour les pièces fragiles",
+      "statSupport": "Suivi humain, pas de robot"
     }
   },
   "products": {
@@ -174,6 +197,8 @@
     "support": "Aide",
     "supportContact": "Contactez-nous",
     "supportDelivery": "Livraison & retours",
+    "supportTrack": "Suivre ma commande",
+    "supportFaq": "FAQ",
     "newsletter": "Restez inspiré",
     "newsletterDesc": "Nouvelles pièces, offres exclusives et regards sur les ateliers.",
     "emailPlaceholder": "Votre adresse e-mail",

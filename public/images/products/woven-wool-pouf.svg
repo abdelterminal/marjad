@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Woven wool pouf</title>
+  <desc id="desc">Soft woven wool pouf with restrained Moroccan stripe detail.</desc>
+  <rect width="900" height="1125" fill="#f6efe6"/>
+  <rect y="735" width="900" height="390" fill="#e9ded0"/>
+  <ellipse cx="450" cy="650" rx="250" ry="116" fill="#d7c1a9"/>
+  <path d="M206 642c24 158 98 238 244 238s220-80 244-238" fill="#c9ad91"/>
+  <path d="M246 704h408M280 772h340M350 620c26 92 26 168 0 248M450 602v282M550 620c-26 92-26 168 0 248" stroke="#f7eadc" stroke-width="8" fill="none" stroke-linecap="round" opacity=".7"/>
+  <path d="M302 676c88 42 208 42 296 0" stroke="#8b3e1a" stroke-width="12" fill="none" stroke-linecap="round" opacity=".75"/>
+  <ellipse cx="450" cy="902" rx="282" ry="31" fill="#2a1a0e" opacity=".11"/>
+</svg>

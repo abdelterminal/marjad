@@ -15,7 +15,7 @@ export function slugify(text: string): string {
     .toLowerCase()
     .normalize('NFD') // decompose accented characters → base + combining mark
     .replace(/[̀-ͯ]/g, '') // strip combining diacritics
-    .replace(/[؀-ۿݐ-ݿࢠ-ࣿ]+/g, (m) => {
+    .replace(/[؀-ۿݐ-ݿࢠ-ࣿ]+/g, () => {
       // Arabic characters — keep as-is (they are valid in slugs) but
       // replace with a transliteration placeholder to stay ASCII-only slugs.
       // For simplicity we strip them (admin uses nameFr for slugs).

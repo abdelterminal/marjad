@@ -30,6 +30,7 @@ export const createOrderSchema = z.object({
   city: z.string().min(2, 'La ville doit contenir au moins 2 caractères').max(100),
   address: z.string().min(5, "L'adresse doit contenir au moins 5 caractères").max(500),
   notes: z.string().max(500).optional(),
+  company: z.string().max(0).optional(),
   items: z
     .array(
       z.object({
@@ -38,6 +39,11 @@ export const createOrderSchema = z.object({
       }),
     )
     .min(1, 'Au moins un article est requis'),
+});
+
+export const trackOrderSchema = z.object({
+  orderId: z.coerce.number().int().positive(),
+  phone: moroccoPhone,
 });
 
 // ─── Products query params ─────────────────────────────────────────────────────

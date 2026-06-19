@@ -10,25 +10,29 @@ export default auth(async (req) => {
   const { pathname } = req.nextUrl;
 
   // ── Admin route protection at middleware level (defense layer 1) ─────────────
-  // Both admin pages and admin API endpoints are blocked here for unauthenticated
-  // / non-admin sessions. Each handler also calls requireAdminApi() (layer 2).
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     const session = req.auth;
     if (!session?.user || (session.user as { role?: string }).role !== 'admin') {
       const url = req.nextUrl.clone();
-      url.pathname = '/';
+      url.pathname = '/login';
       return NextResponse.redirect(url);
     }
   }
 
-  // ── API routes pass through — next-intl must not localize them ──────────────
-  // Without this, /api/auth/session gets redirected to /fr/api/auth/session
-  // and NextAuth receives an HTML 404 instead of handling the request.
-  if (pathname.startsWith('/api/')) {
+  // ── Pass through: API, admin, login, static assets ──────────────────────────
+  // next-intl must NOT localize these paths.
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/login') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/images') ||
+    pathname.includes('.')
+  ) {
     return NextResponse.next();
   }
 
-  // ── next-intl locale routing for all other requests ──────────────────────────
+  // ── next-intl locale routing for storefront pages ───────────────────────────
   return intlMiddleware(req as unknown as NextRequest);
 });
 

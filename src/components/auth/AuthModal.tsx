@@ -130,10 +130,8 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
     }
   }
 
-  const inputClass =
-    'w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white text-sm text-[var(--color-brand-text)] placeholder:text-[var(--color-brand-text-subtle)] focus:outline-none focus:border-[var(--color-brand-border-focus)] focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 disabled:opacity-60 disabled:cursor-not-allowed transition-colors';
-
-  const labelClass = 'block text-sm font-medium text-[var(--color-brand-text)] mb-1.5';
+  const inputClass = 'form-input';
+  const labelClass = 'form-label';
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -197,8 +195,8 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
 
           {/* LOGIN TAB */}
           {tab === 'login' && (
-            <form onSubmit={handleLogin} className="flex flex-col gap-4">
-              <div>
+            <form onSubmit={handleLogin} className="form-panel flex flex-col gap-4 p-4">
+              <div className="form-field">
                 <label className={labelClass} htmlFor="login-email">
                   {isAr ? 'البريد الإلكتروني' : 'E-mail'}
                 </label>
@@ -214,7 +212,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
                   dir="ltr"
                 />
               </div>
-              <div>
+              <div className="form-field">
                 <label className={labelClass} htmlFor="login-password">
                   {isAr ? 'كلمة المرور' : 'Mot de passe'}
                 </label>
@@ -232,7 +230,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+                className="form-submit w-full mt-1"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {isAr ? 'تسجيل الدخول' : 'Se connecter'}
@@ -242,8 +240,8 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
 
           {/* REGISTER TAB */}
           {tab === 'register' && (
-            <form onSubmit={handleRegister} className="flex flex-col gap-4">
-              <div>
+            <form onSubmit={handleRegister} className="form-panel flex flex-col gap-4 p-4">
+              <div className="form-field">
                 <label className={labelClass} htmlFor="reg-name">
                   {isAr ? 'الاسم الكامل' : 'Nom complet'}
                   <span aria-hidden="true" className="text-[var(--color-brand-error)] ms-0.5">*</span>
@@ -260,7 +258,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
                   className={inputClass}
                 />
               </div>
-              <div>
+              <div className="form-field">
                 <label className={labelClass} htmlFor="reg-email">
                   {isAr ? 'البريد الإلكتروني' : 'E-mail'}
                   <span aria-hidden="true" className="text-[var(--color-brand-error)] ms-0.5">*</span>
@@ -277,12 +275,12 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
                   dir="ltr"
                 />
                 {fieldErrors.email && (
-                  <p role="alert" className="mt-1 text-xs text-[var(--color-brand-error)]">
+                  <p role="alert" className="form-error">
                     {fieldErrors.email}
                   </p>
                 )}
               </div>
-              <div>
+              <div className="form-field">
                 <label className={labelClass} htmlFor="reg-password">
                   {isAr ? 'كلمة المرور (8 أحرف على الأقل)' : 'Mot de passe (min. 8 caractères)'}
                   <span aria-hidden="true" className="text-[var(--color-brand-error)] ms-0.5">*</span>
@@ -299,7 +297,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
                   className={inputClass}
                 />
               </div>
-              <div>
+              <div className="form-field">
                 <label className={labelClass} htmlFor="reg-phone">
                   {isAr ? 'رقم الهاتف (اختياري)' : 'Téléphone (optionnel)'}
                 </label>
@@ -318,7 +316,7 @@ export function AuthModal({ open, onOpenChange, defaultTab = 'login' }: AuthModa
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-11 rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white font-semibold text-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed mt-1"
+                className="form-submit w-full mt-1"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {isAr ? 'إنشاء حساب' : 'Créer mon compte'}

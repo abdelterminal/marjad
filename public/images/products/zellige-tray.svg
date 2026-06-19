@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1125" role="img" aria-labelledby="title desc">
+  <title id="title">Zellige tray</title>
+  <desc id="desc">Low zellige tray with geometric Moroccan tile pattern.</desc>
+  <rect width="900" height="1125" fill="#fbf7f0"/>
+  <rect y="690" width="900" height="435" fill="#eee5d8"/>
+  <ellipse cx="450" cy="574" rx="294" ry="130" fill="#8b3e1a"/>
+  <ellipse cx="450" cy="536" rx="294" ry="130" fill="#d4a853"/>
+  <ellipse cx="450" cy="536" rx="236" ry="92" fill="#f8efe3"/>
+  <path d="M284 536h332M450 444v184M333 480l234 112M567 480 333 592" stroke="#1b4a7a" stroke-width="9" stroke-linecap="round" opacity=".65"/>
+  <circle cx="450" cy="536" r="38" fill="#c4622d"/>
+  <ellipse cx="450" cy="720" rx="270" ry="32" fill="#2a1a0e" opacity=".11"/>
+</svg>

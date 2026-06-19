@@ -66,13 +66,11 @@ export function ProfileForm({
     }
   }
 
-  const inputClass =
-    'w-full h-10 px-3 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white text-sm text-[var(--color-brand-text)] placeholder:text-[var(--color-brand-text-subtle)] focus:outline-none focus:border-[var(--color-brand-border-focus)] focus:ring-2 focus:ring-[var(--color-brand-primary)]/20 disabled:opacity-60 transition-colors';
-
-  const labelClass = 'block text-sm font-medium text-[var(--color-brand-text)] mb-1.5';
+  const inputClass = 'form-input';
+  const labelClass = 'form-label';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5 max-w-md">
+    <form onSubmit={handleSubmit(onSubmit)} className="form-panel flex max-w-[28rem] flex-col gap-5 p-5 sm:p-6">
       {/* Success */}
       {success && (
         <div role="status" className="p-3 rounded-[var(--radius-sm)] bg-[var(--color-brand-success-light)] border-s-[3px] border-[var(--color-brand-success)] flex items-center gap-2 text-sm text-[var(--color-brand-success)]">
@@ -90,7 +88,7 @@ export function ProfileForm({
       )}
 
       {/* Name */}
-      <div>
+      <div className="form-field">
         <label className={labelClass} htmlFor="profile-name">
           {isAr ? 'الاسم الكامل' : 'Nom complet'}
           <span aria-hidden="true" className="text-[var(--color-brand-error)] ms-0.5">*</span>
@@ -101,17 +99,17 @@ export function ProfileForm({
           autoComplete="name"
           disabled={isSubmitting}
           {...register('name')}
-          className={[inputClass, errors.name ? 'border-[var(--color-brand-border-error)]' : ''].join(' ')}
+          className={[inputClass, errors.name ? 'form-input-error' : ''].join(' ')}
         />
         {errors.name && (
-          <p role="alert" aria-live="polite" className="mt-1 text-xs text-[var(--color-brand-error)]">
+          <p role="alert" aria-live="polite" className="form-error">
             {errors.name.message}
           </p>
         )}
       </div>
 
       {/* Email (read-only) */}
-      <div>
+      <div className="form-field">
         <label className={labelClass} htmlFor="profile-email">
           {isAr ? 'البريد الإلكتروني' : 'E-mail'}
           <Lock className="w-3 h-3 inline ms-1 text-[var(--color-brand-text-muted)]" aria-hidden="true" />
@@ -123,15 +121,15 @@ export function ProfileForm({
           readOnly
           disabled
           dir="ltr"
-          className={[inputClass, 'opacity-60 cursor-not-allowed'].join(' ')}
+          className={inputClass}
         />
-        <p className="mt-1 text-xs text-[var(--color-brand-text-muted)]">
+        <p className="form-help">
           {isAr ? 'لا يمكن تغيير البريد الإلكتروني' : "L'email ne peut pas être modifié."}
         </p>
       </div>
 
       {/* Phone */}
-      <div>
+      <div className="form-field">
         <label className={labelClass} htmlFor="profile-phone">
           {isAr ? 'رقم الهاتف' : 'Téléphone'}
         </label>
@@ -143,10 +141,10 @@ export function ProfileForm({
           disabled={isSubmitting}
           placeholder="0612345678"
           {...register('phone')}
-          className={[inputClass, errors.phone ? 'border-[var(--color-brand-border-error)]' : ''].join(' ')}
+          className={[inputClass, errors.phone ? 'form-input-error' : ''].join(' ')}
         />
         {errors.phone && (
-          <p role="alert" aria-live="polite" className="mt-1 text-xs text-[var(--color-brand-error)]">
+          <p role="alert" aria-live="polite" className="form-error">
             {isAr
               ? 'رقم غير صحيح. أدخل رقما مغربيا (مثال: 0612345678)'
               : 'Numéro invalide. Entrez un numéro marocain (ex: 0612345678)'}
@@ -158,7 +156,7 @@ export function ProfileForm({
       <button
         type="submit"
         disabled={isSubmitting}
-        className="h-10 px-6 w-fit rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white font-semibold text-sm flex items-center gap-2 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+        className="form-submit w-fit"
       >
         {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
         {isAr ? 'حفظ التغييرات' : 'Enregistrer les modifications'}

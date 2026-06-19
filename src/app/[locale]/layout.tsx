@@ -8,9 +8,10 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { AuthProvider } from '@/components/auth/AuthProvider';
-import '../globals.css';
+import { CartToastProvider } from '@/components/ui/cart-toast';
+import { WhatsAppWidget } from '@/components/layout/WhatsAppWidget';
+import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker';
 
-// ── Google Fonts (LTR — French) ──────────────────────────────
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '600', '700'],
@@ -25,7 +26,6 @@ const inter = Inter({
   display: 'swap',
 });
 
-// ── Google Fonts (RTL — Arabic) ───────────────────────────────
 const amiri = Amiri({
   subsets: ['arabic', 'latin'],
   weight: ['400', '700'],
@@ -41,8 +41,29 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: 'MARJAD — Décoration Intérieure',
-  description: 'Tableaux, lampes, tables et objets décoratifs artisanaux',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? process.env.AUTH_URL ?? 'http://localhost:3000'),
+  title: {
+    default: 'MARJAD — Décoration marocaine artisanale',
+    template: '%s | MARJAD',
+  },
+  description:
+    'Décoration intérieure marocaine: tableaux, lampes, tables et objets artisanaux avec paiement à la livraison partout au Maroc.',
+  applicationName: 'MARJAD',
+  keywords: [
+    'décoration marocaine',
+    'artisanat marocain',
+    'décoration intérieure Maroc',
+    'paiement à la livraison Maroc',
+    'lampes marocaines',
+    'tableaux marocains',
+  ],
+  authors: [{ name: 'MARJAD' }],
+  creator: 'MARJAD',
+  publisher: 'MARJAD',
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 type Props = {
@@ -60,7 +81,6 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
   const isRTL = locale === 'ar';
 
-  // Font variable classes applied to <html> so CSS vars resolve correctly
   const fontClasses = [
     playfairDisplay.variable,
     inter.variable,
@@ -69,10 +89,10 @@ export default async function LocaleLayout({ children, params }: Props) {
   ].join(' ');
 
   return (
-    <html
+    <div
       lang={locale}
       dir={isRTL ? 'rtl' : 'ltr'}
-      className={`h-full antialiased ${fontClasses}`}
+      className={`min-h-screen flex flex-col antialiased bg-[var(--color-brand-surface)] ${fontClasses}`}
       style={
         isRTL
           ? {
@@ -85,18 +105,20 @@ export default async function LocaleLayout({ children, params }: Props) {
             } as React.CSSProperties
       }
     >
-      <body className="min-h-full flex flex-col bg-[var(--color-brand-surface)]">
-        <NextIntlClientProvider messages={messages}>
-          <AuthProvider>
+      <NextIntlClientProvider messages={messages}>
+        <AuthProvider>
+          <CartToastProvider>
             <Header />
             <main className="flex-1">
               {children}
             </main>
             <Footer />
             <CartProvider />
-          </AuthProvider>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+            <WhatsAppWidget />
+            <AnalyticsTracker />
+          </CartToastProvider>
+        </AuthProvider>
+      </NextIntlClientProvider>
+    </div>
   );
 }

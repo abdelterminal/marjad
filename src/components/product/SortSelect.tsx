@@ -28,7 +28,6 @@ export function SortSelect({ currentSort = 'newest' }: SortSelectProps) {
 
   function handleChange(value: string | null) {
     if (!value) return;
-    const url = new URL(pathname, 'http://localhost');
     const params = new URLSearchParams(
       typeof window !== 'undefined' ? window.location.search : '',
     );

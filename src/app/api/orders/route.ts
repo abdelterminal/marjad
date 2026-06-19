@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { createOrder, getUserOrders, StockError } from '@/lib/queries/orders';
 import { createOrderSchema } from '@/lib/validators';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 // POST /api/orders — public (guests allowed); attach userId if session exists
 export async function POST(req: NextRequest) {
   try {
+    const limited = checkRateLimit(req, {
+      key: 'orders:create',
+      limit: 8,
+      windowMs: 15 * 60 * 1000,
+    });
+    if (limited) return limited;
+
     const body = await req.json();
 
     const parsed = createOrderSchema.safeParse(body);
@@ -19,7 +27,8 @@ export async function POST(req: NextRequest) {
     const session = await auth();
     const userId = session?.user?.id ? parseInt(session.user.id, 10) : undefined;
 
-    const { orderId, total } = await createOrder({ ...parsed.data, userId });
+    const orderData = parsed.data;
+    const { orderId, total } = await createOrder({ ...orderData, userId });
 
     const res = NextResponse.json({ orderId, total, status: 'pending' }, { status: 201 });
     // Proof-of-purchase cookie — lets the confirmation page verify the requester
@@ -35,6 +44,7 @@ export async function POST(req: NextRequest) {
     if (err instanceof StockError) {
       return NextResponse.json({ error: err.message }, { status: 409 });
     }
+    console.error('[POST /api/orders]', err);
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });
   }
 }

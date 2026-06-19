@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import React from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,7 +9,6 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 
@@ -44,11 +44,13 @@ export function ConfirmDialog({
     }
   }
 
+  const triggerWithOpen = React.cloneElement(trigger as React.ReactElement<{ onClick?: () => void }>, {
+    onClick: () => setOpen(true),
+  });
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={<span />} onClick={() => setOpen(true)}>
-        {trigger}
-      </DialogTrigger>
+      {triggerWithOpen}
       <DialogContent showCloseButton={false}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
