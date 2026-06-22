@@ -24,6 +24,11 @@
 .DS_Store
 *.pem
 
+# local Codex/agent/skill artifacts
+.agents/
+.codex/
+.hallmark/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
