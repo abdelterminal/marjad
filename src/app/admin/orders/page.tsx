@@ -115,17 +115,18 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Commandes</h1>
           <p className="mt-1 text-sm text-gray-500">{total} commande{total !== 1 ? 's' : ''}</p>
         </div>
         <a
           href={`/api/admin/orders/export${status ? `?status=${encodeURIComponent(status)}` : ''}`}
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-950 hover:text-gray-950"
+          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-950 hover:text-gray-950"
         >
           <Download className="size-4" />
-          Export CSV{status ? ' filtré' : ''}
+          <span className="hidden sm:inline">Export CSV{status ? ' filtré' : ''}</span>
+          <span className="sm:hidden">CSV</span>
         </a>
       </div>
 

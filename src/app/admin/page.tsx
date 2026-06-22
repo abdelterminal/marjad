@@ -116,7 +116,7 @@ export default async function AdminDashboardPage() {
         })}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[
           { label: "Aujourd'hui", value: stats.todayOrders, icon: ShoppingCart },
           { label: 'Confirmées', value: stats.confirmedOrders, icon: CheckCircle },
@@ -138,7 +138,7 @@ export default async function AdminDashboardPage() {
 
       {/* Needs action */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold text-gray-900">File à traiter</h2>
             <p className="mt-1 text-sm text-gray-500">
@@ -147,7 +147,7 @@ export default async function AdminDashboardPage() {
           </div>
           <Link
             href="/admin/orders?status=pending"
-            className="text-sm text-gray-600 hover:text-gray-900 underline underline-offset-2"
+            className="shrink-0 text-sm text-gray-600 hover:text-gray-900 underline underline-offset-2"
           >
             Voir la file →
           </Link>
@@ -199,7 +199,7 @@ export default async function AdminDashboardPage() {
 
       {/* Recent orders */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-wrap items-start justify-between gap-3">
           <h2 className="text-lg font-semibold text-gray-900">Commandes récentes</h2>
           <Link
             href="/admin/orders"

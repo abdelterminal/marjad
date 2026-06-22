@@ -299,7 +299,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
       {/* Section: Tarification */}
       <Section icon={Tag} title="Tarification" description="Prix public et prix barré pour les promotions.">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Prix" required hint="En dirhams">
             <div className="relative">
               <input
@@ -338,7 +338,7 @@ export function ProductForm({ product }: ProductFormProps) {
 
       {/* Section: Inventaire */}
       <Section icon={ShoppingBag} title="Inventaire" description="Stock disponible et catégorie du produit.">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Field label="Stock" hint="Nombre de pièces disponibles">
             <input
               type="number"

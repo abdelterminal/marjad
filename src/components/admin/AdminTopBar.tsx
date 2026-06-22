@@ -28,7 +28,7 @@ export function AdminTopBar({ onMenuClick }: Props) {
         rel="noopener noreferrer"
         className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:border-gray-300 hover:text-gray-900 transition-colors"
       >
-        Voir le site
+        <span className="hidden sm:inline">Voir le site</span>
         <ExternalLink className="h-3 w-3" />
       </Link>
     </header>

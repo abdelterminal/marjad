@@ -21,7 +21,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
       <main className="min-w-0 flex-1 overflow-y-auto lg:pl-60">
         <AdminTopBar onMenuClick={() => setOpen(true)} />
-        <div className="p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8">
           <div className="mx-auto max-w-7xl">{children}</div>
         </div>
       </main>
