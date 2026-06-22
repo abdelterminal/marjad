@@ -1,6 +1,8 @@
 'use client';
 
 import { useLocale } from 'next-intl';
+import Image from 'next/image';
+import { Banknote, CheckCircle2, Truck } from 'lucide-react';
 import { AddToCartButton } from './AddToCartButton';
 
 interface Props {
@@ -17,43 +19,70 @@ interface Props {
   lowStockLabel?: string;
 }
 
-export function StickyMobileCTA({ product, formattedPrice, isOutOfStock, lowStockLabel }: Props) {
+export function StickyMobileCTA({ product, formattedPrice, isOutOfStock }: Props) {
   const locale = useLocale();
   const isAr = locale === 'ar';
 
   if (isOutOfStock) return null;
 
+  const name = isAr ? product.nameAr : product.nameFr;
+
+  const trusts = [
+    {
+      icon: <Banknote className="h-4 w-4" />,
+      label: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison',
+    },
+    {
+      icon: <CheckCircle2 className="h-4 w-4" />,
+      label: isAr ? 'تأكيد قبل الإرسال' : 'Confirmation avant envoi',
+    },
+    {
+      icon: <Truck className="h-4 w-4" />,
+      label: isAr ? 'توصيل بالمغرب' : 'Livraison partout au Maroc',
+    },
+  ];
+
   return (
     <div className="
-      lg:hidden fixed bottom-0 inset-x-0 z-40
-      bg-[var(--color-brand-surface-elevated)]
+      fixed bottom-0 inset-x-0 z-40
       border-t border-[var(--color-brand-border)]
-      px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3
-      shadow-[var(--shadow-lg)]
+      bg-[var(--color-brand-surface-elevated)]/95 backdrop-blur-md
+      px-4 lg:px-10
+      py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]
+      shadow-[0_-4px_24px_rgba(0,0,0,0.08)]
     ">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[11px] text-[var(--color-brand-text-muted)] truncate">
-            {isAr ? product.nameAr : product.nameFr}
-          </p>
-          <p className="price-display text-base font-bold text-[var(--color-brand-text)] leading-tight">
-            {formattedPrice}
-          </p>
+      <div className="mx-auto flex max-w-[var(--container-content)] items-center gap-4">
+
+        {/* Thumbnail + name + price */}
+        <div className="flex shrink-0 items-center gap-3">
+          {product.image && (
+            <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-lg border border-[var(--color-brand-border)]">
+              <Image src={product.image} alt={name} fill className="object-cover" sizes="44px" />
+            </div>
+          )}
+          <div className="min-w-0 hidden sm:block">
+            <p className="max-w-[140px] truncate text-xs font-semibold text-[var(--color-brand-text)]">{name}</p>
+            <p className="text-sm font-bold text-[var(--color-brand-primary)]">{formattedPrice}</p>
+          </div>
+          {/* Mobile: price only */}
+          <p className="text-sm font-bold text-[var(--color-brand-primary)] sm:hidden">{formattedPrice}</p>
         </div>
-        <div className="shrink-0 text-end">
-          <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-brand-primary)]">
-            COD
-          </p>
-          <p className="text-[10px] text-[var(--color-brand-text-muted)]">
-            {lowStockLabel ?? (isAr ? '3–5 أيام' : '3–5 jours')}
-          </p>
+
+        {/* Trust items — center, hidden on small mobile */}
+        <div className="hidden md:flex flex-1 items-center justify-center gap-6">
+          {trusts.map((t) => (
+            <div key={t.label} className="flex items-center gap-1.5 text-[var(--color-brand-text-muted)]">
+              <span className="text-[var(--color-brand-primary)]">{t.icon}</span>
+              <span className="text-[11px] font-medium">{t.label}</span>
+            </div>
+          ))}
         </div>
-      </div>
-      <div className="flex items-center gap-2">
-        <div className="hidden min-w-0 flex-1 rounded-[var(--radius-sm)] bg-[var(--color-brand-surface-alt)] px-3 py-2 text-[10px] leading-4 text-[var(--color-brand-text-muted)] min-[390px]:block">
-          {isAr ? 'تأكيد بالهاتف قبل الإرسال' : "Appel de confirmation avant l'envoi"}
+
+        {/* CTA */}
+        <div className="ms-auto shrink-0">
+          <AddToCartButton product={product} size="md" />
         </div>
-        <AddToCartButton product={product} size="md" fullWidth className="flex-1" />
+
       </div>
     </div>
   );

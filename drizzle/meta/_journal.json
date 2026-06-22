@@ -15,6 +15,13 @@
       "when": 1781779550454,
       "tag": "0001_bored_valeria_richards",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782125698376,
+      "tag": "0002_loud_kate_bishop",
+      "breakpoints": true
     }
   ]
 }

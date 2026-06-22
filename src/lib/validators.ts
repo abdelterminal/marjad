@@ -64,6 +64,8 @@ export const adminProductSchema = z.object({
   nameAr: z.string().min(2, 'Le nom (AR) doit contenir au moins 2 caractères'),
   descriptionFr: z.string().optional(),
   descriptionAr: z.string().optional(),
+  detailsFr: z.string().optional(),
+  detailsAr: z.string().optional(),
   price: z
     .string()
     .regex(/^\d+(\.\d{1,2})?$/, 'Prix invalide')

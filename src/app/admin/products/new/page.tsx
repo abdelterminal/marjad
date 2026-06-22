@@ -4,21 +4,20 @@ import { ProductForm } from '@/components/admin/ProductForm';
 
 export default function NewProductPage() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
         <Link
           href="/admin/products"
-          className="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-900 mb-3"
+          className="mb-4 inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
         >
-          <ChevronLeft className="size-4" />
+          <ChevronLeft className="h-4 w-4" />
           Retour aux produits
         </Link>
         <h1 className="text-2xl font-bold text-gray-900">Nouveau produit</h1>
+        <p className="mt-1 text-sm text-gray-500">Remplissez les informations ci-dessous pour créer une nouvelle fiche produit.</p>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <ProductForm />
-      </div>
+      <ProductForm />
     </div>
   );
 }

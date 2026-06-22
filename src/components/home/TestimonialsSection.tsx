@@ -1,61 +1,60 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Testimonial {
   name: string;
   role: string;
+  city: string;
   initials: string;
   text: string;
-  product: string;
 }
 
 const testimonialsFr: Testimonial[] = [
   {
-    name: 'Fatima R.',
-    initials: 'FR',
-    role: 'Cliente — Casablanca',
-    product: 'Tableau calligraphie',
-    text: "Le tableau m'a littéralement coupé le souffle. L'emballage était soigné, la livraison rapide. C'est exactement l'âme que je cherchais pour mon salon. Je reviendrai.",
+    name: 'Laila',
+    initials: 'L',
+    role: 'Cliente',
+    city: 'Casablanca',
+    text: "J'ai reçu ma commande rapidement et l'emballage était parfait. La pièce est encore plus belle en vrai ! Je recommande MARJAD.",
   },
   {
-    name: 'Mehdi A.',
-    initials: 'MA',
-    role: 'Client — Rabat',
-    product: 'Lampe en fer forgé',
-    text: "Commande confirmée par téléphone, pièce arrivée en parfait état dans un emballage impeccable. C'est exactement ce que je cherchais. Le service est à la hauteur du produit.",
+    name: 'Youssef',
+    initials: 'Y',
+    role: 'Client',
+    city: 'Rabat',
+    text: "Service impeccable, appel de confirmation rassurant et paiement à la livraison très pratique. Mes attentes ont été largement dépassées.",
   },
   {
-    name: 'Nadia B.',
-    initials: 'NB',
-    role: 'Cliente — Marrakech',
-    product: 'Table en bois sculpté',
-    text: "La lampe est encore plus belle en vrai qu'en photo. L'équipe a été très professionnelle, m'a appelée pour confirmer les détails. Une expérience d'achat vraiment agréable.",
+    name: 'Sanae',
+    initials: 'S',
+    role: 'Cliente',
+    city: 'Marrakech',
+    text: "Des pièces uniques et authentiques qui donnent une âme à ma maison. Bravo pour le soin apporté à chaque détail.",
   },
 ];
 
 const testimonialsAr: Testimonial[] = [
   {
-    name: 'فاطمة ر.',
-    initials: 'ف',
-    role: 'عميلة — الدار البيضاء',
-    product: 'لوحة خط عربي',
-    text: 'اللوحة فاقت توقعاتي تماماً. التغليف كان رائعاً والتوصيل سريع. هذا بالضبط ما كنت أبحث عنه لصالوني. سأعود بالتأكيد للتسوق من مرجاد.',
+    name: 'ليلى',
+    initials: 'ل',
+    role: 'عميلة',
+    city: 'الدار البيضاء',
+    text: 'استلمت طلبي بسرعة والتغليف كان رائعاً. القطعة أجمل بكثير من الصورة! أنصح بمرجاد بشدة.',
   },
   {
-    name: 'مهدي أ.',
-    initials: 'م',
-    role: 'عميل — الرباط',
-    product: 'مصباح حديد مطروق',
-    text: 'تم تأكيد الطلب بالهاتف ووصلت القطعة في حالة ممتازة بتغليف احترافي. هذا بالضبط ما كنت أبحث عنه. الخدمة في مستوى المنتج.',
+    name: 'يوسف',
+    initials: 'ي',
+    role: 'عميل',
+    city: 'الرباط',
+    text: 'خدمة ممتازة، اتصال تأكيد مطمئن والدفع عند الاستلام مريح جداً. تجاوزت توقعاتي بكثير.',
   },
   {
-    name: 'نادية ب.',
-    initials: 'ن',
-    role: 'عميلة — مراكش',
-    product: 'طاولة خشب منحوت',
-    text: 'المصباح أجمل بكثير من الصورة. الفريق كان محترفاً جداً، اتصلوا بي لتأكيد التفاصيل. تجربة شراء ممتعة حقاً.',
+    name: 'سناء',
+    initials: 'س',
+    role: 'عميلة',
+    city: 'مراكش',
+    text: 'قطع فريدة وأصيلة تمنح روحاً لمنزلي. أحسنتم في الاهتمام بكل تفصيل.',
   },
 ];
 
@@ -66,130 +65,73 @@ interface Props {
 export function TestimonialsSection({ locale }: Props) {
   const isAr = locale === 'ar';
   const reviews = isAr ? testimonialsAr : testimonialsFr;
-  const [active, setActive] = useState(0);
-
-  const prev = () => setActive((i) => (i - 1 + reviews.length) % reviews.length);
-  const next = () => setActive((i) => (i + 1) % reviews.length);
-  const current = reviews[active];
+  const [activeDot, setActiveDot] = useState(0);
 
   return (
-    <section className="zellige-texture bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
+    <section className="bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
       <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.4fr] gap-12 lg:gap-20 items-center">
-
-          {/* Left — heading + meta */}
-          <div>
-            <p className="text-[var(--color-brand-primary)] text-[11px] font-mono tracking-[0.18em] uppercase mb-4">
-              {isAr ? 'ماذا يقول عملاؤنا' : 'Ce que disent nos clients'}
-            </p>
-            <h2 className="font-[var(--font-display)] text-[clamp(1.75rem,3.5vw,2.75rem)] font-bold text-[var(--color-brand-text)] leading-tight mb-8">
-              {isAr
-                ? 'جرّبوه. أوصوا به.'
-                : 'Ils ont essayé. Ils recommandent.'}
-            </h2>
-
-            {/* Stars + rating */}
-            <div className="flex items-center gap-3 mb-8">
-              <span className="text-[var(--color-brand-secondary)] text-xl tracking-tight">
-                ★★★★★
-              </span>
-              <span className="text-sm text-[var(--color-brand-text-muted)]">
-                {isAr ? '٥ / ٥ — تقييم عملائنا' : '5 / 5 — Note de nos clients'}
-              </span>
-            </div>
-
-            {/* Dot indicators */}
-            <div className="flex items-center gap-2">
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  aria-label={`Avis ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === active
-                      ? 'w-8 bg-[var(--color-brand-primary)]'
-                      : 'w-4 bg-[var(--color-brand-border)]'
-                  }`}
-                />
-              ))}
-            </div>
+        {/* Heading */}
+        <div className="mb-10 text-center">
+          <h2 className="font-[var(--font-display)] text-2xl font-bold uppercase tracking-wide text-[var(--color-brand-text)] sm:text-3xl">
+            {isAr ? 'يثقون بنا' : 'ILS NOUS FONT CONFIANCE'}
+          </h2>
+          <div className="mt-3 flex justify-center">
+            <span className="text-sm text-[var(--color-brand-secondary)]">◆</span>
           </div>
+        </div>
 
-          {/* Right — review card */}
-          <div className="relative">
-            {/* Large decorative quote */}
-            <span
-              className="absolute -top-6 start-0 font-[var(--font-display)] text-[8rem] leading-none text-[var(--color-brand-primary-light)] select-none pointer-events-none"
-              aria-hidden="true"
+        {/* 3-column cards */}
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          {reviews.map((review, i) => (
+            <div
+              key={i}
+              className="flex flex-col rounded-[var(--radius-md)] bg-[var(--color-brand-surface-elevated)] p-6"
             >
-              &quot;
-            </span>
+              {/* Stars */}
+              <div className="mb-4 flex gap-0.5">
+                {Array.from({ length: 5 }).map((_, j) => (
+                  <span key={j} className="text-base text-[var(--color-brand-secondary)]">★</span>
+                ))}
+              </div>
 
-            <div className="relative bg-[var(--color-brand-surface-elevated)] rounded-[var(--radius-md)] p-7 sm:p-9">
-              {/* Review text */}
-              <p
-                key={active}
-                className="font-[var(--font-display)] text-lg sm:text-xl leading-relaxed text-[var(--color-brand-text)] transition-opacity duration-300"
-              >
-                {current.text}
-              </p>
-
-              {/* Product tag */}
-              <p className="mt-5 text-[11px] font-mono uppercase tracking-[0.14em] text-[var(--color-brand-primary)]">
-                {current.product}
+              {/* Text */}
+              <p className="flex-1 text-sm leading-relaxed text-[var(--color-brand-text)]">
+                {review.text}
               </p>
 
               {/* Author */}
-              <div className="mt-5 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)] font-semibold text-sm select-none">
-                    {current.initials}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-[var(--color-brand-text)]">{current.name}</p>
-                    <p className="text-xs text-[var(--color-brand-text-muted)]">{current.role}</p>
-                  </div>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-sm font-semibold text-[var(--color-brand-primary)] select-none">
+                  {review.initials}
                 </div>
-
-                {/* Prev / Next */}
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={prev}
-                    aria-label={isAr ? 'السابق' : 'Précédent'}
-                    className="
-                      flex h-9 w-9 items-center justify-center
-                      rounded-[var(--radius-btn)]
-                      bg-[var(--color-brand-surface-alt)]
-                      hover:bg-[var(--color-brand-primary-light)]
-                      text-[var(--color-brand-text-muted)] hover:text-[var(--color-brand-primary)]
-                      transition-colors duration-[var(--transition-base)]
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
-                    "
-                  >
-                    <ChevronLeft className="h-4 w-4 rtl:rotate-180" />
-                  </button>
-                  <button
-                    onClick={next}
-                    aria-label={isAr ? 'التالي' : 'Suivant'}
-                    className="
-                      flex h-9 w-9 items-center justify-center
-                      rounded-[var(--radius-btn)]
-                      bg-[var(--color-brand-primary)]
-                      hover:bg-[var(--color-brand-primary-hover)]
-                      text-white
-                      transition-colors duration-[var(--transition-base)]
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2
-                    "
-                  >
-                    <ChevronRight className="h-4 w-4 rtl:rotate-180" />
-                  </button>
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-brand-text)]">{review.name}</p>
+                  <p className="text-xs text-[var(--color-brand-text-muted)]">
+                    {review.role}, {review.city}
+                  </p>
                 </div>
               </div>
             </div>
-          </div>
-
+          ))}
         </div>
+
+        {/* Dot indicators */}
+        <div className="mt-8 flex items-center justify-center gap-2">
+          {[0, 1, 2].map((i) => (
+            <button
+              key={i}
+              onClick={() => setActiveDot(i)}
+              aria-label={`Page ${i + 1}`}
+              className={`rounded-full transition-all duration-300 ${
+                i === activeDot
+                  ? 'h-2 w-6 bg-[var(--color-brand-primary)]'
+                  : 'h-2 w-2 bg-[var(--color-brand-border)]'
+              }`}
+            />
+          ))}
+        </div>
+
       </div>
     </section>
   );

@@ -19,6 +19,7 @@ interface AddToCartButtonProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
+  quantity?: number;
 }
 
 export function AddToCartButton({
@@ -26,6 +27,7 @@ export function AddToCartButton({
   className = '',
   size = 'md',
   fullWidth = false,
+  quantity = 1,
 }: AddToCartButtonProps) {
   const locale = useLocale();
   const add = useCartStore((s) => s.add);
@@ -56,14 +58,14 @@ export function AddToCartButton({
         price: product.price,
         image: product.image,
       },
-      1,
+      quantity,
     );
     trackAddToCart({
       productId: product.id,
       slug: product.slug,
       name: locale === 'ar' ? product.nameAr : product.nameFr,
       price: parseFloat(product.price),
-      quantity: 1,
+      quantity,
     });
 
     // Brief 300ms visual feedback

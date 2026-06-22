@@ -47,6 +47,8 @@ export const products = pgTable(
     nameAr: varchar('name_ar', { length: 255 }).notNull(),
     descriptionFr: text('description_fr'),
     descriptionAr: text('description_ar'),
+    detailsFr: text('details_fr'),
+    detailsAr: text('details_ar'),
     slug: varchar('slug', { length: 255 }).notNull().unique(),
     price: numeric('price', { precision: 10, scale: 2 }).notNull(),
     compareAtPrice: numeric('compare_at_price', { precision: 10, scale: 2 }),

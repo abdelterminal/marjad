@@ -1,7 +1,5 @@
-/* Hallmark · macrostructure: Marquee Hero · genre: editorial · tone: warm artisanal
+/* Hallmark · macrostructure: Full-bleed hero + categories + selection + story + COD + bestsellers + testimonials + FAQ
  * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · golden #D4A853
- * paper-band: light · display-style: high-contrast-serif · accent-hue: warm
- * nav: N1b · footer: Ft5 · enrichment: Tier-C lifestyle photography (see IMAGE_PROMPTS.md)
  */
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
@@ -10,9 +8,9 @@ import { Link } from '@/i18n/navigation';
 import { listProducts } from '@/lib/queries/products';
 import { listCategories } from '@/lib/queries/categories';
 import { ProductCard } from '@/components/product/ProductCard';
-import { MarqueeStrip } from '@/components/home/MarqueeStrip';
 import { TestimonialsSection } from '@/components/home/TestimonialsSection';
-import { ArrowRight, Banknote, Headphones, PackageCheck, ShieldCheck, Truck } from 'lucide-react';
+import { FaqSection } from '@/components/home/FaqSection';
+import { ArrowRight, Award, Banknote, Heart, Headphones, Leaf, MessageCircle, PackageCheck, Plus, Sparkles, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 
 interface HomePageProps {
@@ -42,430 +40,411 @@ export default async function HomePage() {
   const isAr = locale === 'ar';
 
   const [{ items: featuredProducts }, categories] = await Promise.all([
-    listProducts({ sort: 'newest', pageSize: 8, page: 1 }),
+    listProducts({ sort: 'newest', pageSize: 10, page: 1 }),
     listCategories(),
   ]);
 
-  const featured = featuredProducts.filter((p) => p.isFeatured).slice(0, 8);
-  const displayProducts = featured.length > 0 ? featured : featuredProducts.slice(0, 8);
+  const featured = featuredProducts.filter((p) => p.isFeatured).slice(0, 5);
+  const displayProducts = featured.length > 0 ? featured : featuredProducts.slice(0, 5);
+  const bestSellers = featuredProducts.slice(0, 4);
+
+  const codSteps = [
+    {
+      icon: Headphones,
+      num: '1.',
+      title: isAr ? 'تأكيد الطلب' : 'APPEL DE CONFIRMATION',
+      body: isAr
+        ? 'نتصل بك لتأكيد طلبك وعنوانك.'
+        : 'Nous vous appelons pour confirmer votre commande et votre adresse.',
+    },
+    {
+      icon: PackageCheck,
+      num: '2.',
+      title: isAr ? 'تغليف عناية' : 'EMBALLAGE SOIGNÉ',
+      body: isAr
+        ? 'كل قطعة تُغلَّف بعناية كبيرة.'
+        : 'Chaque pièce est soigneusement emballée et protégée.',
+    },
+    {
+      icon: Truck,
+      num: '3.',
+      title: isAr ? 'التوصيل في المغرب' : 'LIVRAISON AU MAROC',
+      body: isAr
+        ? 'نوصل في جميع أنحاء المغرب.'
+        : 'Nous livrons partout au Maroc, à domicile.',
+    },
+    {
+      icon: Banknote,
+      num: '4.',
+      title: isAr ? 'الدفع عند الاستلام' : 'PAIEMENT À LA LIVRAISON',
+      body: isAr
+        ? 'تدفع نقداً عند استلام طردك.'
+        : 'Vous payez en espèces au livreur, en toute sérénité.',
+    },
+  ];
+
+  const stats = [
+    { value: '+20 000', label: isAr ? 'عميل راضٍ' : 'Clients satisfaits' },
+    { value: '4.8/5', label: isAr ? 'متوسط التقييم' : 'Note moyenne' },
+    { value: '7j/7', label: isAr ? 'خدمة عملاء' : 'Service client' },
+    { value: '100%', label: isAr ? 'دفع آمن عند الاستلام' : 'Paiement sécurisé à la livraison' },
+  ];
+
+  const storyBullets = [
+    { icon: Sparkles, text: isAr ? 'خبرة حرفية موروثة' : 'Savoir-faire ancestral' },
+    { icon: Leaf, text: isAr ? 'مواد نبيلة ومستدامة' : 'Matières nobles & durables' },
+    { icon: Award, text: isAr ? 'تصميم خارج الزمن' : 'Design intemporel' },
+  ];
 
   return (
     <main className="overflow-x-clip">
 
-      {/* ── HERO — Marquee, full-bleed lifestyle ────────────────── */}
-      <section className="relative min-h-[92vh] flex items-end overflow-hidden">
+      {/* ── HERO ─────────────────────────────────────────────────── */}
+      <section className="relative flex min-h-screen flex-col overflow-hidden">
 
-        {/* Background: real photo layers over warm gradient fallback */}
+        {/* Background — bright Moroccan interior */}
         <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(160deg, #2A1A0E 0%, #8B3E1A 45%, #1A0E08 100%)',
-            backgroundImage: "url('/images/hero-bg.webp')",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center top',
-          }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('/images/hero-bg.png')" }}
         />
 
-        {/* Cinematic overlay — readable text regardless of photo brightness */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/5" />
+        {/* Left-side reading overlay — keeps right image fully visible */}
+        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(15,10,5,0.62)_0%,rgba(15,10,5,0.42)_38%,rgba(15,10,5,0.08)_62%,rgba(15,10,5,0)_100%)]" />
+        {/* Subtle bottom vignette */}
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/30 to-transparent" />
 
-        {/* Brand coordinates — top-end, desktop only */}
-        <p
-          className="
-            absolute top-7 end-8 z-10
-            hidden md:block
-            text-white/50 text-[11px] font-mono tracking-[0.18em] uppercase
-          "
-        >
-          {t('home.hero.signature')}
-        </p>
+        {/* Content */}
+        <div className="relative z-10 flex flex-1 items-center">
+          <div className="w-full max-w-[var(--container-content)] mx-auto px-6 sm:px-8 lg:px-14 py-16 lg:py-24">
+            <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_580px] lg:gap-10">
 
-        {/* Hero content — bottom-start */}
-        <div className="relative z-10 w-full max-w-[var(--container-content)] mx-auto px-6 sm:px-8 lg:px-14 pb-14 lg:pb-20">
-          <div className="max-w-[600px]">
+              {/* ── Left: headline + CTAs + trust items ── */}
+              <div className="max-w-[600px]">
 
-            {/* Eyebrow */}
-            <p className="text-white/60 text-[11px] font-mono tracking-[0.18em] uppercase mb-5">
-              {isAr ? 'مرجاد — المغرب' : 'MARJAD — Maroc'}
-            </p>
+                {/* Headline — large serif, white */}
+                <h1 className="font-[var(--font-display)] font-bold text-white leading-[1.08] tracking-tight text-[clamp(2.4rem,6.5vw,6rem)] overflow-wrap-anywhere min-w-0">
+                  {t('home.hero.titleLine1')}
+                  <br />
+                  {t('home.hero.titleLine2')}
+                </h1>
 
-            {/* Display headline — Playfair Display, two lines */}
-            <h1
-              className="
-                font-[var(--font-display)]
-                text-white
-                text-[clamp(2.8rem,7vw,7rem)]
-                font-bold leading-[1.08] tracking-tight
-                overflow-wrap-anywhere min-w-0
-              "
-            >
-              {t('home.hero.titleLine1')}
-              <br />
-              <span className="text-[var(--color-brand-secondary)]">
-                {t('home.hero.titleLine2')}
-              </span>
-            </h1>
-
-            {/* Subtext */}
-            <p className="mt-5 text-white/70 text-base sm:text-lg max-w-[460px] leading-relaxed">
-              {t('home.hero.subtitle')}
-            </p>
-
-            {/* CTAs */}
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/products"
-                className="
-                  inline-flex items-center gap-2
-                  h-12 px-7
-                  rounded-[var(--radius-btn)]
-                  bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)]
-                  text-white font-semibold text-sm
-                  transition-colors duration-[var(--transition-base)]
-                  active:scale-[0.98]
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1 focus-visible:ring-offset-transparent
-                "
-              >
-                {t('home.hero.cta')}
-                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-              </Link>
-              <Link
-                href="/a-propos"
-                className="
-                  inline-flex items-center gap-2
-                  h-12 px-7
-                  rounded-[var(--radius-btn)]
-                  bg-white/10 hover:bg-white/18
-                  text-white font-medium text-sm
-                  backdrop-blur-sm
-                  transition-colors duration-[var(--transition-base)]
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-1 focus-visible:ring-offset-transparent
-                "
-              >
-                {t('home.hero.ctaSecondary')}
-              </Link>
-            </div>
-
-            <div className="mt-8 grid max-w-[560px] grid-cols-1 gap-2 sm:grid-cols-3">
-              {[
-                t('home.hero.proofCod'),
-                t('home.hero.proofDelivery'),
-                t('home.hero.proofCall'),
-              ].map((proof) => (
-                <div
-                  key={proof}
-                  className="rounded-[var(--radius-md)] border border-white/15 bg-white/[0.08] px-3 py-2 text-xs font-medium text-white/78 backdrop-blur-sm"
-                >
-                  {proof}
+                {/* Ornament divider */}
+                <div className="mt-6 flex items-center gap-3">
+                  <div className="h-px w-14 bg-[var(--color-brand-secondary)]/60" />
+                  <span className="text-[var(--color-brand-secondary)] text-sm">◇</span>
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <MarqueeStrip />
-
-      {/* ── VALUES BAR ─────────────────────────────────────────── */}
-      <section className="zellige-texture bg-[var(--color-brand-surface-alt)] border-b border-[var(--color-brand-border)]">
-        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 sm:gap-0">
-            {[
-              {
-                title: t('home.values.craftTitle'),
-                desc: t('home.values.craftDesc'),
-              },
-              {
-                title: t('home.values.deliveryTitle'),
-                desc: t('home.values.deliveryDesc'),
-              },
-              {
-                title: t('home.values.guaranteeTitle'),
-                desc: t('home.values.guaranteeDesc'),
-              },
-            ].map((item, i) => (
-              <div
-                key={item.title}
-                className="sm:px-10 first:ps-0 last:pe-0 border-t-2 border-[var(--color-brand-primary)] pt-5"
-                style={{ borderTopWidth: i === 0 ? '2px' : undefined }}
-              >
-                <p className="
-                  font-[var(--font-display)]
-                  text-lg font-bold
-                  text-[var(--color-brand-text)]
-                  mb-2
-                ">
-                  {item.title}
+                {/* Subtitle */}
+                <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed max-w-[480px]">
+                  {t('home.hero.subtitle')}
                 </p>
-                <p className="text-sm text-[var(--color-brand-text-muted)] leading-relaxed">
-                  {item.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* ── FEATURED PRODUCTS ──────────────────────────────────── */}
-      {displayProducts.length > 0 && (
-        <section className="py-16 lg:py-24 bg-[var(--color-brand-surface)]">
-          <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+                {/* CTAs */}
+                <div className="mt-8 flex flex-wrap gap-3">
+                  <Link
+                    href="/products"
+                    className="
+                      inline-flex items-center gap-2.5 h-13 px-7
+                      rounded-[var(--radius-btn)]
+                      bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)]
+                      text-white font-semibold text-sm
+                      transition-colors duration-200
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white
+                    "
+                  >
+                    {t('home.hero.cta')}
+                    <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+                  </Link>
+                  <Link
+                    href="/products?sort=newest"
+                    className="
+                      inline-flex items-center gap-2 h-13 px-7
+                      rounded-[var(--radius-btn)]
+                      border border-white/40 hover:bg-white/10
+                      text-white font-medium text-sm
+                      backdrop-blur-sm transition-colors duration-200
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white
+                    "
+                  >
+                    {t('home.hero.ctaSecondary')}
+                  </Link>
+                </div>
 
-            {/* Section header */}
-            <div className="flex items-end justify-between mb-10">
-              <div>
-                <p className="text-[var(--color-brand-primary)] text-[11px] font-mono tracking-[0.18em] uppercase mb-2">
-                  {t('home.featured.eyebrow')}
-                </p>
-                <h2 className="font-[var(--font-display)] text-2xl sm:text-3xl font-bold text-[var(--color-brand-text)]">
-                  {t('home.featured.heading')}
-                </h2>
-              </div>
-              <Link
-                href="/products"
-                className="
-                  flex items-center gap-1.5
-                  text-sm font-medium text-[var(--color-brand-primary)]
-                  hover:text-[var(--color-brand-primary-dark)]
-                  transition-colors duration-[var(--transition-fast)]
-                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] rounded
-                "
-              >
-                {t('home.featured.viewAll')}
-                <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
-              {displayProducts.map((product) => (
-                <ProductCard key={product.id} product={product} locale={locale} />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── BRAND STORY — 2-column editorial ───────────────────── */}
-      <section className="py-16 lg:py-28 bg-[var(--color-brand-surface-alt)]">
-        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-
-            {/* Text */}
-            <div>
-              <p className="text-[var(--color-brand-primary)] text-[11px] font-mono tracking-[0.18em] uppercase mb-4">
-                {t('home.story.eyebrow')}
-              </p>
-              <h2 className="
-                font-[var(--font-display)]
-                text-[clamp(1.75rem,3.5vw,2.75rem)]
-                font-bold text-[var(--color-brand-text)]
-                leading-tight mb-6
-                overflow-wrap-anywhere min-w-0
-              ">
-                {t('home.story.heading')}
-              </h2>
-              <p className="text-[var(--color-brand-text-muted)] text-base leading-relaxed max-w-[500px] mb-8">
-                {t('home.story.body')}
-              </p>
-              <Link
-                href="/a-propos"
-                className="
-                  inline-flex items-center gap-2
-                  text-[var(--color-brand-primary)] font-semibold text-sm
-                  hover:gap-3 transition-all duration-[var(--transition-base)]
-                  group focus-visible:outline-none focus-visible:underline
-                "
-              >
-                {t('home.story.cta')}
-                <ArrowRight className="w-4 h-4 rtl:rotate-180 transition-transform duration-200 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
-              </Link>
-            </div>
-
-            {/* Image */}
-            <div className="relative">
-              <div
-                className="aspect-[4/5] rounded-[var(--radius-xl)] overflow-hidden"
-                style={{
-                  background: 'linear-gradient(135deg, #F5E8DF 0%, #D4A853 60%, #C4622D 100%)',
-                  backgroundImage: "url('/images/brand-story.webp')",
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              >
-                {/* Placeholder text when no image */}
-                <div className="w-full h-full flex items-end p-6 bg-gradient-to-t from-black/30 to-transparent">
-                  <p className="font-[var(--font-display)] text-white/0 text-sm italic">
-                    brand-story.jpg
-                  </p>
+                {/* Trust items — 3 items inline with dividers */}
+                <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3">
+                  {[
+                    { icon: PackageCheck, label: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison' },
+                    { icon: MessageCircle, label: isAr ? 'تأكيد واتساب' : 'Confirmation WhatsApp' },
+                    { icon: Truck, label: isAr ? 'توصيل المغرب' : 'Livraison Maroc' },
+                  ].map((item, i) => {
+                    const Icon = item.icon;
+                    return (
+                      <div key={item.label} className="flex items-center gap-2.5">
+                        {i > 0 && <span className="hidden sm:block text-white/20 select-none">|</span>}
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/30">
+                          <Icon className="h-3.5 w-3.5 text-white/80" />
+                        </div>
+                        <span className="text-xs text-white/80 font-medium">{item.label}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              {/* Floating badge */}
-              <div className="
-                absolute -bottom-4 -start-4
-                bg-[var(--color-brand-surface)]
-                rounded-[var(--radius-md)] px-4 py-3
-                shadow-[var(--shadow-md)]
-              ">
-                <p className="text-[11px] text-[var(--color-brand-text-muted)] mb-0.5">
-                  {isAr ? 'صنع في' : 'Fait au'}
-                </p>
-                <p className="font-[var(--font-display)] text-sm font-semibold text-[var(--color-brand-text)]">
-                  {t('home.story.badge')}
-                </p>
-              </div>
-            </div>
+              {/* ── Right: layered product cards ── */}
+              <div className="hidden lg:flex lg:items-center lg:justify-end lg:pb-8">
+                <div className="relative w-[520px]">
 
+                  {/* Main card — brass lamp */}
+                  <Link
+                    href={displayProducts[0] ? `/products/${displayProducts[0].slug}` : '/products'}
+                    className="relative z-10 block rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.24)] overflow-hidden transition-shadow duration-300 hover:shadow-[0_28px_80px_rgba(0,0,0,0.30)]"
+                  >
+                    {/* Product image */}
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#F5EFE6]">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.03]"
+                        style={{ backgroundImage: "url('/images/marjad-hero-product.png')" }}
+                      />
+                      {/* À la une badge */}
+                      <span className="absolute top-3 start-3 rounded-full bg-[var(--color-brand-secondary)] px-3 py-1 text-[11px] font-semibold text-white shadow-sm">
+                        {isAr ? 'مميز' : 'À la une'}
+                      </span>
+                      {/* Heart */}
+                      <button
+                        type="button"
+                        aria-label="Wishlist"
+                        className="absolute top-3 end-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-colors"
+                      >
+                        <Heart className="h-4 w-4 text-[var(--color-brand-text-muted)]" />
+                      </button>
+                    </div>
+
+                    {/* Info row */}
+                    <div className="p-4">
+                      <p className="font-[var(--font-display)] text-base font-semibold text-[var(--color-brand-text)] line-clamp-1">
+                        {displayProducts[0]
+                          ? (isAr ? displayProducts[0].nameAr : displayProducts[0].nameFr)
+                          : (isAr ? 'مصباح نحاس ذهبي' : 'Lampe laiton doré')}
+                      </p>
+                      <p className="mt-0.5 text-xs text-[var(--color-brand-text-muted)]">
+                        {isAr ? 'صنع يدوي' : 'Fait main'}
+                      </p>
+                      <div className="mt-3 flex items-center justify-between">
+                        <span className="font-[var(--font-display)] text-base font-bold text-[var(--color-brand-primary)]">
+                          {displayProducts[0] ? `${displayProducts[0].price} MAD` : '1 690 MAD'}
+                        </span>
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-secondary)]">
+                          <Plus className="h-4 w-4 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  {/* Secondary detail card — zellige & brass tray, overlapping bottom-start */}
+                  <Link
+                    href="/products"
+                    className="absolute -bottom-12 -start-28 z-20 block w-72 overflow-hidden rounded-xl border-[3px] border-white shadow-[0_8px_32px_rgba(0,0,0,0.20)] transition-transform duration-300 hover:scale-[1.03]"
+                  >
+                    <div
+                      className="aspect-square bg-cover bg-center"
+                      style={{ backgroundImage: "url('/images/marjad-hero-detail.png')" }}
+                    />
+                    <div className="bg-white px-3 py-2">
+                      <p className="text-[11px] font-semibold text-[var(--color-brand-text)]">
+                        {isAr ? 'حرف مغربية' : 'Artisanat du Maroc'}
+                      </p>
+                      <p className="text-[10px] text-[var(--color-brand-text-muted)]">
+                        {isAr ? 'زليج وتراث' : 'Zellige & tradition'}
+                      </p>
+                    </div>
+                  </Link>
+
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── CATEGORIES ─────────────────────────────────────────── */}
+      {/* ── CATEGORIES ───────────────────────────────────────────── */}
       {categories.length > 0 && (
-        <section className="py-16 lg:py-24 bg-[var(--color-brand-surface)]">
+        <section className="bg-[var(--color-brand-surface)] py-12 lg:py-16">
           <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
-
-            <div className="mb-10">
-              <p className="text-[var(--color-brand-primary)] text-[11px] font-mono tracking-[0.18em] uppercase mb-2">
-                {t('home.categories.eyebrow')}
-              </p>
-              <h2 className="font-[var(--font-display)] text-2xl sm:text-3xl font-bold text-[var(--color-brand-text)]">
-                {t('home.categories.heading')}
-              </h2>
-            </div>
-
-            {/* Mobile: horizontal scroll · Desktop: grid */}
-            <div className="
-              flex gap-4 overflow-x-auto pb-4
-              snap-x snap-mandatory
-              lg:grid lg:grid-cols-4 lg:gap-5
-              lg:overflow-visible lg:pb-0
-            ">
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
               {categories.slice(0, 4).map((cat) => {
                 const catName = isAr ? cat.nameAr : cat.nameFr;
-                const categoryHint = isAr
-                  ? t('home.categories.hintAr', { category: catName })
-                  : t('home.categories.hintFr', { category: catName });
                 return (
                   <Link
                     key={cat.id}
                     href={`/products?category=${cat.slug}`}
-                    aria-label={catName}
-                    className="
-                      group relative flex-shrink-0
-                      min-w-[200px] sm:min-w-[220px] lg:min-w-0
-                      aspect-[3/4]
-                      rounded-[var(--radius-xl)] overflow-hidden
-                      snap-start
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2
-                    "
-                    style={{
-                      background: 'linear-gradient(135deg, #F0EBE1 0%, #C4622D 100%)',
-                      backgroundImage: `url('/images/category-${cat.slug}.webp')`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    }}
+                    className="group focus-visible:outline-none"
                   >
-                    {/* Gradient scale on hover */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-brand-surface-alt)] to-[var(--color-brand-primary-light)] group-hover:scale-[1.04] transition-transform duration-500 -z-10" />
-
-                    {/* Dark bottom overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                    {/* Letter placeholder */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-15 pointer-events-none">
-                      <span className="font-[var(--font-display)] text-[7rem] font-bold text-[var(--color-brand-primary)] leading-none select-none">
-                        {catName.charAt(0)}
-                      </span>
+                    <div className="relative overflow-hidden rounded-[var(--radius-md)] aspect-[3/4] bg-[var(--color-brand-surface-alt)]">
+                      <div
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
+                        style={{ backgroundImage: `url('/images/category-${cat.slug}.webp')` }}
+                      />
                     </div>
-
-                    {/* Label */}
-                    <div className="absolute bottom-4 start-4 end-4">
-                      <p className="mb-2 w-fit rounded-full bg-white/12 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white/75 backdrop-blur-sm">
-                        {t('home.categories.badge')}
-                      </p>
-                      <p className="
-                        font-[var(--font-display)] text-white
-                        text-lg font-semibold
-                        line-clamp-2 drop-shadow
-                        group-hover:text-[var(--color-brand-secondary)]
-                        transition-colors duration-200
-                      ">
+                    <div className="mt-3">
+                      <h3 className="font-[var(--font-display)] text-lg font-bold uppercase tracking-wide text-[var(--color-brand-text)]">
                         {catName}
-                      </p>
-                      <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/68 rtl:text-right">
-                        {categoryHint}
-                      </p>
-                      <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-semibold text-white">
-                        {t('home.categories.shopCta')}
-                        <ArrowRight className="size-3 rtl:rotate-180" />
+                      </h3>
+                      <p className="mt-1 inline-flex items-center gap-1 text-sm font-medium text-[var(--color-brand-primary)] transition-all group-hover:gap-2">
+                        {isAr ? 'اكتشف' : 'Découvrir'}
+                        <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
                       </p>
                     </div>
                   </Link>
                 );
               })}
             </div>
-
           </div>
         </section>
       )}
 
-      {/* ── COD CONFIDENCE ────────────────────────────────────── */}
-      <section className="bg-[var(--color-brand-text)] py-14 text-white sm:py-16 lg:py-20">
-        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid gap-10 lg:grid-cols-[0.9fr_1.5fr] lg:items-end">
-            <div>
-              <p className="mb-3 text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-secondary)]">
-                {t('home.cod.eyebrow')}
-              </p>
-              <h2 className="font-[var(--font-display)] text-[clamp(1.8rem,3.7vw,3rem)] font-bold leading-tight">
-                {t('home.cod.heading')}
-              </h2>
-              <p className="mt-4 max-w-[440px] text-sm leading-7 text-white/66">
-                {t('home.cod.body')}
-              </p>
+      {/* ── SÉLECTION MARJAD ─────────────────────────────────────── */}
+      {displayProducts.length > 0 && (
+        <section className="border-t border-[var(--color-brand-border)] bg-[var(--color-brand-surface)] py-14 lg:py-20">
+          <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <h2 className="font-[var(--font-display)] text-2xl font-bold uppercase tracking-wide text-[var(--color-brand-text)] sm:text-3xl">
+                  {isAr ? 'اختيار مرجاد' : 'SÉLECTION MARJAD'}
+                </h2>
+                <p className="mt-1.5 text-sm text-[var(--color-brand-text-muted)]">
+                  {isAr
+                    ? 'قطع مختارة لتجميل منزلك'
+                    : 'Des pièces choisies pour sublimer votre intérieur'}
+                </p>
+              </div>
               <Link
-                href="/livraison-retours"
-                className="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-brand-secondary)] transition hover:gap-3 focus-visible:outline-none focus-visible:underline"
+                href="/products"
+                className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-brand-text-muted)] transition-colors hover:text-[var(--color-brand-primary)] focus-visible:outline-none focus-visible:underline"
               >
-                {t('home.cod.cta')}
-                <ArrowRight className="size-4 rtl:rotate-180" />
+                {isAr ? 'عرض الكل' : 'VOIR TOUT'}
               </Link>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-              {[
-                { icon: Banknote, title: t('home.cod.step1Title'), body: t('home.cod.step1Body') },
-                { icon: Headphones, title: t('home.cod.step2Title'), body: t('home.cod.step2Body') },
-                { icon: PackageCheck, title: t('home.cod.step3Title'), body: t('home.cod.step3Body') },
-                { icon: ShieldCheck, title: t('home.cod.step4Title'), body: t('home.cod.step4Body') },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.title}
-                    className="rounded-[var(--radius-md)] border border-white/10 bg-white/[0.06] p-4 transition hover:-translate-y-0.5 hover:bg-white/[0.09]"
-                  >
-                    <Icon className="mb-4 size-5 text-[var(--color-brand-secondary)]" />
-                    <h3 className="text-sm font-semibold text-white">{item.title}</h3>
-                    <p className="mt-2 text-xs leading-5 text-white/58">{item.body}</p>
-                  </div>
-                );
-              })}
+            <div className="grid grid-cols-2 gap-4 md:gap-5 md:grid-cols-3 lg:grid-cols-5">
+              {displayProducts.map((product) => (
+                <ProductCard key={product.id} product={product} locale={locale} />
+              ))}
+            </div>
+
+            {/* Pagination dots */}
+            <div className="mt-8 flex items-center justify-center gap-2">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div
+                  key={i}
+                  className={`rounded-full transition-all ${
+                    i === 0
+                      ? 'h-2 w-6 bg-[var(--color-brand-primary)]'
+                      : 'h-2 w-2 bg-[var(--color-brand-border)]'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── NOTRE HISTOIRE / BRAND STORY ─────────────────────────── */}
+      <section className="bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
+
+            {/* Text */}
+            <div>
+              <p className="mb-4 text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                {isAr ? 'قصتنا' : 'NOTRE HISTOIRE'}
+              </p>
+              <h2
+                className="
+                  mb-5 font-[var(--font-display)]
+                  text-[clamp(1.75rem,3.5vw,2.75rem)]
+                  font-bold leading-tight text-[var(--color-brand-text)]
+                  overflow-wrap-anywhere min-w-0
+                "
+              >
+                {isAr
+                  ? 'روح المغرب، في كل تفصيل.'
+                  : "L'âme du Maroc,\ndans chaque détail."}
+              </h2>
+              <p className="mb-8 max-w-[500px] text-base leading-relaxed text-[var(--color-brand-text-muted)]">
+                {t('home.story.body')}
+              </p>
+              <ul className="mb-8 space-y-3.5">
+                {storyBullets.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <li key={item.text} className="flex items-center gap-3 text-sm text-[var(--color-brand-text)]">
+                      <Icon className="h-4 w-4 shrink-0 text-[var(--color-brand-primary)]" />
+                      {item.text}
+                    </li>
+                  );
+                })}
+              </ul>
+              <Link
+                href="/a-propos"
+                className="
+                  inline-flex items-center gap-2 h-12 px-7
+                  rounded-[var(--radius-btn)]
+                  bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)]
+                  text-white font-semibold text-sm
+                  transition-colors duration-200
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)]
+                "
+              >
+                {isAr ? 'اكتشف عالمنا' : 'DÉCOUVRIR NOTRE UNIVERS'}
+              </Link>
+            </div>
+
+            {/* Craftsman photos */}
+            <div className="grid grid-cols-2 gap-4">
+              <div
+                className="aspect-[3/4] rounded-[var(--radius-md)] bg-cover bg-center"
+                style={{ backgroundImage: "url('/images/brand-story.webp')" }}
+              />
+              <div
+                className="aspect-[3/4] rounded-[var(--radius-md)] bg-cover bg-center lg:mt-10"
+                style={{ backgroundImage: "url('/images/about-story.webp')" }}
+              />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ── POURQUOI LE PAIEMENT À LA LIVRAISON ─────────────────── */}
+      <section className="bg-[var(--color-brand-surface)] py-16 lg:py-20">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-12 text-center">
+            <h2 className="font-[var(--font-display)] text-xl font-bold uppercase tracking-wide text-[var(--color-brand-text)] sm:text-2xl lg:text-3xl">
+              {isAr
+                ? 'لماذا تختار الدفع عند الاستلام؟'
+                : 'POURQUOI CHOISIR LE PAIEMENT À LA LIVRAISON ?'}
+            </h2>
+            <div className="mt-3 flex justify-center">
+              <span className="text-sm text-[var(--color-brand-secondary)]">◆</span>
             </div>
           </div>
 
-          <div className="mt-10 grid gap-3 border-t border-white/10 pt-6 sm:grid-cols-3">
-            {[
-              { icon: Truck, text: t('home.cod.statDelivery') },
-              { icon: ShieldCheck, text: t('home.cod.statPackaging') },
-              { icon: Headphones, text: t('home.cod.statSupport') },
-            ].map((item) => {
-              const Icon = item.icon;
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+            {codSteps.map((step) => {
+              const Icon = step.icon;
               return (
-                <div key={item.text} className="flex items-center gap-3 text-sm text-white/72">
-                  <Icon className="size-4 text-[var(--color-brand-secondary)]" />
-                  <span>{item.text}</span>
+                <div key={step.title} className="flex flex-col items-center text-center">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--color-brand-border)]">
+                    <Icon className="h-6 w-6 text-[var(--color-brand-primary)]" />
+                  </div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-text)]">
+                    {step.num} {step.title}
+                  </p>
+                  <p className="max-w-[160px] text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
+                    {step.body}
+                  </p>
                 </div>
               );
             })}
@@ -473,7 +452,65 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* ── STATS ROW ────────────────────────────────────────────── */}
+      <div className="border-y border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat, idx) => {
+              const isOdd = idx % 2 === 0; // first column on mobile
+              const isFirstRow = idx < 2;
+              const isLastDesktop = idx === stats.length - 1;
+              return (
+                <div
+                  key={stat.value}
+                  className={[
+                    'px-4 py-8 text-center lg:px-6',
+                    isOdd ? 'border-e border-[var(--color-brand-border)]' : '',
+                    isFirstRow ? 'border-b border-[var(--color-brand-border)] lg:border-b-0' : '',
+                    !isLastDesktop ? 'lg:border-e lg:border-[var(--color-brand-border)]' : '',
+                    isOdd ? '' : 'lg:border-e-0',
+                  ].join(' ')}
+                >
+                  <p className="font-[var(--font-display)] text-3xl font-bold text-[var(--color-brand-primary)]">
+                    {stat.value}
+                  </p>
+                  <p className="mt-1.5 text-xs text-[var(--color-brand-text-muted)]">{stat.label}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── BEST SELLERS & IDÉES CADEAUX ─────────────────────────── */}
+      {bestSellers.length > 0 && (
+        <section className="bg-[var(--color-brand-surface)] py-14 lg:py-20">
+          <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8 flex items-center justify-between">
+              <h2 className="font-[var(--font-display)] text-2xl font-bold uppercase tracking-wide text-[var(--color-brand-text)] sm:text-3xl">
+                {isAr ? 'الأكثر مبيعاً وأفكار الهدايا' : 'BEST SELLERS & IDÉES CADEAUX'}
+              </h2>
+              <Link
+                href="/products"
+                className="text-[11px] font-semibold uppercase tracking-widest text-[var(--color-brand-text-muted)] transition-colors hover:text-[var(--color-brand-primary)] focus-visible:outline-none focus-visible:underline"
+              >
+                {isAr ? 'عرض الكل' : 'VOIR TOUT'}
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
+              {bestSellers.map((product) => (
+                <ProductCard key={product.id} product={product} locale={locale} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
       <TestimonialsSection locale={locale} />
+
+      {/* ── FAQ ──────────────────────────────────────────────────── */}
+      <FaqSection locale={locale} />
 
     </main>
   );

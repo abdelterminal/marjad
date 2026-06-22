@@ -36,14 +36,15 @@ export default async function EditProductPage({ params }: PageProps) {
         <p className="mt-1 text-sm text-gray-500">{product.nameFr}</p>
       </div>
 
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-        <ProductForm
+      <ProductForm
           product={{
             id: product.id,
             nameFr: product.nameFr,
             nameAr: product.nameAr,
             descriptionFr: product.descriptionFr,
             descriptionAr: product.descriptionAr,
+            detailsFr: product.detailsFr,
+            detailsAr: product.detailsAr,
             price: product.price,
             compareAtPrice: product.compareAtPrice,
             stock: product.stock,
@@ -53,7 +54,6 @@ export default async function EditProductPage({ params }: PageProps) {
             isFeatured: product.isFeatured,
           }}
         />
-      </div>
     </div>
   );
 }

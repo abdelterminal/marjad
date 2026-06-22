@@ -1,36 +1,45 @@
 type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 
-const STATUS_CONFIG: Record<OrderStatus, { label: string; classes: string }> = {
+const STATUS_CONFIG: Record<OrderStatus, { label: string; dot: string; classes: string }> = {
   pending: {
     label: 'En attente',
-    classes: 'bg-amber-100 text-amber-800',
+    dot: 'bg-amber-400',
+    classes: 'bg-amber-50 text-amber-700 ring-1 ring-inset ring-amber-300/50',
   },
   confirmed: {
     label: 'Confirmée',
-    classes: 'bg-blue-100 text-blue-800',
+    dot: 'bg-blue-400',
+    classes: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-300/50',
   },
   processing: {
     label: 'En traitement',
-    classes: 'bg-blue-100 text-blue-800',
+    dot: 'bg-blue-400',
+    classes: 'bg-blue-50 text-blue-700 ring-1 ring-inset ring-blue-300/50',
   },
   shipped: {
     label: 'Expédiée',
-    classes: 'bg-purple-100 text-purple-800',
+    dot: 'bg-violet-400',
+    classes: 'bg-violet-50 text-violet-700 ring-1 ring-inset ring-violet-300/50',
   },
   delivered: {
     label: 'Livrée',
-    classes: 'bg-green-100 text-green-800',
+    dot: 'bg-emerald-400',
+    classes: 'bg-emerald-50 text-emerald-700 ring-1 ring-inset ring-emerald-300/50',
   },
   cancelled: {
     label: 'Annulée',
-    classes: 'bg-red-100 text-red-800',
+    dot: 'bg-red-400',
+    classes: 'bg-red-50 text-red-600 ring-1 ring-inset ring-red-300/50',
   },
 };
 
 export function AdminStatusBadge({ status }: { status: string }) {
   const config = STATUS_CONFIG[status as OrderStatus] ?? STATUS_CONFIG.pending;
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${config.classes}`}>
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${config.classes}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} />
       {config.label}
     </span>
   );

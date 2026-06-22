@@ -21,8 +21,11 @@ export default async function AdminCategoriesPage() {
       </div>
 
       {/* Create form */}
-      <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm space-y-4">
-        <h2 className="text-lg font-semibold text-gray-900">Nouvelle catégorie</h2>
+      <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-4">
+        <div>
+          <h2 className="text-sm font-semibold text-gray-900">Nouvelle catégorie</h2>
+          <p className="mt-0.5 text-xs text-gray-500">Ajoutez une catégorie au catalogue.</p>
+        </div>
         <CategoryForm />
       </div>
 

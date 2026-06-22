@@ -2,6 +2,14 @@
 
 ---
 
+### [UI/FRONTEND] Homepage luxury concept adaptation — Phase 5
+- Did: adapted the homepage toward the generated world-class MARJAD concept with immersive hero composition, earlier visual category paths, curated product section, editorial craft imagery, and a dark gift-ready product band.
+- Wrote: `src/app/[locale]/page.tsx`, `team/STATUS.md`.
+- Handoff: Next pass should visually inspect desktop/mobile and tune spacing/image crops, or commit/push if the direction is approved.
+- Flags: Existing products/categories and COD links are preserved; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
 ### [FRONTEND/GROWTH] Checkout COD trust polish — Phase 5
 - Did: reinforced checkout trust around no payment now, phone confirmation before shipping, address quality, delivery timing, and COD confirmation expectations.
 - Wrote: `src/components/checkout/CheckoutForm.tsx`, `team/STATUS.md`.

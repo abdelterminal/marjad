@@ -1,7 +1,7 @@
 # Status Board
 
 **Current phase:** Phase 5 — Ship + storefront conversion polish
-**Last updated:** 2026-06-22 — Checkout COD trust polish added; TypeScript, lint, and build green
+**Last updated:** 2026-06-22 — Homepage luxury concept adaptation added; TypeScript, lint, and build green
 
 ## Phase overview
 
@@ -49,6 +49,7 @@ None.
 - Completed a code-based launch QA sweep and removed fake WhatsApp fallback links from public surfaces.
 - Polished admin order detail with a COD ops summary, clearer next action guidance, stronger contact actions, and responsive status scanning.
 - Strengthened checkout trust copy around no-payment-now COD, phone confirmation, address quality, delivery timing, and non-shipment without confirmation.
+- Adapted the homepage toward the generated luxury editorial MARJAD direction with a stronger hero, category buying paths, curated product rhythm, editorial craft story, and gift-ready band.
 - Verification: `npx tsc --noEmit`, `npm run lint`, and `npm run build` all pass.
 
 ## Ticket board
