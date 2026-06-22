@@ -1,10 +1,12 @@
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
 import Link from 'next/link';
+import { getWhatsAppHref } from '@/lib/contact';
 
 export async function Footer() {
   const t = await getTranslations();
   const locale = await getLocale();
+  const whatsappHref = getWhatsAppHref();
 
   return (
     <footer className="mt-auto bg-[var(--color-brand-text)] text-white">
@@ -139,16 +141,20 @@ export async function Footer() {
             {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-4">
-            <a
-              href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '212000000000'}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
-              aria-label="WhatsApp"
-            >
-              WhatsApp
-            </a>
-            <span className="text-white/15">·</span>
+            {whatsappHref && (
+              <>
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
+                  aria-label="WhatsApp"
+                >
+                  WhatsApp
+                </a>
+                <span className="text-white/15">·</span>
+              </>
+            )}
             <Link
               href={`/${locale}/livraison-retours`}
               className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"

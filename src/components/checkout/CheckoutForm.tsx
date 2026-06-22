@@ -127,6 +127,11 @@ export function CheckoutForm() {
   const textareaClass = 'form-textarea';
   const errorInputClass = 'form-input-error';
   const labelClass = 'form-label';
+  const trustPoints = [
+    isAr ? 'بدون دفع الآن' : 'Aucun paiement maintenant',
+    isAr ? 'تأكيد بالهاتف قبل الإرسال' : 'Confirmation par téléphone',
+    isAr ? 'توصيل 3 إلى 5 أيام عمل' : 'Livraison 3 à 5 jours ouvrables',
+  ];
   const checkoutSteps = [
     {
       icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
@@ -190,6 +195,17 @@ export function CheckoutForm() {
             ? 'لا تحتاج إلى بطاقة بنكية. اترك معلومات التوصيل وسيتواصل فريق مرجاد معك قبل إرسال الطلب.'
             : "Pas besoin de carte bancaire. Laissez vos informations de livraison, l'équipe MARJAD vous contacte avant l'expédition."}
         </p>
+        <div className="mt-5 grid gap-2 sm:grid-cols-3">
+          {trustPoints.map((point) => (
+            <div
+              key={point}
+              className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white/70 px-3 py-2 text-xs font-semibold text-[var(--color-brand-text)]"
+            >
+              <ShieldCheck className="h-4 w-4 flex-shrink-0 text-[var(--color-brand-primary)]" aria-hidden="true" />
+              <span>{point}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-10">
@@ -213,6 +229,14 @@ export function CheckoutForm() {
           <h2 className="font-[var(--font-display)] text-xl font-bold text-[var(--color-brand-text)] mb-5">
             {isAr ? 'معلومات التوصيل' : 'Informations de livraison'}
           </h2>
+          <div className="mb-5 rounded-[var(--radius-sm)] border border-[var(--color-brand-primary)]/20 bg-[var(--color-brand-primary-light)] px-4 py-3 text-sm leading-relaxed text-[var(--color-brand-text)]">
+            <span className="font-semibold">
+              {isAr ? 'مهم:' : 'Important :'}
+            </span>{' '}
+            {isAr
+              ? 'اكتب رقم هاتف متاحاً. لن نرسل الطلب قبل تأكيد العنوان والكمية معك.'
+              : "Indiquez un téléphone joignable. La commande ne part pas avant validation de l'adresse et de la quantité avec vous."}
+          </div>
           <div className="hidden" aria-hidden="true">
             <label htmlFor="company">
               {isAr ? 'الشركة' : 'Entreprise'}
@@ -271,7 +295,7 @@ export function CheckoutForm() {
                 </p>
               ) : (
                 <p className="form-help">
-                  {isAr ? 'مثال: 0612345678' : 'Ex: 0612345678'}
+                  {isAr ? 'مثال: 0612345678 — سنتصل بهذا الرقم للتأكيد.' : 'Ex: 0612345678 — nous appelons ce numéro pour confirmer.'}
                 </p>
               )}
             </div>
@@ -311,6 +335,13 @@ export function CheckoutForm() {
                 autoComplete="street-address"
                 className={[textareaClass, errors.address ? errorInputClass : ''].join(' ')}
               />
+              {!errors.address && (
+                <p className="form-help">
+                  {isAr
+                    ? 'أضف الحي أو أقرب معلم لتسهيل التوصيل.'
+                    : 'Ajoutez le quartier ou un repère proche pour faciliter la livraison.'}
+                </p>
+              )}
               {errors.address && (
                 <p role="alert" aria-live="polite" className="form-error flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
@@ -339,14 +370,21 @@ export function CheckoutForm() {
             <h2 className="text-base font-semibold text-[var(--color-brand-text)] mb-3">
               {isAr ? 'طريقة الدفع' : 'Paiement'}
             </h2>
-            <div className="flex items-center gap-3 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-4 shadow-[var(--shadow-xs)]">
-              <Banknote className="w-5 h-5 text-[var(--color-brand-primary)] flex-shrink-0" />
-              <span className="text-sm font-medium text-[var(--color-brand-text)]">
-                {isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison'}
-              </span>
-              <span className="ms-auto text-xs text-[var(--color-brand-text-muted)]">
-                {isAr ? 'COD' : 'COD'}
-              </span>
+            <div className="rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-4 shadow-[var(--shadow-xs)]">
+              <div className="flex items-center gap-3">
+                <Banknote className="w-5 h-5 text-[var(--color-brand-primary)] flex-shrink-0" />
+                <span className="text-sm font-semibold text-[var(--color-brand-text)]">
+                  {isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison'}
+                </span>
+                <span className="ms-auto rounded-full bg-[var(--color-brand-success-light)] px-2 py-1 text-xs font-semibold text-[var(--color-brand-success)]">
+                  {isAr ? 'بدون دفع الآن' : '0 MAD maintenant'}
+                </span>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
+                {isAr
+                  ? 'تدفع نقداً عند استلام الطلب بعد التأكيد الهاتفي.'
+                  : 'Vous payez en espèces à la réception, après confirmation téléphonique.'}
+              </p>
             </div>
           </div>
 
@@ -357,15 +395,15 @@ export function CheckoutForm() {
             className="form-submit w-full"
           >
             {isSubmitting && <Loader2 className="w-5 h-5 animate-spin" />}
-            {isAr ? 'تأكيد الطلب' : 'Passer la commande'}
+            {isAr ? 'تأكيد الطلب بدون دفع الآن' : 'Confirmer sans payer maintenant'}
           </button>
 
           <div className="mt-4 flex items-start gap-2 rounded-[var(--radius-sm)] bg-[var(--color-brand-success-light)] px-3 py-2 text-xs leading-relaxed text-[var(--color-brand-success)]">
             <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true" />
             <span>
               {isAr
-                ? 'بياناتك تستعمل فقط لتأكيد الطلب والتوصيل.'
-                : 'Vos informations servent uniquement à confirmer et livrer votre commande.'}
+                ? 'بعد الإرسال ستظهر لك صفحة التأكيد. سنراجع الطلب معك قبل أي شحن.'
+                : "Après l'envoi, vous verrez la confirmation. Nous validons toujours la commande avec vous avant expédition."}
             </span>
           </div>
         </form>
@@ -458,6 +496,11 @@ export function CheckoutForm() {
               <div className="mt-4 flex items-center gap-2 text-xs text-[var(--color-brand-text-muted)]">
                 <Clock3 className="h-4 w-4 text-[var(--color-brand-primary)]" aria-hidden="true" />
                 <span>{isAr ? 'التوصيل المتوقع: 3 إلى 5 أيام عمل.' : 'Livraison estimée : 3 à 5 jours ouvrables.'}</span>
+              </div>
+              <div className="mt-3 rounded-[var(--radius-sm)] bg-white px-3 py-2 text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
+                {isAr
+                  ? 'إذا لم نتمكن من تأكيد الطلب بالهاتف، لن يتم شحنه.'
+                  : "Si nous n'arrivons pas à confirmer la commande par téléphone, elle ne sera pas expédiée."}
               </div>
             </div>
           </div>

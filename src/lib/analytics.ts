@@ -9,8 +9,9 @@ export type AnalyticsEvent = {
 };
 
 type AnalyticsWindow = Window & {
-  dataLayer?: AnalyticsEvent[];
+  dataLayer?: unknown[];
   fbq?: (command: string, event: string, payload?: AnalyticsPayload) => void;
+  gtag?: (command: string, event: string, payload?: AnalyticsPayload) => void;
   ttq?: {
     track?: (event: string, payload?: AnalyticsPayload) => void;
   };
@@ -30,6 +31,14 @@ const TIKTOK_EVENT_MAP: Record<string, string> = {
   order_submitted: 'CompletePayment',
 };
 
+const GOOGLE_EVENT_MAP: Record<string, string> = {
+  page_view: 'page_view',
+  product_view: 'view_item',
+  add_to_cart: 'add_to_cart',
+  checkout_start: 'begin_checkout',
+  order_submitted: 'purchase',
+};
+
 export function trackEvent(event: string, payload?: AnalyticsPayload) {
   if (typeof window === 'undefined') return;
 
@@ -42,6 +51,11 @@ export function trackEvent(event: string, payload?: AnalyticsPayload) {
 
   analyticsWindow.dataLayer = analyticsWindow.dataLayer ?? [];
   analyticsWindow.dataLayer.push(entry);
+
+  const googleEvent = GOOGLE_EVENT_MAP[event];
+  if (googleEvent && typeof analyticsWindow.gtag === 'function') {
+    analyticsWindow.gtag('event', googleEvent, payload);
+  }
 
   const metaEvent = META_EVENT_MAP[event];
   if (metaEvent && typeof analyticsWindow.fbq === 'function') {

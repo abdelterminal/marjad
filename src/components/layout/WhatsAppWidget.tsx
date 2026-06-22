@@ -1,19 +1,18 @@
 'use client';
 
 import { useIsClient } from '@/lib/use-is-client';
-
-const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
+import { getWhatsAppHref } from '@/lib/contact';
 
 const messageFr = encodeURIComponent('Bonjour MARJAD, je souhaite avoir des informations sur un produit.');
 const messageAr = encodeURIComponent('مرحباً مرجاد، أود الاستفسار عن منتج.');
 
 export function WhatsAppWidget() {
   const isClient = useIsClient();
-  if (!isClient || !number) return null;
+  if (!isClient) return null;
 
   const isAr = typeof document !== 'undefined' && document.documentElement.lang === 'ar';
-  const msg = isAr ? messageAr : messageFr;
-  const href = `https://wa.me/${number}?text=${msg}`;
+  const href = getWhatsAppHref(isAr ? decodeURIComponent(messageAr) : decodeURIComponent(messageFr));
+  if (!href) return null;
 
   return (
     <a

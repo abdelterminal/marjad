@@ -1,7 +1,7 @@
 # Status Board
 
 **Current phase:** Phase 5 — Ship + storefront conversion polish
-**Last updated:** 2026-06-19 — Courier workflow presets added; TypeScript, lint, and build green
+**Last updated:** 2026-06-22 — Checkout COD trust polish added; TypeScript, lint, and build green
 
 ## Phase overview
 
@@ -45,6 +45,10 @@ None.
 - Added admin duplicate/fraud hints for repeated phone numbers, repeated addresses, and old pending orders on list/detail views.
 - Added admin CSV export for orders, respecting current status filters for courier/ops handoff.
 - Added compact courier workflow presets on the admin orders page with preset CSV exports for confirmation, shipping, transit, and delivered reconciliation.
+- Added optional Meta, TikTok, and Google tag scripts behind public env vars, wired to the existing ecommerce analytics event layer.
+- Completed a code-based launch QA sweep and removed fake WhatsApp fallback links from public surfaces.
+- Polished admin order detail with a COD ops summary, clearer next action guidance, stronger contact actions, and responsive status scanning.
+- Strengthened checkout trust copy around no-payment-now COD, phone confirmation, address quality, delivery timing, and non-shipment without confirmation.
 - Verification: `npx tsc --noEmit`, `npm run lint`, and `npm run build` all pass.
 
 ## Ticket board

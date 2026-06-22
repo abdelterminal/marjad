@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { AlertTriangle, ChevronLeft, MessageCircle, Phone } from 'lucide-react';
+import { AlertTriangle, Banknote, ChevronLeft, MapPin, MessageCircle, PackageCheck, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { getOrderById } from '@/lib/queries/orders';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
@@ -20,6 +20,29 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const STATUS_FLOW = ['pending', 'confirmed', 'shipped', 'delivered'];
+
+const STATUS_GUIDANCE: Record<string, { title: string; body: string }> = {
+  pending: {
+    title: 'Appel de confirmation',
+    body: 'Confirmer téléphone, adresse, quantité et disponibilité avant de préparer la commande.',
+  },
+  confirmed: {
+    title: 'Prête pour expédition',
+    body: 'La commande est validée. Préparer le colis et l’ajouter au prochain export coursier.',
+  },
+  shipped: {
+    title: 'Suivi livraison',
+    body: 'Le colis est en route. Garder le client joignable pour limiter les retours COD.',
+  },
+  delivered: {
+    title: 'Rapprochement COD',
+    body: 'Commande livrée. À rapprocher avec le paiement collecté par le coursier.',
+  },
+  cancelled: {
+    title: 'Commande clôturée',
+    body: 'Commande annulée. Vérifier la raison si le client revient via WhatsApp ou téléphone.',
+  },
+};
 
 function getWhatsappMessage(order: NonNullable<Awaited<ReturnType<typeof getOrderById>>>) {
   const total = formatMAD(parseFloat(order.total));
@@ -60,9 +83,11 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
     ? `212${normalizedPhone.slice(1)}`
     : normalizedPhone.replace(/^\+/, '');
   const whatsappMessage = encodeURIComponent(getWhatsappMessage(order));
+  const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+  const statusGuidance = STATUS_GUIDANCE[order.status] ?? STATUS_GUIDANCE.pending;
 
   return (
-    <div className="space-y-6 max-w-[56rem]">
+    <div className="max-w-[72rem] space-y-6">
       {/* Header */}
       <div>
         <Link
@@ -72,7 +97,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
           <ChevronLeft className="size-4" />
           Retour aux commandes
         </Link>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Commande #{order.id}</h1>
             <p className="mt-1 text-sm text-gray-500">
@@ -85,9 +110,45 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               })}
             </p>
           </div>
-          <AdminStatusBadge status={order.status} />
+          <div className="flex flex-wrap items-center gap-2">
+            <AdminStatusBadge status={order.status} />
+            <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
+              Paiement COD
+            </span>
+          </div>
         </div>
       </div>
+
+      <section className="grid gap-3 md:grid-cols-4">
+        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:col-span-2">
+          <div className="flex items-start gap-3">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-950 text-white">
+              <PackageCheck className="size-4" />
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Prochaine action</p>
+              <h2 className="mt-1 text-sm font-semibold text-gray-950">{statusGuidance.title}</h2>
+              <p className="mt-1 text-xs leading-5 text-gray-500">{statusGuidance.body}</p>
+            </div>
+          </div>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+            <Banknote className="size-3.5" />
+            Total COD
+          </p>
+          <p className="mt-2 text-xl font-bold text-gray-950">{formatMAD(parseFloat(order.total))}</p>
+          <p className="mt-1 text-xs text-gray-500">{itemCount} article{itemCount > 1 ? 's' : ''}</p>
+        </div>
+        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
+            <MapPin className="size-3.5" />
+            Livraison
+          </p>
+          <p className="mt-2 text-sm font-semibold text-gray-950">{order.city}</p>
+          <p className="mt-1 line-clamp-2 text-xs leading-5 text-gray-500">{order.address}</p>
+        </div>
+      </section>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Left column */}
@@ -139,15 +200,18 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
           </div>
 
           {/* Status timeline */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-            <h2 className="font-semibold text-gray-900 mb-4">Suivi de la commande</h2>
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <h2 className="font-semibold text-gray-900">Suivi de la commande</h2>
+              <span className="text-xs font-medium text-gray-400">COD Maroc</span>
+            </div>
             {order.status === 'cancelled' ? (
               <div className="flex items-center gap-3">
                 <div className="size-3 rounded-full bg-red-500" />
                 <span className="text-sm font-medium text-red-700">Commande annulée</span>
               </div>
             ) : (
-              <div className="flex items-center gap-0">
+              <div className="flex min-w-max items-center gap-0 overflow-x-auto pb-1">
                 {STATUS_FLOW.map((s, i) => {
                   const done = i <= currentStatusIndex;
                   const current = i === currentStatusIndex;
@@ -189,8 +253,13 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
         {/* Right column */}
         <div className="space-y-6">
           {/* Customer info */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-3">
-            <h2 className="font-semibold text-gray-900">Informations client</h2>
+          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-4">
+            <div>
+              <h2 className="font-semibold text-gray-900">Client & confirmation</h2>
+              <p className="mt-1 text-xs leading-5 text-gray-500">
+                Utiliser ces actions avant tout changement de statut COD.
+              </p>
+            </div>
             <dl className="space-y-2 text-sm">
               <div>
                 <dt className="text-gray-500">Nom</dt>
@@ -199,24 +268,6 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
               <div>
                 <dt className="text-gray-500">Téléphone</dt>
                 <dd className="font-medium text-gray-900">{order.customerPhone}</dd>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  <a
-                    href={`tel:${normalizedPhone}`}
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 text-xs font-semibold text-gray-700 transition-colors hover:border-gray-400 hover:bg-white"
-                  >
-                    <Phone className="size-3.5" />
-                    Appeler
-                  </a>
-                  <a
-                    href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-green-200 bg-green-50 px-3 text-xs font-semibold text-green-700 transition-colors hover:bg-white"
-                  >
-                    <MessageCircle className="size-3.5" />
-                    WhatsApp
-                  </a>
-                </div>
               </div>
               <div>
                 <dt className="text-gray-500">Ville</dt>
@@ -239,6 +290,24 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
                 </div>
               )}
             </dl>
+            <div className="grid grid-cols-2 gap-2">
+              <a
+                href={`tel:${normalizedPhone}`}
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-gray-950 px-3 text-xs font-semibold text-white transition hover:bg-gray-800"
+              >
+                <Phone className="size-3.5" />
+                Appeler
+              </a>
+              <a
+                href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 text-xs font-semibold text-green-700 transition hover:bg-white"
+              >
+                <MessageCircle className="size-3.5" />
+                WhatsApp
+              </a>
+            </div>
           </div>
 
           {order.riskHints.length > 0 && (

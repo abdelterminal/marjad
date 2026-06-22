@@ -6,6 +6,7 @@ import { getOrderById } from '@/lib/queries/orders';
 import { formatMAD } from '@/lib/money';
 import { CheckCircle2, Package, MessageCircle, PhoneCall, Truck, Banknote } from 'lucide-react';
 import Image from 'next/image';
+import { getWhatsAppHref } from '@/lib/contact';
 
 interface ConfirmationPageProps {
   params: Promise<{ locale: string; orderId: string }>;
@@ -47,6 +48,7 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   }
 
   const total = parseFloat(order.total);
+  const whatsappHref = getWhatsAppHref();
   const nextSteps = [
     {
       icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
@@ -169,15 +171,17 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
       </div>
 
       {/* WhatsApp CTA */}
-      <a
-        href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '212000000000'}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
-      >
-        <MessageCircle className="w-4 h-4 text-[#25D366]" />
-        {isAr ? 'تواصل عبر واتساب' : 'Contacter sur WhatsApp'}
-      </a>
+      {whatsappHref && (
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
+        >
+          <MessageCircle className="w-4 h-4 text-[#25D366]" />
+          {isAr ? 'تواصل عبر واتساب' : 'Contacter sur WhatsApp'}
+        </a>
+      )}
 
       {/* Actions */}
       <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">

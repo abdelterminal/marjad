@@ -2,6 +2,38 @@
 
 ---
 
+### [FRONTEND/GROWTH] Checkout COD trust polish — Phase 5
+- Did: reinforced checkout trust around no payment now, phone confirmation before shipping, address quality, delivery timing, and COD confirmation expectations.
+- Wrote: `src/components/checkout/CheckoutForm.tsx`, `team/STATUS.md`.
+- Handoff: Next pass should be commit/push this batch or run a visual mobile/RTL QA pass when browser checks are acceptable.
+- Flags: No order API behavior changed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [FRONTEND] Admin order detail COD polish — Phase 5
+- Did: made the admin order detail page easier to scan for COD operations with a next-action card, total/address summary, stronger call/WhatsApp actions, and safer responsive status timeline.
+- Wrote: `src/app/admin/orders/[id]/page.tsx`, `team/STATUS.md`.
+- Handoff: Next pass should be checkout trust polish or a browser/mobile/RTL QA pass when visual checks are acceptable.
+- Flags: No backend behavior changed; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
+### [QA/FRONTEND] Launch QA sweep — Phase 5
+- Did: ran a code-based launch sweep for placeholders, support links, analytics wiring, and build health; fixed fake WhatsApp fallback links.
+- Wrote: `src/lib/contact.ts`, contact/footer/confirmation/widget updates, `team/reviews/QA-launch-sweep-2026-06-22.md`, `team/STATUS.md`.
+- Handoff: Next pass should be admin order detail polish or a browser/mobile/RTL QA pass when screenshots are acceptable.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass; remaining lint warnings are the existing script warnings.
+
+---
+
+### [GROWTH/FRONTEND] Marketing pixel scripts — Phase 5
+- Did: added optional Meta Pixel, TikTok Pixel, and Google tag loading behind public env vars, and forwarded existing ecommerce events to Google `gtag`.
+- Wrote: `src/components/analytics/MarketingPixels.tsx`, `src/app/[locale]/layout.tsx`, `src/lib/analytics.ts`, `.env.local.example`, `team/STATUS.md`.
+- Handoff: Next pass should be a focused launch QA sweep across mobile, RTL, cart, checkout, tracking, and admin flows.
+- Flags: Scripts load only when IDs are configured; `npx tsc --noEmit`, `npm run lint`, and `npm run build` pass.
+
+---
+
 ### [BACKEND/FRONTEND] Courier workflow presets — Phase 5
 - Did: added compact admin order presets for COD confirmation, ready-to-ship, in-transit follow-up, and delivered reconciliation.
 - Wrote: `src/app/admin/orders/page.tsx`, `src/app/api/admin/orders/export/route.ts`, `team/STATUS.md`.

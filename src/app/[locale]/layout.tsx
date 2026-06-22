@@ -11,6 +11,7 @@ import { AuthProvider } from '@/components/auth/AuthProvider';
 import { CartToastProvider } from '@/components/ui/cart-toast';
 import { WhatsAppWidget } from '@/components/layout/WhatsAppWidget';
 import { AnalyticsTracker } from '@/components/analytics/AnalyticsTracker';
+import { MarketingPixels } from '@/components/analytics/MarketingPixels';
 
 const playfairDisplay = Playfair_Display({
   subsets: ['latin'],
@@ -116,6 +117,7 @@ export default async function LocaleLayout({ children, params }: Props) {
             <CartProvider />
             <WhatsAppWidget />
             <AnalyticsTracker />
+            <MarketingPixels />
           </CartToastProvider>
         </AuthProvider>
       </NextIntlClientProvider>

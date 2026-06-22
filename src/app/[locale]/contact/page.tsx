@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { MessageCircle, Mail, MapPin } from 'lucide-react';
 import type { Metadata } from 'next';
 import { ContactForm } from '@/components/contact/ContactForm';
+import { getWhatsAppHref } from '@/lib/contact';
 
 export const metadata: Metadata = {
   title: 'Contact — MARJAD',
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   const t = await getTranslations();
-  const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? '212000000000';
+  const whatsappHref = getWhatsAppHref();
 
   return (
     <main className="overflow-x-clip">
@@ -43,45 +44,47 @@ export default async function ContactPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
             {/* WhatsApp — primary CTA */}
-            <a
-              href={`https://wa.me/${whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="
-                group relative flex flex-col gap-4 p-6
-                rounded-[var(--radius-xl)]
-                bg-[var(--color-brand-text)]
-                hover:bg-[#1F1F1F]
-                text-white
-                transition-colors duration-200
-                focus-visible:outline-none focus-visible:ring-2
-                focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-2
-              "
-            >
-              <div className="
-                w-10 h-10 rounded-full
-                bg-[#25D366]/20 text-[#25D366]
-                flex items-center justify-center
-              ">
-                <MessageCircle className="w-5 h-5" />
-              </div>
-              <div>
-                <h2 className="font-[var(--font-display)] text-lg font-semibold mb-1">
-                  {t('contact.whatsappTitle')}
-                </h2>
-                <p className="text-white/55 text-sm leading-snug">
-                  {t('contact.whatsappDesc')}
-                </p>
-              </div>
-              <span className="
-                mt-auto inline-flex items-center gap-1.5
-                text-sm font-semibold text-[var(--color-brand-secondary)]
-                group-hover:gap-2.5 transition-all duration-200
-              ">
-                {t('contact.whatsappCta')}
-                <span className="rtl:rotate-180">→</span>
-              </span>
-            </a>
+            {whatsappHref && (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  group relative flex flex-col gap-4 p-6
+                  rounded-[var(--radius-xl)]
+                  bg-[var(--color-brand-text)]
+                  hover:bg-[#1F1F1F]
+                  text-white
+                  transition-colors duration-200
+                  focus-visible:outline-none focus-visible:ring-2
+                  focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-2
+                "
+              >
+                <div className="
+                  w-10 h-10 rounded-full
+                  bg-[#25D366]/20 text-[#25D366]
+                  flex items-center justify-center
+                ">
+                  <MessageCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <h2 className="font-[var(--font-display)] text-lg font-semibold mb-1">
+                    {t('contact.whatsappTitle')}
+                  </h2>
+                  <p className="text-white/55 text-sm leading-snug">
+                    {t('contact.whatsappDesc')}
+                  </p>
+                </div>
+                <span className="
+                  mt-auto inline-flex items-center gap-1.5
+                  text-sm font-semibold text-[var(--color-brand-secondary)]
+                  group-hover:gap-2.5 transition-all duration-200
+                ">
+                  {t('contact.whatsappCta')}
+                  <span className="rtl:rotate-180">→</span>
+                </span>
+              </a>
+            )}
 
             {/* Email */}
             <a
