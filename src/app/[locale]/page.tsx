@@ -1,5 +1,6 @@
-/* Hallmark · macrostructure: Full-bleed hero + categories + selection + story + COD + bestsellers + testimonials + FAQ
+/* Hallmark · macrostructure: Immersive commerce hero + categories + selection + story + COD + bestsellers + testimonials + FAQ
  * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · golden #D4A853
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
  */
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
     description: isAr
       ? 'اكتشف قطع ديكور مغربية مختارة بعناية مع التوصيل داخل المغرب والدفع عند الاستلام.'
       : 'Découvrez tableaux, lampes, tables et objets décoratifs marocains avec livraison partout au Maroc et paiement à la livraison.',
-    image: '/images/hero-bg.png',
+    image: '/images/marjad-hero-lifestyle.png',
   });
 }
 
@@ -100,29 +101,42 @@ export default async function HomePage() {
     <main className="overflow-x-clip">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col overflow-hidden">
+      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-4.5rem)]">
 
-        {/* Background — bright Moroccan interior */}
+        {/* Background — generated MARJAD lifestyle interior */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/images/hero-bg.png')" }}
+          className="absolute inset-0 bg-cover"
+          style={{
+            backgroundImage: "url('/images/marjad-hero-lifestyle.png')",
+            backgroundPosition: isAr ? 'left center' : 'right center',
+          }}
         />
 
-        {/* Left-side reading overlay — keeps right image fully visible */}
-        <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(15,10,5,0.62)_0%,rgba(15,10,5,0.42)_38%,rgba(15,10,5,0.08)_62%,rgba(15,10,5,0)_100%)]" />
-        {/* Subtle bottom vignette */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/30 to-transparent" />
+        {/* Reading overlays keep the interior visible while protecting contrast */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: isAr
+              ? 'linear-gradient(270deg, rgba(16,10,5,0.76) 0%, rgba(16,10,5,0.58) 37%, rgba(16,10,5,0.2) 66%, rgba(16,10,5,0.04) 100%)'
+              : 'linear-gradient(90deg, rgba(16,10,5,0.76) 0%, rgba(16,10,5,0.58) 37%, rgba(16,10,5,0.2) 66%, rgba(16,10,5,0.04) 100%)',
+          }}
+        />
+        <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[var(--color-brand-text)]/42 to-transparent" />
 
         {/* Content */}
         <div className="relative z-10 flex flex-1 items-center">
-          <div className="w-full max-w-[var(--container-content)] mx-auto px-6 sm:px-8 lg:px-14 py-16 lg:py-24">
-            <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[1fr_580px] lg:gap-10">
+          <div className="mx-auto w-full max-w-[var(--container-content)] px-5 py-12 sm:px-8 lg:px-14 lg:py-16">
+            <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(360px,520px)] lg:gap-14">
 
               {/* ── Left: headline + CTAs + trust items ── */}
-              <div className="max-w-[600px]">
+              <div className="max-w-[680px]">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/22 bg-white/8 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/76 backdrop-blur-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-brand-secondary)]" />
+                  {isAr ? 'اختيار حرفي · الدفع عند الاستلام' : 'Sélection artisanale · COD Maroc'}
+                </div>
 
                 {/* Headline — large serif, white */}
-                <h1 className="font-[var(--font-display)] font-bold text-white leading-[1.08] tracking-tight text-[clamp(2.4rem,6.5vw,6rem)] overflow-wrap-anywhere min-w-0">
+                <h1 className="max-w-[780px] font-[var(--font-display)] text-[clamp(2.65rem,7.4vw,7rem)] font-bold leading-[0.98] text-white overflow-wrap-anywhere min-w-0">
                   {t('home.hero.titleLine1')}
                   <br />
                   {t('home.hero.titleLine2')}
@@ -135,7 +149,7 @@ export default async function HomePage() {
                 </div>
 
                 {/* Subtitle */}
-                <p className="mt-5 text-white/75 text-base sm:text-lg leading-relaxed max-w-[480px]">
+                <p className="mt-5 max-w-[520px] text-base leading-relaxed text-white/78 sm:text-lg">
                   {t('home.hero.subtitle')}
                 </p>
 
@@ -144,10 +158,11 @@ export default async function HomePage() {
                   <Link
                     href="/products"
                     className="
-                      inline-flex items-center gap-2.5 h-13 px-7
+                      inline-flex h-13 items-center gap-2.5 px-7
                       rounded-[var(--radius-btn)]
                       bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)]
                       text-white font-semibold text-sm
+                      shadow-[0_16px_36px_rgba(0,0,0,0.22)]
                       transition-colors duration-200
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white
                     "
@@ -158,9 +173,9 @@ export default async function HomePage() {
                   <Link
                     href="/products?sort=newest"
                     className="
-                      inline-flex items-center gap-2 h-13 px-7
+                      inline-flex h-13 items-center gap-2 px-7
                       rounded-[var(--radius-btn)]
-                      border border-white/40 hover:bg-white/10
+                      border border-white/38 hover:bg-white/10
                       text-white font-medium text-sm
                       backdrop-blur-sm transition-colors duration-200
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white
@@ -170,40 +185,54 @@ export default async function HomePage() {
                   </Link>
                 </div>
 
-                {/* Trust items — 3 items inline with dividers */}
-                <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3">
+                {/* Trust items — quiet, direct COD reassurance */}
+                <div className="mt-9 grid max-w-[560px] grid-cols-1 gap-2.5 sm:grid-cols-3">
                   {[
                     { icon: PackageCheck, label: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison' },
                     { icon: MessageCircle, label: isAr ? 'تأكيد واتساب' : 'Confirmation WhatsApp' },
                     { icon: Truck, label: isAr ? 'توصيل المغرب' : 'Livraison Maroc' },
-                  ].map((item, i) => {
+                  ].map((item) => {
                     const Icon = item.icon;
                     return (
-                      <div key={item.label} className="flex items-center gap-2.5">
-                        {i > 0 && <span className="hidden sm:block text-white/20 select-none">|</span>}
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/30">
+                      <div key={item.label} className="flex min-h-12 items-center gap-2.5 border border-white/16 bg-white/7 px-3 py-2 backdrop-blur-sm">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/24">
                           <Icon className="h-3.5 w-3.5 text-white/80" />
                         </div>
-                        <span className="text-xs text-white/80 font-medium">{item.label}</span>
+                        <span className="text-xs font-medium leading-snug text-white/80">{item.label}</span>
                       </div>
                     );
                   })}
                 </div>
+
+                <div className="mt-8 flex items-center gap-3 lg:hidden">
+                  <div
+                    className="h-20 w-20 shrink-0 rounded-[var(--radius-md)] border border-white/24 bg-cover bg-center shadow-[0_12px_28px_rgba(0,0,0,0.22)]"
+                    style={{ backgroundImage: "url('/images/marjad-hero-product.png')" }}
+                  />
+                  <div className="border-s border-white/22 ps-4 text-white/78">
+                    <p className="font-[var(--font-display)] text-base font-semibold text-white">
+                      {isAr ? 'قطعة مميزة' : 'Pièce à la une'}
+                    </p>
+                    <p className="mt-1 max-w-[220px] text-xs leading-relaxed">
+                      {isAr ? 'لمسة حرفية دافئة للبيت.' : 'Une touche artisanale chaude pour la maison.'}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* ── Right: layered product cards ── */}
-              <div className="hidden lg:flex lg:items-center lg:justify-end lg:pb-8">
-                <div className="relative w-[520px]">
+              <div className="hidden lg:flex lg:items-center lg:justify-end">
+                <div className="relative w-[500px]">
 
                   {/* Main card — brass lamp */}
                   <Link
                     href={displayProducts[0] ? `/products/${displayProducts[0].slug}` : '/products'}
-                    className="relative z-10 block rounded-2xl bg-white shadow-[0_20px_60px_rgba(0,0,0,0.24)] overflow-hidden transition-shadow duration-300 hover:shadow-[0_28px_80px_rgba(0,0,0,0.30)]"
+                    className="group relative z-10 block overflow-hidden rounded-[var(--radius-lg)] border border-white/55 bg-[var(--color-brand-surface-elevated)] shadow-[0_24px_70px_rgba(0,0,0,0.28)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     {/* Product image */}
-                    <div className="relative aspect-[4/3] overflow-hidden bg-[#F5EFE6]">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-brand-surface-alt)]">
                       <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-[1.03]"
+                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.035]"
                         style={{ backgroundImage: "url('/images/marjad-hero-product.png')" }}
                       />
                       {/* À la une badge */}
@@ -211,18 +240,14 @@ export default async function HomePage() {
                         {isAr ? 'مميز' : 'À la une'}
                       </span>
                       {/* Heart */}
-                      <button
-                        type="button"
-                        aria-label="Wishlist"
-                        className="absolute top-3 end-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm hover:bg-white transition-colors"
-                      >
+                      <span className="absolute top-3 end-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 backdrop-blur-sm">
                         <Heart className="h-4 w-4 text-[var(--color-brand-text-muted)]" />
-                      </button>
+                      </span>
                     </div>
 
                     {/* Info row */}
-                    <div className="p-4">
-                      <p className="font-[var(--font-display)] text-base font-semibold text-[var(--color-brand-text)] line-clamp-1">
+                    <div className="p-5">
+                      <p className="font-[var(--font-display)] text-lg font-semibold leading-tight text-[var(--color-brand-text)] line-clamp-1">
                         {displayProducts[0]
                           ? (isAr ? displayProducts[0].nameAr : displayProducts[0].nameFr)
                           : (isAr ? 'مصباح نحاس ذهبي' : 'Lampe laiton doré')}
@@ -230,12 +255,15 @@ export default async function HomePage() {
                       <p className="mt-0.5 text-xs text-[var(--color-brand-text-muted)]">
                         {isAr ? 'صنع يدوي' : 'Fait main'}
                       </p>
-                      <div className="mt-3 flex items-center justify-between">
+                      <div className="mt-4 flex items-center justify-between">
                         <span className="font-[var(--font-display)] text-base font-bold text-[var(--color-brand-primary)]">
                           {displayProducts[0] ? `${displayProducts[0].price} MAD` : '1 690 MAD'}
                         </span>
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-secondary)]">
-                          <Plus className="h-4 w-4 text-white" />
+                        <div className="inline-flex items-center gap-2 text-xs font-semibold text-[var(--color-brand-text)]">
+                          {isAr ? 'عرض القطعة' : 'Voir la pièce'}
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-secondary)]">
+                            <Plus className="h-4 w-4 text-white" />
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -244,10 +272,10 @@ export default async function HomePage() {
                   {/* Secondary detail card — zellige & brass tray, overlapping bottom-start */}
                   <Link
                     href="/products"
-                    className="absolute -bottom-12 -start-28 z-20 block w-72 overflow-hidden rounded-xl border-[3px] border-white shadow-[0_8px_32px_rgba(0,0,0,0.20)] transition-transform duration-300 hover:scale-[1.03]"
+                    className="absolute -bottom-10 -start-20 z-20 block w-64 overflow-hidden rounded-[var(--radius-md)] border-[3px] border-white bg-white shadow-[0_14px_34px_rgba(0,0,0,0.22)] transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
                   >
                     <div
-                      className="aspect-square bg-cover bg-center"
+                      className="aspect-[4/3] bg-cover bg-center"
                       style={{ backgroundImage: "url('/images/marjad-hero-detail.png')" }}
                     />
                     <div className="bg-white px-3 py-2">
@@ -260,10 +288,26 @@ export default async function HomePage() {
                     </div>
                   </Link>
 
+                  <div className="absolute -end-8 top-8 z-0 w-44 border border-white/18 bg-[var(--color-brand-text)]/38 p-4 text-white/78 backdrop-blur-md">
+                    <p className="font-[var(--font-display)] text-xl leading-none text-white">MARJAD</p>
+                    <p className="mt-2 text-[11px] leading-relaxed">
+                      {isAr ? 'تأكيد قبل الإرسال · دفع عند الاستلام' : 'Confirmation avant envoi · paiement à la livraison'}
+                    </p>
+                  </div>
+
                 </div>
               </div>
 
             </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 border-t border-white/12 bg-[var(--color-brand-text)]/22 backdrop-blur-sm">
+          <div className="mx-auto flex max-w-[var(--container-content)] items-center justify-between gap-4 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.16em] text-white/62 sm:px-8 lg:px-14">
+            <span>{isAr ? 'زليج' : 'Zellige'}</span>
+            <span>{isAr ? 'نحاس' : 'Laiton'}</span>
+            <span>{isAr ? 'خشب منحوت' : 'Bois sculpté'}</span>
+            <span className="hidden sm:inline">{isAr ? 'سيراميك' : 'Céramique'}</span>
           </div>
         </div>
       </section>
