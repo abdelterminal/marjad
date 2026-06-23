@@ -1,12 +1,15 @@
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
 import Link from 'next/link';
-import { getWhatsAppHref } from '@/lib/contact';
+import { MessageCircle, Phone } from 'lucide-react';
+import { getWhatsAppHref, getSupportPhoneHref, getPublicSupportPhoneNumber } from '@/lib/contact';
 
 export async function Footer() {
   const t = await getTranslations();
   const locale = await getLocale();
   const whatsappHref = getWhatsAppHref();
+  const phoneHref = getSupportPhoneHref();
+  const phoneDisplay = getPublicSupportPhoneNumber();
 
   return (
     <footer className="mt-auto bg-[var(--color-brand-text)] text-white">
@@ -87,48 +90,54 @@ export async function Footer() {
             </ul>
           </div>
 
-          {/* Newsletter column */}
+          {/* Contact column */}
           <div className="md:col-span-3 space-y-4">
             <h3 className="text-xs font-semibold text-white/40 uppercase tracking-[0.14em]">
-              {t('footer.newsletter')}
+              {locale === 'ar' ? 'تواصل معنا' : 'Nous contacter'}
             </h3>
             <p className="text-sm text-white/60 leading-snug">
-              {t('footer.newsletterDesc')}
+              {locale === 'ar'
+                ? 'أسئلة؟ سواء قبل الطلب أو بعده — فريقنا متاح عبر واتساب.'
+                : 'Des questions ? Avant ou après commande — notre équipe répond sur WhatsApp.'}
             </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                placeholder={t('footer.emailPlaceholder')}
-                aria-label={t('footer.emailPlaceholder')}
-                className="
-                  flex-1 h-10 px-3
-                  text-sm text-white
-                  bg-white/10 border border-white/20
-                  rounded-[var(--radius-input)]
-                  placeholder:text-white/35
-                  focus:outline-none focus:ring-2 focus:ring-[var(--color-brand-secondary)]/50
-                  focus:border-[var(--color-brand-secondary)]/60
-                  hover:border-white/35
-                  transition-colors duration-150
-                "
-              />
-              <button
-                type="button"
-                className="
-                  h-10 px-4 flex-shrink-0
-                  rounded-[var(--radius-btn)]
-                  bg-white text-[var(--color-brand-text)]
-                  hover:bg-[var(--color-brand-secondary)]
-                  text-sm font-semibold
-                  transition-colors duration-150
-                  focus-visible:outline-none focus-visible:ring-2
-                  focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-1
-                  focus-visible:ring-offset-[var(--color-brand-text)]
-                "
-              >
-                {t('footer.subscribe')}
-              </button>
+            <div className="flex flex-col gap-2.5">
+              {whatsappHref && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="
+                    inline-flex items-center gap-2.5
+                    h-11 px-5
+                    rounded-[var(--radius-btn)]
+                    bg-[var(--color-brand-secondary)] hover:bg-[var(--color-brand-secondary-hover)]
+                    text-[var(--color-brand-text)] text-sm font-semibold
+                    transition-colors duration-150
+                    focus-visible:outline-none focus-visible:ring-2
+                    focus-visible:ring-[var(--color-brand-secondary)] focus-visible:ring-offset-1
+                    focus-visible:ring-offset-[var(--color-brand-text)]
+                  "
+                >
+                  <MessageCircle className="h-4 w-4" aria-hidden="true" />
+                  {locale === 'ar' ? 'راسلنا على واتساب' : 'Écrire sur WhatsApp'}
+                </a>
+              )}
+              {phoneHref && phoneDisplay && (
+                <a
+                  href={phoneHref}
+                  className="inline-flex items-center gap-2 rounded-sm text-sm text-white/65 transition-colors duration-150 hover:text-[var(--color-brand-secondary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-brand-secondary)]"
+                >
+                  <Phone className="h-4 w-4 shrink-0" aria-hidden="true" />
+                  {phoneDisplay}
+                </a>
+              )}
             </div>
+            <Link
+              href={`/${locale}/contact`}
+              className="block rounded-sm text-xs text-white/35 transition-colors duration-150 hover:text-[var(--color-brand-secondary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-brand-secondary)]"
+            >
+              {locale === 'ar' ? 'أو عبر نموذج التواصل ←' : 'Ou via le formulaire de contact →'}
+            </Link>
           </div>
 
         </div>
@@ -140,14 +149,25 @@ export async function Footer() {
           <p className="text-xs text-white/30">
             {t('footer.copyright')}
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end">
+            {phoneHref && phoneDisplay && (
+              <>
+                <a
+                  href={phoneHref}
+                  className="rounded-sm text-xs text-white/35 transition-colors duration-150 hover:text-[var(--color-brand-secondary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-brand-secondary)]"
+                >
+                  {phoneDisplay}
+                </a>
+                <span className="text-white/15">·</span>
+              </>
+            )}
             {whatsappHref && (
               <>
                 <a
                   href={whatsappHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
+                  className="rounded-sm text-xs text-white/35 transition-colors duration-150 hover:text-[var(--color-brand-secondary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-brand-secondary)]"
                   aria-label="WhatsApp"
                 >
                   WhatsApp
@@ -157,7 +177,7 @@ export async function Footer() {
             )}
             <Link
               href={`/${locale}/livraison-retours`}
-              className="text-xs text-white/35 hover:text-[var(--color-brand-secondary)] transition-colors duration-150"
+              className="rounded-sm text-xs text-white/35 transition-colors duration-150 hover:text-[var(--color-brand-secondary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--color-brand-secondary)]"
             >
               {t('footer.supportDelivery')}
             </Link>
