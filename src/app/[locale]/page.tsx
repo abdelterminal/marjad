@@ -84,10 +84,10 @@ export default async function HomePage() {
   ];
 
   const stats = [
-    { value: '+20 000', label: isAr ? 'عميل راضٍ' : 'Clients satisfaits' },
-    { value: '4.8/5', label: isAr ? 'متوسط التقييم' : 'Note moyenne' },
-    { value: '7j/7', label: isAr ? 'خدمة عملاء' : 'Service client' },
-    { value: '100%', label: isAr ? 'دفع آمن عند الاستلام' : 'Paiement sécurisé à la livraison' },
+    { value: 'COD', label: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison' },
+    { value: isAr ? 'اتصال' : 'Appel', label: isAr ? 'تأكيد قبل الإرسال' : 'Confirmation avant envoi' },
+    { value: isAr ? 'المغرب' : 'Maroc', label: isAr ? 'توصيل داخل المغرب' : 'Livraison partout au Maroc' },
+    { value: isAr ? 'اختيار' : 'Sélection', label: isAr ? 'قطع مختارة بعناية' : 'Pièces choisies avec soin' },
   ];
 
   const storyBullets = [

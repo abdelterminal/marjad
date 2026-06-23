@@ -27,7 +27,8 @@ interface Props {
 
 export function MobileMenu({ categories = [], locale: localeProp }: Props) {
   const t = useTranslations();
-  const locale = useLocale();
+  const currentLocale = useLocale();
+  const locale = localeProp ?? currentLocale;
   const pathname = usePathname();
   const { data: session } = useSession();
   const { openAuthModal } = useAuthModal();

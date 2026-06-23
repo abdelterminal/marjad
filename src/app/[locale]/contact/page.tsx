@@ -12,13 +12,14 @@ import {
   Truck, RotateCcw, ChevronDown, ArrowRight,
 } from 'lucide-react';
 import { ContactForm } from '@/components/contact/ContactForm';
-import { getWhatsAppHref } from '@/lib/contact';
+import { getSupportPhoneHref, getWhatsAppHref } from '@/lib/contact';
 
 export default async function ContactPage() {
   const t = await getTranslations('contact');
   const locale = await getLocale();
   const isAr = locale === 'ar';
   const whatsappHref = getWhatsAppHref();
+  const phoneHref = getSupportPhoneHref();
   const df = isAr ? 'var(--font-display-ar)' : 'var(--font-display)';
 
   const subjects = [
@@ -35,21 +36,23 @@ export default async function ContactPage() {
   ];
 
   const channels = [
-    {
-      icon: MessageCircle,
-      color: '#1B4820',
-      title: t('channelWaTitle'),
-      desc:  t('channelWaDesc'),
-      link:  whatsappHref ?? '#',
-      linkLabel: t('channelWaLink'),
-      external: true,
-    },
+    ...(whatsappHref
+      ? [{
+          icon: MessageCircle,
+          color: '#1B4820',
+          title: t('channelWaTitle'),
+          desc:  t('channelWaDesc'),
+          link:  whatsappHref,
+          linkLabel: t('channelWaLink'),
+          external: true,
+        }]
+      : []),
     {
       icon: Package,
       color: 'var(--color-brand-primary)',
       title: t('channelTrackTitle'),
       desc:  t('channelTrackDesc'),
-      link:  `/${locale}/orders`,
+      link:  '/suivi-commande',
       linkLabel: t('channelTrackLink'),
       external: false,
     },
@@ -58,7 +61,7 @@ export default async function ContactPage() {
       color: 'var(--color-brand-text)',
       title: t('channelShipTitle'),
       desc:  t('channelShipDesc'),
-      link:  `/${locale}/shipping`,
+      link:  '/livraison-retours',
       linkLabel: t('channelShipLink'),
       external: false,
     },
@@ -67,7 +70,7 @@ export default async function ContactPage() {
       color: 'var(--color-brand-primary)',
       title: t('channelReturnTitle'),
       desc:  t('channelReturnDesc'),
-      link:  `/${locale}/returns`,
+      link:  '/livraison-retours',
       linkLabel: t('channelReturnLink'),
       external: false,
     },
@@ -128,33 +131,37 @@ export default async function ContactPage() {
               </p>
 
               {/* WhatsApp CTA */}
-              <a
-                href={whatsappHref ?? 'https://wa.me/'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mb-3 flex w-fit items-center gap-3 rounded-lg px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                style={{ background: '#1B4820' }}
-              >
-                <MessageCircle className="h-[18px] w-[18px]" strokeWidth={1.8} />
-                {t('whatsappBtn')}
-              </a>
+              {whatsappHref && (
+                <a
+                  href={whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mb-3 flex w-fit items-center gap-3 rounded-lg px-5 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{ background: '#1B4820' }}
+                >
+                  <MessageCircle className="h-[18px] w-[18px]" strokeWidth={1.8} />
+                  {t('whatsappBtn')}
+                </a>
+              )}
 
               {/* Call CTA */}
-              <a
-                href="tel:+212000000000"
-                className="mb-5 flex w-fit items-center gap-3 rounded-lg border px-5 py-3 text-sm font-semibold transition-all hover:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-                style={{
-                  borderColor: 'var(--color-brand-border)',
-                  color: 'var(--color-brand-text)',
-                }}
-              >
-                <Phone className="h-[18px] w-[18px]" strokeWidth={1.6} />
-                {t('callBtn')}
-              </a>
+              {phoneHref && (
+                <a
+                  href={phoneHref}
+                  className="mb-5 flex w-fit items-center gap-3 rounded-lg border px-5 py-3 text-sm font-semibold transition-all hover:bg-white/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{
+                    borderColor: 'var(--color-brand-border)',
+                    color: 'var(--color-brand-text)',
+                  }}
+                >
+                  <Phone className="h-[18px] w-[18px]" strokeWidth={1.6} />
+                  {t('callBtn')}
+                </a>
+              )}
 
               {/* Track order link */}
               <Link
-                href="/orders"
+                href="/suivi-commande"
                 className="group inline-flex items-center gap-2 text-sm font-medium transition-all hover:gap-3"
                 style={{ color: 'var(--color-brand-text-muted)' }}
               >
@@ -175,6 +182,7 @@ export default async function ContactPage() {
           style={{ background: 'var(--color-brand-surface)' }}
         >
           <div
+            id="contact-form"
             className="w-full max-w-[420px] rounded-2xl p-6 shadow-md lg:p-7"
             style={{
               background: 'var(--color-brand-surface-elevated)',
@@ -271,14 +279,14 @@ export default async function ContactPage() {
                     <ArrowRight className="h-3.5 w-3.5" style={isAr ? { transform: 'rotate(180deg)' } : undefined} />
                   </a>
                 ) : (
-                  <a
+                  <Link
                     href={link}
                     className="group inline-flex items-center gap-1.5 text-[13px] font-semibold transition-all hover:gap-2.5"
                     style={{ color: 'var(--color-brand-primary)' }}
                   >
                     {linkLabel}
                     <ArrowRight className="h-3.5 w-3.5" style={isAr ? { transform: 'rotate(180deg)' } : undefined} />
-                  </a>
+                  </Link>
                 )}
               </div>
             ))}

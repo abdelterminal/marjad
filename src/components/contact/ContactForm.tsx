@@ -16,7 +16,7 @@ interface ContactFormProps {
 }
 
 const inputBase =
-  'w-full rounded-lg border border-gray-200 bg-white py-2.5 pe-10 ps-3.5 text-sm text-gray-900 placeholder:text-gray-400 transition-all hover:border-gray-300 focus:border-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-900/8';
+  'form-input pe-10 ps-3.5';
 
 export function ContactForm({
   title,
@@ -66,50 +66,50 @@ export function ContactForm({
 
       <form onSubmit={handleSubmit} className="space-y-3.5">
         {/* Nom */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold" style={{ color: 'var(--color-brand-text)' }}>
+        <div className="form-field">
+          <label className="form-label">
             {nameLabel}
           </label>
           <div className="relative">
             <input name="name" type="text" autoComplete="name" required className={inputBase} />
             <User
-              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-brand-text-subtle)]"
               strokeWidth={1.5}
             />
           </div>
         </div>
 
         {/* Téléphone */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold" style={{ color: 'var(--color-brand-text)' }}>
+        <div className="form-field">
+          <label className="form-label">
             {phoneLabel}
           </label>
           <div className="relative">
-            <input name="phone" type="tel" autoComplete="tel" className={inputBase} />
+            <input name="phone" type="tel" autoComplete="tel" dir="ltr" className={inputBase} />
             <Phone
-              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-brand-text-subtle)]"
               strokeWidth={1.5}
             />
           </div>
         </div>
 
         {/* Email */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold" style={{ color: 'var(--color-brand-text)' }}>
+        <div className="form-field">
+          <label className="form-label">
             {emailLabel}
           </label>
           <div className="relative">
-            <input name="email" type="email" autoComplete="email" required className={inputBase} />
+            <input name="email" type="email" autoComplete="email" required dir="ltr" className={inputBase} />
             <Mail
-              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-brand-text-subtle)]"
               strokeWidth={1.5}
             />
           </div>
         </div>
 
         {/* Sujet */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold" style={{ color: 'var(--color-brand-text)' }}>
+        <div className="form-field">
+          <label className="form-label">
             {subjectLabel}
           </label>
           <div className="relative">
@@ -127,22 +127,22 @@ export function ContactForm({
               ))}
             </select>
             <ChevronDown
-              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-brand-text-subtle)]"
               strokeWidth={1.5}
             />
           </div>
         </div>
 
         {/* Message */}
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-semibold" style={{ color: 'var(--color-brand-text)' }}>
+        <div className="form-field">
+          <label className="form-label">
             {messageLabel}
           </label>
           <textarea
             name="message"
             rows={4}
             required
-            className={`${inputBase} pe-3.5 min-h-[100px] resize-y`}
+            className="form-textarea min-h-[100px] resize-y"
           />
         </div>
 
@@ -150,11 +150,7 @@ export function ContactForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2.5 rounded-lg py-3.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
-          style={{
-            background: 'var(--color-brand-primary)',
-            '--tw-ring-color': 'var(--color-brand-primary)',
-          } as React.CSSProperties}
+          className="form-submit w-full py-3.5"
         >
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />

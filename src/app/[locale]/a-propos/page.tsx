@@ -106,7 +106,7 @@ export default async function AProposPage() {
             </p>
 
             <Link
-              href="/journal"
+              href="/products"
               className="group mt-8 inline-flex items-center gap-2 text-sm font-semibold transition-all duration-150 hover:gap-3"
               style={{ color: 'var(--color-brand-primary)' }}
             >
