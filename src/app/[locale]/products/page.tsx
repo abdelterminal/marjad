@@ -9,6 +9,11 @@ import { Pagination } from '@/components/product/Pagination';
 import { Headphones, PackageCheck, SearchX, ShieldCheck, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 
+/* Hallmark · macrostructure: Curated catalogue · genre: luxury ecommerce · tone: quiet Moroccan
+ * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
+ */
+
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
@@ -109,8 +114,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const trustItems = [
     {
       icon: <Truck className="h-4 w-4" aria-hidden="true" />,
-      title: isAr ? 'توصيل داخل المغرب' : 'Livraison partout au Maroc',
-      body: isAr ? '3 إلى 5 أيام عمل، مع تغليف محكم.' : '3 à 5 jours ouvrables, emballage soigné.',
+      title: isAr ? 'توصيل داخل المغرب' : 'Livraison au Maroc',
+      body: isAr ? '3 إلى 5 أيام عمل بعد التأكيد.' : '3 à 5 jours ouvrables après confirmation.',
     },
     {
       icon: <PackageCheck className="h-4 w-4" aria-hidden="true" />,
@@ -119,8 +124,8 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
     },
     {
       icon: <ShieldCheck className="h-4 w-4" aria-hidden="true" />,
-      title: isAr ? 'اختيار مضمون' : 'Sélection vérifiée',
-      body: isAr ? 'قطع مختارة بعناية للديكور الداخلي.' : "Des pièces choisies pour l'intérieur.",
+      title: isAr ? 'اختيار بعناية' : 'Sélection soignée',
+      body: isAr ? 'قطع مختارة للديكور الداخلي.' : "Des pièces choisies pour l'intérieur.",
     },
     {
       icon: <Headphones className="h-4 w-4" aria-hidden="true" />,
@@ -148,11 +153,11 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <div className="grid grid-cols-1 divide-y divide-[var(--color-brand-border)] border-y border-[var(--color-brand-border)] sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-2">
               {trustItems.map((item) => (
                 <div
                   key={item.title}
-                  className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface)] p-3 shadow-[var(--shadow-xs)]"
+                  className="p-3"
                 >
                   <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
                     {item.icon}

@@ -7,6 +7,11 @@ import { Link } from '@/i18n/navigation';
 import { formatMAD } from '@/lib/money';
 import { AddToCartButton } from './AddToCartButton';
 
+/* Hallmark · component: product card · genre: luxury ecommerce · theme: custom/MARJAD
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * contrast: pass
+ */
+
 type ProductCardProduct = {
   id: number;
   slug: string;
@@ -87,12 +92,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
             )}
           </>
         ) : (
-          <div
-            className="absolute inset-0 flex items-end p-4"
-            style={{
-              background: 'linear-gradient(135deg, #F0EBE1 0%, #C4622D 100%)',
-            }}
-          >
+          <div className="absolute inset-0 flex items-end bg-[linear-gradient(135deg,var(--color-brand-surface-alt)_0%,var(--color-brand-primary)_100%)] p-4">
             <span className="font-[var(--font-display)] text-4xl font-bold text-white/40 leading-none select-none">
               {name.charAt(0)}
             </span>
