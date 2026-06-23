@@ -37,7 +37,15 @@ export function AddToCartButton({
   const [state, setState] = useState<'idle' | 'adding' | 'added'>('idle');
 
   const label = locale === 'ar' ? 'أضف إلى السلة' : 'Ajouter au panier';
-  const addedLabel = locale === 'ar' ? 'أُضيف ✓' : 'Ajouté ✓';
+  const addingLabel = locale === 'ar' ? 'جارٍ الإضافة' : 'Ajout en cours';
+  const addedLabel = locale === 'ar' ? 'أُضيف' : 'Ajouté';
+  const buttonLabel = state === 'adding' ? addingLabel : state === 'added' ? addedLabel : label;
+  const accessibleLabel =
+    state === 'idle'
+      ? locale === 'ar'
+        ? `أضف ${product.nameAr} إلى السلة`
+        : `Ajouter ${product.nameFr} au panier`
+      : `${buttonLabel}: ${locale === 'ar' ? product.nameAr : product.nameFr}`;
 
   const sizeClasses = {
     sm: 'h-9 px-3 text-xs',
@@ -84,13 +92,11 @@ export function AddToCartButton({
 
   return (
     <button
+      type="button"
       onClick={handleAdd}
-      disabled={state === 'adding'}
-      aria-label={
-        locale === 'ar'
-          ? `أضف ${product.nameAr} إلى السلة`
-          : `Ajouter ${product.nameFr} au panier`
-      }
+      disabled={state !== 'idle'}
+      aria-busy={state === 'adding'}
+      aria-label={accessibleLabel}
       className={[
         'inline-flex items-center justify-center gap-2',
         'rounded-[var(--radius-btn)]',
@@ -100,7 +106,7 @@ export function AddToCartButton({
         'focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2',
         'disabled:opacity-70 disabled:cursor-not-allowed',
         state === 'added'
-          ? 'bg-[var(--color-brand-success)] hover:bg-[var(--color-brand-success)] text-white'
+          ? 'bg-[var(--color-brand-success)] hover:bg-[var(--color-brand-success)] text-white disabled:opacity-100'
           : 'bg-[var(--color-brand-text)] hover:bg-[var(--color-brand-primary)] text-white shadow-[var(--shadow-xs)]',
         sizeClasses,
         fullWidth ? 'w-full' : '',
@@ -116,7 +122,7 @@ export function AddToCartButton({
       ) : (
         <ShoppingBag className="w-4 h-4" />
       )}
-      {state === 'added' ? addedLabel : label}
+      <span aria-live="polite">{buttonLabel}</span>
     </button>
   );
 }

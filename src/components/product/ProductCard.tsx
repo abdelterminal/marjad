@@ -47,6 +47,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
   const compareAtPrice = product.compareAtPrice ? parseFloat(product.compareAtPrice) : null;
   const hasDiscount = compareAtPrice !== null && compareAtPrice > price;
   const isOutOfStock = product.stock <= 0;
+  const isLowStock = !isOutOfStock && product.stock <= 5;
   const discountPercent = hasDiscount
     ? Math.round(((compareAtPrice! - price) / compareAtPrice!) * 100)
     : 0;
@@ -57,6 +58,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
     <article className="
       group relative flex flex-col interactive-lift
       bg-[var(--color-brand-surface-elevated)]
+      shadow-[var(--shadow-card)]
       rounded-[var(--radius-md)]
       overflow-hidden
     ">
@@ -100,29 +102,6 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         )}
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/25 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-        {/* Wishlist */}
-        <button
-          type="button"
-          onClick={(e) => { e.preventDefault(); setWishlisted((w) => !w); }}
-          aria-label={isAr ? 'أضف إلى المفضلة' : 'Ajouter aux favoris'}
-          className="
-            absolute top-2.5 end-2.5 z-10
-            flex items-center justify-center
-            w-8 h-8 rounded-full
-            bg-white/80 backdrop-blur-sm
-            opacity-0 group-hover:opacity-100
-            translate-y-1 group-hover:translate-y-0
-            transition-all duration-300
-            hover:bg-white
-            focus-visible:outline-none focus-visible:ring-2
-            focus-visible:ring-[var(--color-brand-primary)]
-          "
-        >
-          <Heart
-            className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-[var(--color-brand-primary)] text-[var(--color-brand-primary)]' : 'text-[var(--color-brand-text-muted)]'}`}
-          />
-        </button>
-
         {categoryName && (
           <span className="
             absolute top-2.5 start-2.5
@@ -147,6 +126,18 @@ export function ProductCard({ product, locale }: ProductCardProps) {
           </span>
         )}
 
+        {isLowStock && (
+          <span className="
+            absolute bottom-2.5 start-2.5 z-10
+            px-2 py-1
+            rounded-[var(--radius-full)]
+            bg-[var(--color-brand-warning-light)]
+            text-[var(--color-brand-warning)] text-[10px] font-semibold
+          ">
+            {isAr ? `${product.stock} قطع فقط` : `Plus que ${product.stock}`}
+          </span>
+        )}
+
         {isOutOfStock && (
           <div className="absolute inset-0 bg-white/65 backdrop-blur-[1px] flex items-center justify-center">
             <span className="
@@ -161,6 +152,32 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         )}
       </Link>
 
+      {/* Wishlist */}
+      <button
+        type="button"
+        onClick={() => setWishlisted((w) => !w)}
+        aria-pressed={wishlisted}
+        aria-label={wishlisted
+          ? (isAr ? 'إزالة من المفضلة' : 'Retirer des favoris')
+          : (isAr ? 'أضف إلى المفضلة' : 'Ajouter aux favoris')
+        }
+        className="
+          absolute top-2.5 end-2.5 z-20
+          flex items-center justify-center
+          w-8 h-8 rounded-full
+          bg-white/85 backdrop-blur-sm
+          opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:focus-visible:opacity-100
+          transition-colors duration-200
+          hover:bg-white
+          focus-visible:outline-none focus-visible:ring-2
+          focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2
+        "
+      >
+        <Heart
+          className={`w-4 h-4 transition-colors ${wishlisted ? 'fill-[var(--color-brand-primary)] text-[var(--color-brand-primary)]' : 'text-[var(--color-brand-text-muted)]'}`}
+        />
+      </button>
+
       <div className="flex flex-col flex-1 p-3 sm:p-4 gap-2.5 sm:gap-3">
         <Link
           href={`/products/${product.slug}`}
@@ -169,7 +186,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
           aria-hidden="true"
         >
           <h3 className="
-            text-[13px] sm:text-sm font-medium
+            text-[14px] sm:text-sm font-medium
             text-[var(--color-brand-text)]
             line-clamp-2 leading-snug sm:min-h-[2.5rem]
           ">
@@ -180,7 +197,7 @@ export function ProductCard({ product, locale }: ProductCardProps) {
         <div className="mt-auto space-y-2">
           <div className="flex items-end justify-between gap-3">
             <div className="flex flex-wrap items-baseline gap-2">
-              <span className="price-display text-base sm:text-lg font-bold text-[var(--color-brand-text)]">
+              <span className="price-display text-base sm:text-lg font-bold text-[var(--color-brand-primary)]">
                 {formatMAD(price)}
               </span>
               {hasDiscount && (

@@ -38,16 +38,18 @@ export function StickyMobileCTA({ product, formattedPrice, isOutOfStock }: Props
     },
     {
       icon: <Truck className="h-4 w-4" />,
-      label: isAr ? 'توصيل بالمغرب' : 'Livraison partout au Maroc',
+      label: isAr ? 'توصيل داخل المغرب' : 'Livraison au Maroc',
     },
   ];
 
   return (
-    <div className="
-      fixed bottom-0 inset-x-0 z-40
+    <aside
+      aria-label={isAr ? 'إضافة المنتج إلى السلة' : 'Ajouter le produit au panier'}
+      className="
+      fixed bottom-0 inset-x-0 z-40 lg:hidden
       border-t border-[var(--color-brand-border)]
       bg-[var(--color-brand-surface-elevated)]/95 backdrop-blur-md
-      px-4 lg:px-10
+      px-4
       py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]
       shadow-[0_-4px_24px_rgba(0,0,0,0.08)]
     ">
@@ -62,10 +64,10 @@ export function StickyMobileCTA({ product, formattedPrice, isOutOfStock }: Props
           )}
           <div className="min-w-0 hidden sm:block">
             <p className="max-w-[140px] truncate text-xs font-semibold text-[var(--color-brand-text)]">{name}</p>
-            <p className="text-sm font-bold text-[var(--color-brand-primary)]">{formattedPrice}</p>
+            <p className="price-display text-sm font-bold text-[var(--color-brand-primary)]">{formattedPrice}</p>
           </div>
           {/* Mobile: price only */}
-          <p className="text-sm font-bold text-[var(--color-brand-primary)] sm:hidden">{formattedPrice}</p>
+          <p className="price-display text-sm font-bold text-[var(--color-brand-primary)] sm:hidden">{formattedPrice}</p>
         </div>
 
         {/* Trust items — center, hidden on small mobile */}
@@ -84,6 +86,6 @@ export function StickyMobileCTA({ product, formattedPrice, isOutOfStock }: Props
         </div>
 
       </div>
-    </div>
+    </aside>
   );
 }
