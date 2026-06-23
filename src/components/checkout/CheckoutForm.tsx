@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useLocale } from 'next-intl';
 import { Link, useRouter } from '@/i18n/navigation';
-import { Loader2, Banknote, AlertCircle, Clock3, PhoneCall, ShieldCheck, Truck, ShoppingBag } from 'lucide-react';
+import { Loader2, Banknote, AlertCircle, Clock3, MessageCircle, PhoneCall, ShieldCheck, Truck, ShoppingBag } from 'lucide-react';
 import { useCartStore } from '@/lib/cart-store';
 import { formatMAD } from '@/lib/money';
 import { createOrderSchema } from '@/lib/validators';
@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { useIsClient } from '@/lib/use-is-client';
 import { trackCheckoutStart, trackOrderSubmitted } from '@/lib/analytics';
+import { getWhatsAppHref } from '@/lib/contact';
 
 /* Hallmark · macrostructure: Checkout split · genre: luxury ecommerce · tone: calm Moroccan COD
  * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
@@ -137,6 +138,11 @@ export function CheckoutForm() {
     isAr ? 'تأكيد بالهاتف قبل الإرسال' : 'Confirmation par téléphone',
     isAr ? 'توصيل 3 إلى 5 أيام عمل' : 'Livraison 3 à 5 jours ouvrables',
   ];
+  const whatsappOrderHref = getWhatsAppHref(
+    isAr
+      ? 'مرحباً مرجاد، أريد الطلب عبر واتساب'
+      : 'Bonjour MARJAD, je voudrais commander via WhatsApp',
+  );
   const checkoutSteps = [
     {
       icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
@@ -329,11 +335,17 @@ export function CheckoutForm() {
               </label>
               <input
                 id="city"
+                list="moroccan-cities"
                 {...register('city')}
                 disabled={isSubmitting}
                 autoComplete="address-level2"
                 className={[inputClass, errors.city ? errorInputClass : ''].join(' ')}
               />
+              <datalist id="moroccan-cities">
+                {['Casablanca','Rabat','Marrakech','Fès','Tanger','Agadir','Meknès','Oujda','Kénitra','Tétouan','Safi','El Jadida','Béni Mellal','Nador','Khouribga','Settat','Laâyoune','Mohammedia','Khémisset','Berrechid','Taza','Ifrane','Ouarzazate','Essaouira','Dakhla','Taroudant','Guelmim','Tiznit','Larache','Al Hoceïma','Fnideq','Berkane','Errachidia','Azrou','Ait Melloul'].map((c) => (
+                  <option key={c} value={c} />
+                ))}
+              </datalist>
               {errors.city && (
                 <p role="alert" aria-live="polite" className="form-error flex items-center gap-1">
                   <AlertCircle className="w-3 h-3" />
@@ -427,11 +439,39 @@ export function CheckoutForm() {
                 : "Après l'envoi, vous verrez la confirmation. Nous validons toujours la commande avec vous avant expédition."}
             </span>
           </div>
+
+          {/* WhatsApp ordering alternative */}
+          {whatsappOrderHref && (
+            <div className="mt-5 border-t border-[var(--color-brand-border)] pt-4 text-center">
+              <p className="text-xs text-[var(--color-brand-text-muted)] mb-2">
+                {isAr ? 'أو اطلب مباشرة عبر واتساب' : 'Ou commandez directement sur WhatsApp'}
+              </p>
+              <a
+                href={whatsappOrderHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="
+                  inline-flex items-center gap-2
+                  h-10 px-5
+                  rounded-[var(--radius-btn)]
+                  border border-[var(--color-brand-border)]
+                  text-[var(--color-brand-primary)] text-sm font-semibold
+                  hover:border-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-light)]
+                  transition-colors duration-150
+                  focus-visible:outline-none focus-visible:ring-2
+                  focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2
+                "
+              >
+                <MessageCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+                WhatsApp
+              </a>
+            </div>
+          )}
         </form>
 
         {/* Order summary */}
         <div className="order-1 lg:order-2">
-          <div className="rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-5 lg:sticky lg:top-[80px] lg:p-6">
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-5 lg:sticky lg:top-[116px] lg:p-6">
             <div className="mb-5 flex items-center justify-between gap-4">
               <div>
                 <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">

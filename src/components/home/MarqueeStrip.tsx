@@ -2,20 +2,20 @@ import { getLocale } from 'next-intl/server';
 
 const messagesFr = [
   'Artisanat Marocain',
-  'Livraison partout au Maroc',
+  'Livraison au Maroc',
   'Paiement à la livraison',
   'Pièces uniques',
   'Fait main',
-  'Retours garantis 48h',
+  'Support après commande',
 ];
 
 const messagesAr = [
   'الحرف اليدوية المغربية',
-  'توصيل في جميع أنحاء المغرب',
+  'توصيل داخل المغرب',
   'الدفع عند الاستلام',
   'قطع فريدة',
   'صنع يدوي',
-  'إرجاع مضمون 48 ساعة',
+  'دعم بعد الطلب',
 ];
 
 export async function MarqueeStrip() {

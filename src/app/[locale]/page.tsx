@@ -13,6 +13,7 @@ import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { FaqSection } from '@/components/home/FaqSection';
 import { ArrowRight, Award, Banknote, Heart, Headphones, Leaf, MessageCircle, PackageCheck, Plus, Sparkles, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
+import { MarqueeStrip } from '@/components/home/MarqueeStrip';
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;
@@ -101,7 +102,7 @@ export default async function HomePage() {
     <main className="overflow-x-clip">
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[calc(100svh-4rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-4.5rem)]">
+      <section className="relative flex min-h-[calc(100svh-6rem)] flex-col overflow-hidden lg:min-h-[calc(100svh-6.5rem)]">
 
         {/* Background — generated MARJAD lifestyle interior */}
         <div
@@ -136,7 +137,7 @@ export default async function HomePage() {
                 </div>
 
                 {/* Headline — large serif, white */}
-                <h1 className="max-w-[780px] font-[var(--font-display)] text-[clamp(2.65rem,7.4vw,7rem)] font-bold leading-[0.98] text-white overflow-wrap-anywhere min-w-0">
+                <h1 className="max-w-[780px] font-[var(--font-display)] text-[clamp(2.65rem,7.4vw,7rem)] font-bold leading-[0.98] text-white [overflow-wrap:anywhere] min-w-0">
                   {t('home.hero.titleLine1')}
                   <br />
                   {t('home.hero.titleLine2')}
@@ -171,7 +172,7 @@ export default async function HomePage() {
                     <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                   </Link>
                   <Link
-                    href="/products?sort=newest"
+                    href="/a-propos"
                     className="
                       inline-flex h-13 items-center gap-2 px-7
                       rounded-[var(--radius-btn)]
@@ -181,7 +182,7 @@ export default async function HomePage() {
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white
                     "
                   >
-                    {t('home.hero.ctaSecondary')}
+                    {isAr ? 'قصتنا' : 'Notre histoire'}
                   </Link>
                 </div>
 
@@ -312,10 +313,23 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <MarqueeStrip />
+
       {/* ── CATEGORIES ───────────────────────────────────────────── */}
       {categories.length > 0 && (
         <section className="bg-[var(--color-brand-surface)] py-12 lg:py-16">
           <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-6 flex items-end justify-between">
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                  {isAr ? 'تصفح حسب الفئة' : 'Explorer par catégorie'}
+                </p>
+                <h2 className="mt-1.5 font-[var(--font-display)] text-xl font-bold text-[var(--color-brand-text)] sm:text-2xl">
+                  {isAr ? 'مجموعاتنا' : 'Nos collections'}
+                </h2>
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4 lg:gap-6">
               {categories.slice(0, 4).map((cat) => {
                 const catName = isAr ? cat.nameAr : cat.nameFr;
@@ -325,11 +339,12 @@ export default async function HomePage() {
                     href={`/products?category=${cat.slug}`}
                     className="group focus-visible:outline-none"
                   >
-                    <div className="relative overflow-hidden rounded-[var(--radius-md)] aspect-[3/4] bg-[var(--color-brand-surface-alt)]">
+                    <div className="relative overflow-hidden rounded-[var(--radius-md)] aspect-[3/4] bg-[linear-gradient(135deg,var(--color-brand-surface-alt)_0%,var(--color-brand-primary-light)_100%)]">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.05]"
                         style={{ backgroundImage: `url('/images/category-${cat.slug}.webp')` }}
                       />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/18 transition-colors duration-500" />
                     </div>
                     <div className="mt-3">
                       <h3 className="font-[var(--font-display)] text-lg font-bold uppercase tracking-wide text-[var(--color-brand-text)]">
@@ -371,31 +386,18 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 md:gap-5 md:grid-cols-3 lg:grid-cols-5">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5 lg:gap-5">
               {displayProducts.map((product) => (
                 <ProductCard key={product.id} product={product} locale={locale} />
               ))}
             </div>
 
-            {/* Pagination dots */}
-            <div className="mt-8 flex items-center justify-center gap-2">
-              {[0, 1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className={`rounded-full transition-all ${
-                    i === 0
-                      ? 'h-2 w-6 bg-[var(--color-brand-primary)]'
-                      : 'h-2 w-2 bg-[var(--color-brand-border)]'
-                  }`}
-                />
-              ))}
-            </div>
           </div>
         </section>
       )}
 
       {/* ── NOTRE HISTOIRE / BRAND STORY ─────────────────────────── */}
-      <section className="bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
+      <section className="zellige-texture bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
         <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-16">
 
@@ -409,7 +411,7 @@ export default async function HomePage() {
                   mb-5 font-[var(--font-display)]
                   text-[clamp(1.75rem,3.5vw,2.75rem)]
                   font-bold leading-tight text-[var(--color-brand-text)]
-                  overflow-wrap-anywhere min-w-0
+                  [overflow-wrap:anywhere] min-w-0
                 "
               >
                 {isAr
@@ -480,7 +482,7 @@ export default async function HomePage() {
               const Icon = step.icon;
               return (
                 <div key={step.title} className="flex flex-col items-center text-center">
-                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--color-brand-border)]">
+                  <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full border-2 border-[var(--color-brand-primary)] bg-[var(--color-brand-primary-light)]">
                     <Icon className="h-6 w-6 text-[var(--color-brand-primary)]" />
                   </div>
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[var(--color-brand-text)]">
@@ -541,7 +543,7 @@ export default async function HomePage() {
                 {isAr ? 'عرض الكل' : 'VOIR TOUT'}
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4 lg:gap-5">
               {bestSellers.map((product) => (
                 <ProductCard key={product.id} product={product} locale={locale} />
               ))}
