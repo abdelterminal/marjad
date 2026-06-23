@@ -11,6 +11,11 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
+/* Hallmark · component: collection filters · genre: luxury ecommerce · theme: custom/MARJAD
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * contrast: pass
+ */
+
 type Category = {
   id: number;
   slug: string;
@@ -49,6 +54,7 @@ function FilterContent({
   locale: string;
 }) {
   const isAr = locale === 'ar';
+  const activeFilters = selectedCategories.length + (minPrice ? 1 : 0) + (maxPrice ? 1 : 0);
 
   function toggleCategory(slug: string) {
     if (selectedCategories.includes(slug)) {
@@ -59,30 +65,37 @@ function FilterContent({
   }
 
   return (
-    <div className="flex flex-col gap-6 h-full">
+    <div className="flex h-full flex-col gap-6">
       {/* Categories */}
       <div>
-        <h3 className="text-sm font-semibold text-[var(--color-brand-text)] mb-3">
-          {isAr ? 'الفئات' : 'Catégories'}
-        </h3>
-        <div className="space-y-2">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <h3 className="text-sm font-semibold text-[var(--color-brand-text)]">
+            {isAr ? 'الفئات' : 'Catégories'}
+          </h3>
+          {activeFilters > 0 && (
+            <span className="rounded-[var(--radius-full)] bg-[var(--color-brand-primary-light)] px-2 py-1 text-[11px] font-semibold text-[var(--color-brand-primary)]">
+              {isAr ? `${activeFilters} مفعلة` : `${activeFilters} actif${activeFilters > 1 ? 's' : ''}`}
+            </span>
+          )}
+        </div>
+        <div className="divide-y divide-[var(--color-brand-border)] border-y border-[var(--color-brand-border)]">
           {categories.map((cat) => {
             const catName = isAr ? cat.nameAr : cat.nameFr;
             const checked = selectedCategories.includes(cat.slug);
             return (
               <label
                 key={cat.id}
-                className="flex items-center gap-2 cursor-pointer group py-1 min-h-[44px]"
+                className="group flex min-h-[48px] cursor-pointer items-center justify-between gap-3 py-2"
               >
+                <span className="text-sm text-[var(--color-brand-text)] transition-colors group-hover:text-[var(--color-brand-primary)]">
+                  {catName}
+                </span>
                 <input
                   type="checkbox"
                   checked={checked}
                   onChange={() => toggleCategory(cat.slug)}
-                className="h-4 w-4 cursor-pointer accent-[var(--color-brand-primary)]"
+                  className="h-4 w-4 cursor-pointer rounded border-[var(--color-brand-border)] accent-[var(--color-brand-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-brand-primary)]"
                 />
-                <span className="text-sm text-[var(--color-brand-text)] group-hover:text-[var(--color-brand-primary)] transition-colors">
-                  {catName}
-                </span>
               </label>
             );
           })}
@@ -94,7 +107,7 @@ function FilterContent({
         <h3 className="text-sm font-semibold text-[var(--color-brand-text)] mb-3">
           {isAr ? 'السعر (درهم)' : 'Prix (MAD)'}
         </h3>
-        <div className="flex items-center gap-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
           <input
             type="number"
             min={0}
@@ -118,12 +131,14 @@ function FilterContent({
       {/* Actions */}
       <div className="flex gap-2 mt-auto pt-4 border-t border-[var(--color-brand-border)]">
         <button
+          type="button"
           onClick={onReset}
-          className="flex-1 h-10 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] text-sm font-semibold text-[var(--color-brand-text-muted)] hover:border-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary)] transition-colors"
+          className="flex-1 h-10 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] text-sm font-semibold text-[var(--color-brand-text-muted)] transition-colors hover:border-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-brand-primary)]"
         >
           {isAr ? 'إعادة تعيين' : 'Réinitialiser'}
         </button>
         <button
+          type="button"
           onClick={onApply}
           className="form-submit flex-1 min-h-10"
         >
@@ -188,8 +203,9 @@ export function Filters({ categories, currentCategory, currentMin, currentMax }:
     <>
       {/* Mobile filter button — only shown below lg */}
       <button
+        type="button"
         onClick={() => setSheetOpen(true)}
-        className="lg:hidden inline-flex items-center gap-2 h-9 px-3 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
+        className="lg:hidden inline-flex h-9 items-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] px-3 text-sm font-semibold text-[var(--color-brand-text)] shadow-[var(--shadow-xs)] transition-colors hover:bg-[var(--color-brand-surface-alt)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-brand-primary)]"
       >
         <SlidersHorizontal className="w-4 h-4" />
         {isAr ? 'الفلاتر' : 'Filtres'}
@@ -224,7 +240,7 @@ export function Filters({ categories, currentCategory, currentMin, currentMax }:
       </Sheet>
 
       {/* Desktop sidebar — only shown at lg+ */}
-      <aside className="hidden lg:flex flex-col w-[240px] flex-shrink-0 sticky top-[80px] max-h-[calc(100vh-80px)] overflow-y-auto p-4 rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]">
+      <aside className="hidden lg:flex flex-col w-[240px] flex-shrink-0 sticky top-[116px] max-h-[calc(100vh-116px)] overflow-y-auto p-4 rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]">
         <FilterContent
           categories={categories}
           selectedCategories={selectedCategories}
