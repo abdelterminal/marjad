@@ -15,6 +15,11 @@ import { useSession } from 'next-auth/react';
 import { useIsClient } from '@/lib/use-is-client';
 import { trackCheckoutStart, trackOrderSubmitted } from '@/lib/analytics';
 
+/* Hallmark · macrostructure: Checkout split · genre: luxury ecommerce · tone: calm Moroccan COD
+ * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
+ */
+
 type OrderFormData = Omit<z.infer<typeof createOrderSchema>, 'items'>;
 
 export function CheckoutForm() {
@@ -182,35 +187,44 @@ export function CheckoutForm() {
   }
 
   return (
-    <div className="max-w-[var(--container-lg)] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 rounded-[var(--radius-md)] bg-[var(--color-brand-surface-alt)] p-5 sm:p-6">
-        <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
-          {isAr ? 'طلب آمن' : 'Commande sécurisée'}
-        </p>
-        <h1 className="mt-2 font-[var(--font-display)] text-2xl sm:text-3xl font-bold leading-tight text-[var(--color-brand-text)]">
-          {isAr ? 'أكمل الطلب، وسنتصل بك للتأكيد.' : 'Finalisez votre commande, nous confirmons par appel.'}
-        </h1>
-        <p className="mt-3 max-w-[680px] text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
-          {isAr
-            ? 'لا تحتاج إلى بطاقة بنكية. اترك معلومات التوصيل وسيتواصل فريق مرجاد معك قبل إرسال الطلب.'
-            : "Pas besoin de carte bancaire. Laissez vos informations de livraison, l'équipe MARJAD vous contacte avant l'expédition."}
-        </p>
-        <div className="mt-5 grid gap-2 sm:grid-cols-3">
-          {trustPoints.map((point) => (
-            <div
-              key={point}
-              className="flex items-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white/70 px-3 py-2 text-xs font-semibold text-[var(--color-brand-text)]"
-            >
-              <ShieldCheck className="h-4 w-4 flex-shrink-0 text-[var(--color-brand-primary)]" aria-hidden="true" />
-              <span>{point}</span>
+    <main className="bg-[var(--color-brand-surface)]">
+      <div className="mx-auto max-w-[var(--container-xl)] px-4 py-6 sm:px-6 lg:px-10 lg:py-10">
+      <div className="mb-8 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[linear-gradient(135deg,var(--color-brand-surface-elevated)_0%,var(--color-brand-surface-alt)_100%)]">
+        <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="p-5 sm:p-7 lg:p-8">
+            <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+              {isAr ? 'طلب آمن' : 'Commande sécurisée'}
+            </p>
+            <h1 className="mt-3 max-w-3xl font-[var(--font-display)] text-[clamp(1.9rem,3vw,3.25rem)] font-bold leading-tight text-[var(--color-brand-text)]">
+              {isAr ? 'أكمل الطلب، وسنتصل بك للتأكيد.' : 'Finalisez votre commande, nous confirmons par appel.'}
+            </h1>
+            <p className="mt-4 max-w-[720px] text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
+              {isAr
+                ? 'لا تحتاج إلى بطاقة بنكية. اترك معلومات التوصيل وسيتواصل فريق مرجاد معك قبل إرسال الطلب.'
+                : "Pas besoin de carte bancaire. Laissez vos informations de livraison, l'équipe MARJAD vous contacte avant l'expédition."}
+            </p>
+          </div>
+          <div className="border-t border-[var(--color-brand-border)] bg-[var(--color-brand-text)] p-5 text-white sm:p-7 lg:border-s lg:border-t-0">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/55">
+              {isAr ? 'طريقة الطلب' : 'Mode de commande'}
+            </p>
+            <div className="mt-5 grid gap-3">
+              {trustPoints.map((point) => (
+                <div key={point} className="flex items-center gap-3 text-sm font-semibold">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/10 text-[var(--color-brand-secondary)]">
+                    <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span>{point}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-8 lg:gap-10">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10">
         {/* Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="form-panel order-2 p-5 lg:order-1 lg:p-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="form-panel order-2 p-5 lg:order-1 lg:p-7">
           {/* Error banners */}
           {submitError && (
             <div role="alert" className="mb-4 p-4 rounded-[var(--radius-sm)] bg-[var(--color-brand-error-light)] border-s-[3px] border-[var(--color-brand-error)] flex items-start gap-3 text-sm text-[var(--color-brand-error)]">
@@ -226,16 +240,23 @@ export function CheckoutForm() {
           )}
 
           {/* Section: Delivery info */}
-          <h2 className="font-[var(--font-display)] text-xl font-bold text-[var(--color-brand-text)] mb-5">
-            {isAr ? 'معلومات التوصيل' : 'Informations de livraison'}
-          </h2>
-          <div className="mb-5 rounded-[var(--radius-sm)] border border-[var(--color-brand-primary)]/20 bg-[var(--color-brand-primary-light)] px-4 py-3 text-sm leading-relaxed text-[var(--color-brand-text)]">
-            <span className="font-semibold">
-              {isAr ? 'مهم:' : 'Important :'}
-            </span>{' '}
-            {isAr
-              ? 'اكتب رقم هاتف متاحاً. لن نرسل الطلب قبل تأكيد العنوان والكمية معك.'
-              : "Indiquez un téléphone joignable. La commande ne part pas avant validation de l'adresse et de la quantité avec vous."}
+          <div className="mb-6 flex flex-col gap-4 border-b border-[var(--color-brand-border)] pb-5 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                {isAr ? 'معلوماتك' : 'Vos informations'}
+              </p>
+              <h2 className="mt-1 font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-text)]">
+                {isAr ? 'معلومات التوصيل' : 'Informations de livraison'}
+              </h2>
+            </div>
+            <div className="rounded-[var(--radius-sm)] border border-[var(--color-brand-primary)]/20 bg-[var(--color-brand-primary-light)] px-4 py-3 text-sm leading-relaxed text-[var(--color-brand-text)] sm:max-w-[330px]">
+              <span className="font-semibold">
+                {isAr ? 'مهم:' : 'Important :'}
+              </span>{' '}
+              {isAr
+                ? 'اكتب رقم هاتف متاحاً. لن نرسل الطلب قبل التأكيد.'
+                : "Indiquez un téléphone joignable. La commande part seulement après confirmation."}
+            </div>
           </div>
           <div className="hidden" aria-hidden="true">
             <label htmlFor="company">
@@ -248,7 +269,7 @@ export function CheckoutForm() {
               {...register('company')}
             />
           </div>
-          <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {/* Name */}
             <div className="form-field">
               <label className={labelClass} htmlFor="customerName">
@@ -322,7 +343,7 @@ export function CheckoutForm() {
             </div>
 
             {/* Address */}
-            <div className="form-field">
+            <div className="form-field sm:col-span-2">
               <label className={labelClass} htmlFor="address">
                 {isAr ? 'عنوان التوصيل' : 'Adresse de livraison'}
                 <span aria-hidden="true" className="text-[var(--color-brand-error)] ms-0.5">*</span>
@@ -351,7 +372,7 @@ export function CheckoutForm() {
             </div>
 
             {/* Notes */}
-            <div className="form-field">
+            <div className="form-field sm:col-span-2">
               <label className={labelClass} htmlFor="notes">
                 {isAr ? 'ملاحظات (اختياري)' : 'Notes (optionnel)'}
               </label>
@@ -366,8 +387,8 @@ export function CheckoutForm() {
           </div>
 
           {/* Payment method */}
-          <div className="mt-6 mb-6">
-            <h2 className="text-base font-semibold text-[var(--color-brand-text)] mb-3">
+          <div className="my-6 border-y border-[var(--color-brand-border)] py-5">
+            <h2 className="mb-3 text-base font-semibold text-[var(--color-brand-text)]">
               {isAr ? 'طريقة الدفع' : 'Paiement'}
             </h2>
             <div className="rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-4 shadow-[var(--shadow-xs)]">
@@ -410,10 +431,20 @@ export function CheckoutForm() {
 
         {/* Order summary */}
         <div className="order-1 lg:order-2">
-          <div className="lg:sticky lg:top-[80px] rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] p-6">
-            <h2 className="text-base font-semibold text-[var(--color-brand-text)] mb-4">
-              {isAr ? 'ملخص الطلب' : 'Récapitulatif'}
-            </h2>
+          <div className="rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-5 lg:sticky lg:top-[80px] lg:p-6">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div>
+                <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                  {isAr ? 'السلة' : 'Panier'}
+                </p>
+                <h2 className="mt-1 text-base font-semibold text-[var(--color-brand-text)]">
+                  {isAr ? 'ملخص الطلب' : 'Récapitulatif'}
+                </h2>
+              </div>
+              <span className="rounded-full bg-[var(--color-brand-primary-light)] px-3 py-1 text-xs font-semibold text-[var(--color-brand-primary)]">
+                {isAr ? `${itemCount} قطعة` : `${itemCount} article${itemCount > 1 ? 's' : ''}`}
+              </span>
+            </div>
 
             {items.map((item) => {
               const name = locale === 'ar' ? item.nameAr : item.nameFr;
@@ -421,9 +452,9 @@ export function CheckoutForm() {
               return (
                 <div
                   key={item.productId}
-                  className="flex gap-3 py-3 border-b border-[var(--color-brand-border)] last:border-b-0"
+                  className="flex gap-3 border-b border-[var(--color-brand-border)] py-3 last:border-b-0"
                 >
-                  <div className="relative flex-shrink-0 w-12 h-12 rounded-[var(--radius-sm)] overflow-hidden bg-white">
+                  <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-white">
                     {item.image ? (
                       <Image
                         src={item.image}
@@ -451,7 +482,7 @@ export function CheckoutForm() {
               );
             })}
 
-            <div className="mt-4 pt-4 border-t border-[var(--color-brand-border)] space-y-2">
+            <div className="mt-4 space-y-2 border-t border-[var(--color-brand-border)] pt-4">
               <div className="flex justify-between text-sm">
                 <span className="text-[var(--color-brand-text-muted)]">
                   {isAr ? 'المجموع الفرعي' : 'Sous-total'}
@@ -466,7 +497,7 @@ export function CheckoutForm() {
                   {isAr ? 'مجاني' : 'Gratuite'}
                 </span>
               </div>
-              <div className="flex justify-between text-base font-semibold pt-2 border-t border-[var(--color-brand-border)]">
+              <div className="flex justify-between border-t border-[var(--color-brand-border)] pt-3 text-base font-semibold">
                 <span>{isAr ? 'الإجمالي' : 'Total'}</span>
                 <span className="price-display">{formatMAD(subtotal)}</span>
               </div>
@@ -479,7 +510,7 @@ export function CheckoutForm() {
               <div className="space-y-3">
                 {checkoutSteps.map((step) => (
                   <div key={step.title} className="flex items-start gap-3">
-                    <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-white text-[var(--color-brand-primary)]">
+                    <div className="mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-surface-alt)] text-[var(--color-brand-primary)]">
                       {step.icon}
                     </div>
                     <div>
@@ -497,7 +528,7 @@ export function CheckoutForm() {
                 <Clock3 className="h-4 w-4 text-[var(--color-brand-primary)]" aria-hidden="true" />
                 <span>{isAr ? 'التوصيل المتوقع: 3 إلى 5 أيام عمل.' : 'Livraison estimée : 3 à 5 jours ouvrables.'}</span>
               </div>
-              <div className="mt-3 rounded-[var(--radius-sm)] bg-white px-3 py-2 text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
+              <div className="mt-3 rounded-[var(--radius-sm)] bg-[var(--color-brand-surface-elevated)] px-3 py-2 text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
                 {isAr
                   ? 'إذا لم نتمكن من تأكيد الطلب بالهاتف، لن يتم شحنه.'
                   : "Si nous n'arrivons pas à confirmer la commande par téléphone, elle ne sera pas expédiée."}
@@ -506,6 +537,7 @@ export function CheckoutForm() {
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </main>
   );
 }
