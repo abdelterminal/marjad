@@ -22,6 +22,7 @@ import {
   Truck,
 } from 'lucide-react';
 import { absoluteUrl, createPageMetadata } from '@/lib/seo';
+import { ExpandableDescription } from '@/components/product/ExpandableDescription';
 import { ProductViewEvent } from '@/components/analytics/ProductViewEvent';
 import { getWhatsAppHref } from '@/lib/contact';
 
@@ -158,7 +159,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   /* ── Render ───────────────────────────────────────────────── */
   return (
-    <main className="bg-[var(--color-brand-surface)] pb-20">
+    <main className="bg-[var(--color-brand-surface)] pb-20 lg:pb-0">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
@@ -226,15 +227,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
             {/* Short description */}
             {description && (
-              <p className="mt-4 text-sm text-[var(--color-brand-text-muted)] leading-relaxed line-clamp-4">
-                {description}
-              </p>
+              <ExpandableDescription text={description} locale={locale} />
             )}
 
             {/* Price */}
             <div className="my-6 border-y border-[var(--color-brand-border)] py-5">
               <div className="flex flex-wrap items-baseline gap-3">
-                <span className="text-[2rem] font-bold text-[var(--color-brand-primary)]">
+                <span className="price-display text-[2rem] font-bold text-[var(--color-brand-primary)]">
                   {formattedPrice}
                 </span>
                 {hasDiscount && (
@@ -335,7 +334,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       {/* ── BOTTOM INFO PANELS ──────────────────────────────── */}
       <section className="border-y border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]">
         <div className="mx-auto max-w-[var(--container-content)] px-4 py-10 sm:px-6 lg:px-10 lg:py-14">
-          <div className="mb-8 max-w-2xl">
+          <div className="mb-8 max-w-[42rem]">
             <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
               {isAr ? 'تفاصيل مطمئنة' : 'Détails qui rassurent'}
             </p>
