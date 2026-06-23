@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getLocale } from 'next-intl/server';
 import { cookies } from 'next/headers';
 import { Link } from '@/i18n/navigation';
@@ -7,9 +8,30 @@ import { formatMAD } from '@/lib/money';
 import { CheckCircle2, Package, MessageCircle, PhoneCall, Truck, Banknote } from 'lucide-react';
 import Image from 'next/image';
 import { getWhatsAppHref } from '@/lib/contact';
+import { createPageMetadata } from '@/lib/seo';
+
+/* Hallmark · macrostructure: Confirmation receipt · genre: luxury ecommerce · tone: reassuring COD
+ * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
+ */
 
 interface ConfirmationPageProps {
   params: Promise<{ locale: string; orderId: string }>;
+}
+
+export async function generateMetadata({ params }: ConfirmationPageProps): Promise<Metadata> {
+  const { locale, orderId } = await params;
+  const isAr = locale === 'ar';
+
+  return createPageMetadata({
+    locale,
+    path: `/${locale}/checkout/confirmation/${orderId}`,
+    title: isAr ? 'تم استلام الطلب' : 'Commande reçue',
+    description: isAr
+      ? 'تم استلام طلبك في مرجاد. سنتصل بك لتأكيد العنوان والكمية قبل الإرسال.'
+      : "Votre commande MARJAD a été reçue. Nous vous appelons pour confirmer l'adresse et la quantité avant l'expédition.",
+    image: null,
+  });
 }
 
 export default async function ConfirmationPage({ params }: ConfirmationPageProps) {
@@ -48,7 +70,11 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   }
 
   const total = parseFloat(order.total);
-  const whatsappHref = getWhatsAppHref();
+  const whatsappHref = getWhatsAppHref(
+    isAr
+      ? `مرحباً مرجاد، أريد الاستفسار عن طلبي رقم ${order.id}`
+      : `Bonjour MARJAD, je souhaite poser une question sur ma commande #${order.id}`,
+  );
   const nextSteps = [
     {
       icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
@@ -68,135 +94,142 @@ export default async function ConfirmationPage({ params }: ConfirmationPageProps
   ];
 
   return (
-    <main className="max-w-[var(--container-sm)] mx-auto px-4 py-10 text-center">
-      {/* Success icon */}
-      <div className="w-16 h-16 rounded-full bg-[var(--color-brand-success-light)] flex items-center justify-center mx-auto">
-        <CheckCircle2 className="w-8 h-8 text-[var(--color-brand-success)]" />
-      </div>
+    <main className="bg-[var(--color-brand-surface)]">
+      <div className="mx-auto max-w-[var(--container-xl)] px-4 py-8 sm:px-6 lg:px-10 lg:py-12">
+        <section className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_410px]">
+            <div className="p-6 text-center sm:p-8 lg:p-10 lg:text-start">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-brand-success-light)] text-[var(--color-brand-success)] lg:mx-0">
+                <CheckCircle2 className="h-8 w-8" aria-hidden="true" />
+              </div>
 
-      {/* Headline */}
-      <h1 className="mt-4 text-2xl font-bold font-[var(--font-display)] text-[var(--color-brand-text)]">
-        {isAr ? 'تم تأكيد طلبك!' : 'Commande confirmée !'}
-      </h1>
-      <p className="mt-2 text-sm text-[var(--color-brand-text-muted)] max-w-[400px] mx-auto">
-        {isAr
-          ? 'شكراً لك! تم استلام طلبك. سيتواصل معك فريقنا خلال 24 ساعة لتأكيد التوصيل.'
-          : 'Merci ! Votre commande a bien été reçue. Notre équipe vous contactera sous 24h pour confirmer la livraison.'}
-      </p>
+              <p className="mt-6 text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                {isAr ? 'تم استلام الطلب' : 'Commande reçue'}
+              </p>
+              <h1 className="mt-2 font-[var(--font-display)] text-[clamp(2rem,4vw,3.5rem)] font-bold leading-tight text-[var(--color-brand-text)]">
+                {isAr ? 'طلبك بين أيدينا.' : 'Votre commande est entre nos mains.'}
+              </h1>
+              <p className="mx-auto mt-4 max-w-[560px] text-sm leading-relaxed text-[var(--color-brand-text-muted)] lg:mx-0">
+                {isAr
+                  ? 'شكراً لك. استلمنا طلبك وسيتواصل معك فريق مرجاد لتأكيد العنوان والكمية قبل أي إرسال.'
+                  : "Merci. Nous avons reçu votre commande et l'équipe MARJAD vous appelle pour confirmer l'adresse et la quantité avant tout envoi."}
+              </p>
 
-      {/* Order number */}
-      <p className="mt-3 text-sm font-semibold text-[var(--color-brand-text-muted)] font-mono">
-        {isAr ? `رقم الطلب: #${order.id}` : `N° de commande : #${order.id}`}
-      </p>
+              <div className="mt-6 inline-flex items-center justify-center rounded-full border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] px-4 py-2 font-mono text-sm font-semibold text-[var(--color-brand-text-muted)]">
+                {isAr ? `رقم الطلب: #${order.id}` : `N° de commande : #${order.id}`}
+              </div>
 
-      <div className="mt-8 grid gap-3 text-start sm:grid-cols-3">
-        {nextSteps.map((step) => (
-          <div
-            key={step.title}
-            className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] p-3"
-          >
-            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
-              {step.icon}
-            </div>
-            <p className="text-xs font-semibold text-[var(--color-brand-text)]">
-              {step.title}
-            </p>
-            <p className="mt-1 text-xs leading-snug text-[var(--color-brand-text-muted)]">
-              {step.body}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Items summary */}
-      {order.items && order.items.length > 0 && (
-        <div className="text-start mt-8 rounded-[var(--radius-md)] border border-[var(--color-brand-border)] overflow-hidden">
-          {order.items.map((item) => {
-            const productName = item.product
-              ? (isAr ? item.product.nameAr : item.product.nameFr)
-              : `Produit #${item.productId}`;
-            const productImage = item.product?.images?.[0] ?? null;
-            const lineTotal = parseFloat(item.unitPrice) * item.quantity;
-
-            return (
-              <div
-                key={item.id}
-                className="flex gap-3 p-3 border-b border-[var(--color-brand-border)] last:border-b-0"
-              >
-                {productImage && (
-                  <div className="relative flex-shrink-0 w-10 h-10 rounded-[var(--radius-sm)] overflow-hidden bg-[var(--color-brand-surface-alt)]">
-                    <Image
-                      src={productImage}
-                      alt={productName}
-                      fill
-                      className="object-cover"
-                      sizes="40px"
-                    />
+              <div className="mt-8 grid gap-3 text-start sm:grid-cols-3">
+                {nextSteps.map((step) => (
+                  <div key={step.title} className="border-t border-[var(--color-brand-border)] pt-4">
+                    <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
+                      {step.icon}
+                    </div>
+                    <p className="text-sm font-semibold text-[var(--color-brand-text)]">
+                      {step.title}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-[var(--color-brand-text-muted)]">
+                      {step.body}
+                    </p>
                   </div>
-                )}
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[var(--color-brand-text)] line-clamp-1">
-                    {productName}
+                ))}
+              </div>
+            </div>
+
+            <aside className="border-t border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] p-5 sm:p-6 lg:border-s lg:border-t-0">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+                    {isAr ? 'ملخص' : 'Reçu'}
                   </p>
-                  <p className="text-xs text-[var(--color-brand-text-muted)]">
-                    {isAr ? `× ${item.quantity}` : `× ${item.quantity}`}
-                  </p>
+                  <h2 className="mt-1 text-base font-semibold text-[var(--color-brand-text)]">
+                    {isAr ? 'ملخص الطلب' : 'Résumé de commande'}
+                  </h2>
                 </div>
-                <span className="text-sm font-semibold text-[var(--color-brand-text)] price-display flex-shrink-0">
-                  {formatMAD(lineTotal)}
+                <span className="price-display text-base font-bold text-[var(--color-brand-primary)]">
+                  {formatMAD(total)}
                 </span>
               </div>
-            );
-          })}
-          {/* Total row */}
-          <div className="flex justify-between p-3 bg-[var(--color-brand-surface-alt)]">
-            <span className="text-sm font-semibold text-[var(--color-brand-text)]">
-              {isAr ? 'الإجمالي' : 'Total'}
-            </span>
-            <span className="text-sm font-bold text-[var(--color-brand-text)] price-display">
-              {formatMAD(total)}
-            </span>
+
+              {order.items && order.items.length > 0 && (
+                <div className="mt-5 overflow-hidden border-y border-[var(--color-brand-border)]">
+                  {order.items.map((item) => {
+                    const productName = item.product
+                      ? (isAr ? item.product.nameAr : item.product.nameFr)
+                      : `Produit #${item.productId}`;
+                    const productImage = item.product?.images?.[0] ?? null;
+                    const lineTotal = parseFloat(item.unitPrice) * item.quantity;
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="flex gap-3 border-b border-[var(--color-brand-border)] py-3 last:border-b-0"
+                      >
+                        <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]">
+                          {productImage && (
+                            <Image
+                              src={productImage}
+                              alt={productName}
+                              fill
+                              className="object-cover"
+                              sizes="48px"
+                            />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="line-clamp-1 text-sm font-medium text-[var(--color-brand-text)]">
+                            {productName}
+                          </p>
+                          <p className="mt-0.5 text-xs text-[var(--color-brand-text-muted)]">
+                            {isAr ? `الكمية: ${item.quantity}` : `Qté: ${item.quantity}`}
+                          </p>
+                        </div>
+                        <span className="price-display flex-shrink-0 text-sm font-semibold text-[var(--color-brand-text)]">
+                          {formatMAD(lineTotal)}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <div className="mt-5 flex items-start gap-3 border-b border-[var(--color-brand-border)] pb-5 text-start">
+                <Package className="mt-0.5 h-5 w-5 flex-shrink-0 text-[var(--color-brand-primary)]" aria-hidden="true" />
+                <p className="text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
+                  {isAr
+                    ? 'التوصيل المقدر: 3 إلى 5 أيام عمل داخل المغرب بعد التأكيد الهاتفي.'
+                    : 'Livraison estimée : 3 à 5 jours ouvrables au Maroc après confirmation téléphonique.'}
+                </p>
+              </div>
+
+              <div className="mt-5 grid gap-3">
+                {whatsappHref && (
+                  <a
+                    href={whatsappHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-11 items-center justify-center gap-2 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] px-5 text-sm font-semibold text-[var(--color-brand-text)] transition-colors hover:border-[var(--color-brand-primary)]/40 hover:text-[var(--color-brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
+                  >
+                    <MessageCircle className="h-4 w-4 text-[var(--color-brand-success)]" aria-hidden="true" />
+                    {isAr ? 'تواصل عبر واتساب' : 'Contacter sur WhatsApp'}
+                  </a>
+                )}
+                <Link
+                  href="/products"
+                  className="inline-flex h-11 items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-brand-text)] px-5 text-sm font-semibold text-white transition-colors hover:bg-[var(--color-brand-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
+                >
+                  {isAr ? 'مواصلة التسوق' : 'Continuer les achats'}
+                </Link>
+                <Link
+                  href="/account"
+                  className="inline-flex h-11 items-center justify-center rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] px-5 text-sm font-semibold text-[var(--color-brand-text)] transition-colors hover:bg-[var(--color-brand-surface-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
+                >
+                  {isAr ? 'عرض طلباتي' : 'Voir mes commandes'}
+                </Link>
+              </div>
+            </aside>
           </div>
-        </div>
-      )}
-
-      {/* Delivery info */}
-      <div className="mt-6 flex items-center gap-3 p-4 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] text-start">
-        <Package className="w-5 h-5 text-[var(--color-brand-primary)] flex-shrink-0" />
-        <p className="text-sm text-[var(--color-brand-text-muted)]">
-          {isAr
-            ? 'التوصيل المقدر: 3–5 أيام عمل (المغرب)'
-            : 'Livraison estimée : 3–5 jours ouvrables (Maroc)'}
-        </p>
-      </div>
-
-      {/* WhatsApp CTA */}
-      {whatsappHref && (
-        <a
-          href={whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-4 inline-flex items-center gap-2 h-10 px-5 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
-        >
-          <MessageCircle className="w-4 h-4 text-[#25D366]" />
-          {isAr ? 'تواصل عبر واتساب' : 'Contacter sur WhatsApp'}
-        </a>
-      )}
-
-      {/* Actions */}
-      <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
-        <Link
-          href="/products"
-          className="inline-flex items-center justify-center h-10 px-6 rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-hover)] text-white font-semibold text-sm transition-colors"
-        >
-          {isAr ? 'مواصلة التسوق' : 'Continuer les achats'}
-        </Link>
-        <Link
-          href="/account"
-          className="inline-flex items-center justify-center h-10 px-6 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-medium text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors"
-        >
-          {isAr ? 'عرض طلباتي' : 'Voir mes commandes'}
-        </Link>
+        </section>
       </div>
     </main>
   );
