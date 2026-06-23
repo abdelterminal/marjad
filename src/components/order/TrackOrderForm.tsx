@@ -3,7 +3,13 @@
 import { useState } from 'react';
 import { useLocale } from 'next-intl';
 import { AlertCircle, CheckCircle2, Loader2, PackageCheck, Phone, Search, Truck } from 'lucide-react';
+import Image from 'next/image';
 import { formatMAD } from '@/lib/money';
+
+/* Hallmark · component: order tracking form · genre: luxury ecommerce · theme: custom/MARJAD
+ * states: default · hover · focus · active · disabled · loading · error · success
+ * contrast: pass
+ */
 
 type TrackedOrder = {
   id: number;
@@ -89,9 +95,9 @@ export function TrackOrderForm() {
   const isCancelled = order?.status === 'cancelled';
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-      <form onSubmit={handleSubmit} className="form-panel space-y-5">
-        <div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)]">
+      <form onSubmit={handleSubmit} className="form-panel space-y-5 p-5 sm:p-6 lg:p-7">
+        <div className="border-b border-[var(--color-brand-border)] pb-5">
           <p className="text-[11px] font-mono uppercase tracking-[0.16em] text-[var(--color-brand-primary)]">
             {isAr ? 'تتبع الطلب' : 'Suivi commande'}
           </p>
@@ -140,22 +146,24 @@ export function TrackOrderForm() {
         </div>
 
         {error && (
-          <div className="form-error">
+          <div role="alert" className="flex items-start gap-2 rounded-[var(--radius-sm)] border-s-[3px] border-[var(--color-brand-error)] bg-[var(--color-brand-error-light)] p-3 text-sm text-[var(--color-brand-error)]">
             <AlertCircle className="size-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <button type="submit" className="form-submit" disabled={loading}>
+        <button type="submit" className="form-submit w-full" disabled={loading}>
           {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
           {loading ? (isAr ? 'جارٍ البحث...' : 'Recherche...') : isAr ? 'تتبع الطلب' : 'Suivre la commande'}
         </button>
       </form>
 
-      <div className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-5 shadow-[var(--shadow-sm)]">
+      <div className="rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-5 shadow-[var(--shadow-sm)] sm:p-6 lg:p-7">
         {!order ? (
           <div className="flex min-h-[360px] flex-col justify-center text-center">
-            <PackageCheck className="mx-auto size-10 text-[var(--color-brand-primary)]" />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
+              <PackageCheck className="size-7" aria-hidden="true" />
+            </div>
             <h3 className="mt-4 font-[var(--font-display)] text-xl font-bold text-[var(--color-brand-text)]">
               {isAr ? 'حالة طلبك ستظهر هنا' : 'Le statut apparaîtra ici'}
             </h3>
@@ -169,7 +177,7 @@ export function TrackOrderForm() {
           <div className="space-y-6">
             <div className="flex flex-col gap-3 border-b border-[var(--color-brand-border)] pb-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <p className="font-mono text-sm font-semibold text-[var(--color-brand-text)]">
+                <p className="font-mono text-sm font-semibold text-[var(--color-brand-text-muted)]">
                   #{order.id}
                 </p>
                 <h3 className="mt-1 font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-text)]">
@@ -179,7 +187,7 @@ export function TrackOrderForm() {
                   {order.customerName} · {order.city}
                 </p>
               </div>
-              <p className="price-display text-xl font-bold text-[var(--color-brand-text)]">
+              <p className="price-display text-xl font-bold text-[var(--color-brand-primary)]">
                 {formatMAD(parseFloat(order.total))}
               </p>
             </div>
@@ -198,17 +206,17 @@ export function TrackOrderForm() {
                   return (
                     <div
                       key={step}
-                      className={`rounded-[var(--radius-sm)] border p-3 ${
+                      className={`border-t pt-4 ${
                         done
-                          ? 'border-[var(--color-brand-primary)]/30 bg-[var(--color-brand-primary-light)]'
-                          : 'border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]'
+                          ? 'border-[var(--color-brand-primary)]'
+                          : 'border-[var(--color-brand-border)]'
                       }`}
                     >
                       <div
                         className={`mb-2 flex size-7 items-center justify-center rounded-full ${
                           done
                             ? 'bg-[var(--color-brand-primary)] text-white'
-                            : 'bg-white text-[var(--color-brand-text-subtle)]'
+                            : 'bg-[var(--color-brand-surface-alt)] text-[var(--color-brand-text-subtle)]'
                         }`}
                       >
                         {step === 'shipped' ? (
@@ -235,16 +243,29 @@ export function TrackOrderForm() {
               <h4 className="text-sm font-semibold text-[var(--color-brand-text)]">
                 {isAr ? 'المنتجات' : 'Articles'}
               </h4>
-              <div className="divide-y divide-[var(--color-brand-border)] rounded-[var(--radius-sm)] border border-[var(--color-brand-border)]">
+              <div className="divide-y divide-[var(--color-brand-border)] border-y border-[var(--color-brand-border)]">
                 {order.items.map((item) => (
-                  <div key={item.product.slug} className="flex items-center justify-between gap-4 p-3">
-                    <div>
-                      <p className="text-sm font-medium text-[var(--color-brand-text)]">
-                        {isAr ? item.product.nameAr : item.product.nameFr}
-                      </p>
-                      <p className="mt-0.5 text-xs text-[var(--color-brand-text-muted)]">
-                        × {item.quantity}
-                      </p>
+                  <div key={item.product.slug} className="flex items-center justify-between gap-4 py-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]">
+                        {item.product.image && (
+                          <Image
+                            src={item.product.image}
+                            alt={isAr ? item.product.nameAr : item.product.nameFr}
+                            fill
+                            className="object-cover"
+                            sizes="48px"
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="line-clamp-1 text-sm font-medium text-[var(--color-brand-text)]">
+                          {isAr ? item.product.nameAr : item.product.nameFr}
+                        </p>
+                        <p className="mt-0.5 text-xs text-[var(--color-brand-text-muted)]">
+                          {isAr ? `الكمية: ${item.quantity}` : `Qté: ${item.quantity}`}
+                        </p>
+                      </div>
                     </div>
                     <p className="text-sm font-semibold text-[var(--color-brand-text)]">
                       {formatMAD(parseFloat(item.unitPrice) * item.quantity)}
@@ -254,7 +275,7 @@ export function TrackOrderForm() {
               </div>
             </div>
 
-            <div className="grid gap-3 rounded-[var(--radius-sm)] bg-[var(--color-brand-surface-alt)] p-4 text-sm text-[var(--color-brand-text-muted)] sm:grid-cols-2">
+            <div className="grid gap-4 border-t border-[var(--color-brand-border)] pt-5 text-sm text-[var(--color-brand-text-muted)] sm:grid-cols-2">
               <div className="flex gap-2">
                 <Phone className="mt-0.5 size-4 shrink-0 text-[var(--color-brand-primary)]" />
                 <p>
