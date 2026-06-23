@@ -23,12 +23,16 @@ import {
 } from 'lucide-react';
 import { absoluteUrl, createPageMetadata } from '@/lib/seo';
 import { ProductViewEvent } from '@/components/analytics/ProductViewEvent';
+import { getWhatsAppHref } from '@/lib/contact';
+
+/* Hallmark · macrostructure: Editorial PDP · genre: luxury ecommerce · tone: warm Moroccan
+ * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
+ * pre-emit critique: P5 H5 E5 S5 R5 V5
+ */
 
 interface ProductDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
-
-const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
 
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
@@ -92,12 +96,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     : [];
   const related = relatedRaw.filter((p) => p.slug !== slug).slice(0, 4);
 
-  const waText = encodeURIComponent(
+  const waHref = getWhatsAppHref(
     isAr
       ? `مرحباً مرجاد، أود طلب المنتج: ${name}`
       : `Bonjour MARJAD, je souhaite commander : ${name}`,
   );
-  const waHref = waNumber ? `https://wa.me/${waNumber}?text=${waText}` : null;
 
   const productJsonLd = {
     '@context': 'https://schema.org',
@@ -155,7 +158,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   /* ── Render ───────────────────────────────────────────────── */
   return (
-    <main className="pb-20">
+    <main className="bg-[var(--color-brand-surface)] pb-20">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
@@ -169,19 +172,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       />
 
       {/* ── HERO: GALLERY + BUY BOX ─────────────────────────── */}
-      <section className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-10 pt-6 pb-0 lg:py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8 lg:gap-14">
+      <section className="relative overflow-hidden border-b border-[var(--color-brand-border)] bg-[linear-gradient(180deg,var(--color-brand-surface-alt)_0%,var(--color-brand-surface)_78%)]">
+        <div className="max-w-[var(--container-content)] mx-auto px-4 sm:px-6 lg:px-10 py-6 lg:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.08fr)_minmax(380px,0.72fr)] gap-8 lg:gap-14">
 
           {/* Gallery */}
           <Gallery images={product.images ?? []} productName={name} />
 
           {/* Buy box */}
-          <div className="lg:sticky lg:top-[90px] lg:self-start space-y-5">
+          <div className="lg:sticky lg:top-[90px] lg:self-start">
+            <div className="rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]/95 p-5 shadow-[var(--shadow-md)] backdrop-blur sm:p-6 lg:p-7">
 
             {/* Breadcrumb */}
             <nav
               aria-label={isAr ? 'مسار التنقل' : "Fil d'Ariane"}
-              className="flex items-center flex-wrap gap-1 text-xs text-[var(--color-brand-text-muted)]"
+              className="mb-5 flex items-center flex-wrap gap-1 text-xs text-[var(--color-brand-text-muted)]"
             >
               <Link href="/" className="hover:text-[var(--color-brand-primary)] transition-colors">
                 {isAr ? 'الرئيسية' : 'Accueil'}
@@ -201,39 +206,52 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <span className="truncate max-w-[200px] text-[var(--color-brand-text)]">{name}</span>
             </nav>
 
-            {/* Discount badge */}
-            {hasDiscount && (
-              <span className="inline-block px-2 py-0.5 rounded-[var(--radius-sm)] bg-[var(--color-brand-text)] text-white text-[10px] font-bold tracking-wide">
-                -{discountPct}%
-              </span>
-            )}
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              {categoryName && (
+                <span className="inline-flex items-center rounded-full border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-brand-text-muted)]">
+                  {categoryName}
+                </span>
+              )}
+              {hasDiscount && (
+                <span className="inline-flex items-center rounded-full bg-[var(--color-brand-text)] px-3 py-1 text-[11px] font-bold tracking-wide text-white">
+                  -{discountPct}%
+                </span>
+              )}
+            </div>
 
             {/* Product name */}
-            <h1 className="font-[var(--font-display)] text-[clamp(1.6rem,3vw,2.4rem)] font-bold text-[var(--color-brand-text)] leading-tight">
+            <h1 className="font-[var(--font-display)] text-[clamp(1.75rem,3vw,2.65rem)] font-bold text-[var(--color-brand-text)] leading-tight">
               {name}
             </h1>
 
             {/* Short description */}
             {description && (
-              <p className="text-sm text-[var(--color-brand-text-muted)] leading-relaxed line-clamp-3">
+              <p className="mt-4 text-sm text-[var(--color-brand-text-muted)] leading-relaxed line-clamp-4">
                 {description}
               </p>
             )}
 
             {/* Price */}
-            <div className="flex items-baseline gap-3">
-              <span className="text-[2rem] font-bold text-[var(--color-brand-primary)]">
-                {formattedPrice}
-              </span>
-              {hasDiscount && (
-                <span className="text-base text-[var(--color-brand-text-muted)] line-through">
-                  {formatMAD(compareAtPrice!)}
+            <div className="my-6 border-y border-[var(--color-brand-border)] py-5">
+              <div className="flex flex-wrap items-baseline gap-3">
+                <span className="text-[2rem] font-bold text-[var(--color-brand-primary)]">
+                  {formattedPrice}
                 </span>
-              )}
+                {hasDiscount && (
+                  <span className="text-base text-[var(--color-brand-text-muted)] line-through">
+                    {formatMAD(compareAtPrice!)}
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 text-xs font-medium text-[var(--color-brand-text-subtle)]">
+                {isAr
+                  ? 'الدفع نقداً عند الاستلام بعد تأكيد الطلب.'
+                  : 'Paiement en espèces à la livraison après confirmation.'}
+              </p>
             </div>
 
             {/* Stock */}
-            <div>
+            <div className="mb-5">
               {isOutOfStock ? (
                 <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--color-brand-error)]">
                   <span className="h-2 w-2 rounded-full bg-[var(--color-brand-error)]" />
@@ -270,27 +288,30 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             />
 
             {/* Trust items */}
-            <div className="grid grid-cols-3 gap-3 pt-1">
+            <div className="mt-5 grid grid-cols-1 divide-y divide-[var(--color-brand-border)] rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] sm:grid-cols-3 sm:divide-x sm:divide-y-0">
               {[
                 {
-                  icon: <Banknote className="h-5 w-5 mx-auto text-[var(--color-brand-text-muted)]" />,
+                  icon: <Banknote className="h-4 w-4 text-[var(--color-brand-primary)]" />,
                   title: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison',
                   body: isAr ? 'نقداً عند الاستلام' : 'Payez en espèces à la réception',
                 },
                 {
-                  icon: <CheckCircle2 className="h-5 w-5 mx-auto text-[var(--color-brand-text-muted)]" />,
+                  icon: <CheckCircle2 className="h-4 w-4 text-[var(--color-brand-primary)]" />,
                   title: isAr ? 'تأكيد قبل الإرسال' : 'Confirmation avant envoi',
                   body: isAr ? 'نتصل بك للتأكيد' : 'Nous vous appelons pour confirmer',
                 },
                 {
-                  icon: <Truck className="h-5 w-5 mx-auto text-[var(--color-brand-text-muted)]" />,
+                  icon: <Truck className="h-4 w-4 text-[var(--color-brand-primary)]" />,
                   title: isAr ? 'توصيل بالمغرب' : 'Livraison partout au Maroc',
                   body: isAr ? 'سريع وآمن ومتتبع' : 'Rapide, sécurisée et suivie',
                 },
               ].map((item) => (
-                <div key={item.title} className="text-center">
+                <div
+                  key={item.title}
+                  className="px-3 py-3"
+                >
                   {item.icon}
-                  <p className="mt-1.5 text-[11px] font-semibold text-[var(--color-brand-text)] leading-tight">
+                  <p className="mt-2 text-[11px] font-semibold text-[var(--color-brand-text)] leading-tight">
                     {item.title}
                   </p>
                   <p className="mt-0.5 text-[10px] text-[var(--color-brand-text-subtle)] leading-tight">
@@ -301,20 +322,31 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
 
             {/* Accordion */}
-            <div className="pt-1 border-t border-[var(--color-brand-border)]">
+            <div className="mt-5 border-t border-[var(--color-brand-border)] pt-1">
               <ProductAccordion items={accordionItems} />
             </div>
 
+            </div>
           </div>
+        </div>
         </div>
       </section>
 
       {/* ── BOTTOM INFO PANELS ──────────────────────────────── */}
-      <section className="mt-12 border-t border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]">
-        <div className="mx-auto max-w-[var(--container-content)] grid grid-cols-1 lg:grid-cols-3 divide-y lg:divide-y-0 lg:divide-x divide-[var(--color-brand-border)]">
+      <section className="border-y border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)]">
+        <div className="mx-auto max-w-[var(--container-content)] px-4 py-10 sm:px-6 lg:px-10 lg:py-14">
+          <div className="mb-8 max-w-2xl">
+            <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
+              {isAr ? 'تفاصيل مطمئنة' : 'Détails qui rassurent'}
+            </p>
+            <h2 className="mt-2 font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-text)]">
+              {isAr ? 'كل ما تحتاج معرفته قبل الطلب' : 'Tout savoir avant de commander'}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] lg:grid-cols-3 lg:divide-x divide-[var(--color-brand-border)]">
 
           {/* Panel 1 — L'histoire du produit */}
-          <div className="flex gap-5 p-8">
+          <div className="flex gap-5 p-6 sm:p-8">
             <div className="flex-1 min-w-0">
               <h3 className="font-[var(--font-display)] text-lg font-bold text-[var(--color-brand-text)] mb-3">
                 {isAr ? 'قصة المنتج' : "L'histoire du produit"}
@@ -325,23 +357,20 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     ? 'قطعة مغربية مختارة بعناية من قِبَل فريق مرجاد، مصنوعة يدوياً بمواد أصيلة.'
                     : "Sélectionnée avec soin par l'équipe MARJAD, cette pièce est façonnée à la main avec des matériaux authentiques.")}
               </p>
-              <Link
-                href={`/products/${product.slug}`}
-                className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-brand-text)] hover:text-[var(--color-brand-primary)] transition-colors"
-              >
-                {isAr ? 'اقرأ أكثر' : 'Lire plus'}
+              <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[var(--color-brand-primary)]">
+                {isAr ? 'مختارة بعناية' : 'Sélectionnée avec soin'}
                 <ArrowRight className="h-3.5 w-3.5 rtl:rotate-180" />
-              </Link>
+              </span>
             </div>
             {mainImage && (
-              <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-xl">
+              <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-[var(--radius-md)]">
                 <Image src={mainImage} alt={name} fill className="object-cover" sizes="120px" />
               </div>
             )}
           </div>
 
           {/* Panel 2 — Origine */}
-          <div className="flex gap-5 p-8">
+          <div className="flex gap-5 border-t border-[var(--color-brand-border)] p-6 sm:p-8 lg:border-t-0">
             <div className="flex-1 min-w-0">
               <h3 className="font-[var(--font-display)] text-lg font-bold text-[var(--color-brand-text)] mb-4">
                 {isAr ? 'الأصل' : 'Origine'}
@@ -374,7 +403,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 ))}
               </ul>
             </div>
-            <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-xl">
+            <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-[var(--radius-md)]">
               <Image
                 src="/images/marjad-hero-detail.png"
                 alt={isAr ? 'حرف مغربية' : 'Artisanat marocain'}
@@ -386,7 +415,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           </div>
 
           {/* Panel 3 — Livraison & retours */}
-          <div className="flex gap-5 p-8">
+          <div className="flex gap-5 border-t border-[var(--color-brand-border)] p-6 sm:p-8 lg:border-t-0">
             <div className="flex-1 min-w-0">
               <h3 className="font-[var(--font-display)] text-lg font-bold text-[var(--color-brand-text)] mb-4">
                 {isAr ? 'التوصيل والإرجاع' : 'Livraison & retours'}
@@ -396,7 +425,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   {
                     icon: <Truck className="h-4 w-4 shrink-0 text-[var(--color-brand-primary)]" />,
                     title: isAr ? 'توصيل بالمغرب' : 'Livraison partout au Maroc',
-                    body: isAr ? '3 إلى 5 أيام عمل' : '2 à 4 jours ouvrés',
+                    body: isAr ? '3 إلى 5 أيام عمل' : '3 à 5 jours ouvrables',
                   },
                   {
                     icon: <Banknote className="h-4 w-4 shrink-0 text-[var(--color-brand-primary)]" />,
@@ -405,8 +434,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   },
                   {
                     icon: <RotateCcw className="h-4 w-4 shrink-0 text-[var(--color-brand-primary)]" />,
-                    title: isAr ? 'الإرجاع مقبول' : 'Retours faciles',
-                    body: isAr ? '48 ساعة لتغيير رأيك' : '14 jours pour changer d\'avis',
+                    title: isAr ? 'الإرجاع مقبول' : 'Retours sous conditions',
+                    body: isAr ? '48 ساعة في حال وجود مشكل' : '48h en cas de problème',
                   },
                 ].map((b) => (
                   <li key={b.title} className="flex items-start gap-2.5">
@@ -419,7 +448,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 ))}
               </ul>
             </div>
-            <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-xl">
+            <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-[var(--radius-md)]">
               <Image
                 src="/images/hero-bg.png"
                 alt={isAr ? 'توصيل مرجاد' : 'Livraison MARJAD'}
@@ -430,6 +459,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
           </div>
 
+        </div>
         </div>
       </section>
 

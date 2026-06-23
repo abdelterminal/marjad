@@ -46,10 +46,10 @@ export function Gallery({ images, productName }: GalleryProps) {
                     onClick={() => setActiveIndex(idx)}
                     aria-label={`Photo ${idx + 1}`}
                     className={[
-                      'relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-150 focus-visible:outline-none',
+                      'relative h-[74px] w-[74px] shrink-0 overflow-hidden rounded-[var(--radius-md)] border transition-all duration-150 focus-visible:outline-none',
                       idx === activeIndex
-                        ? 'border-[var(--color-brand-primary)] opacity-100'
-                        : 'border-[var(--color-brand-border)] opacity-55 hover:opacity-90 hover:border-[var(--color-brand-text-muted)]',
+                        ? 'border-[var(--color-brand-primary)] opacity-100 shadow-[var(--shadow-sm)]'
+                        : 'border-[var(--color-brand-border)] opacity-60 hover:border-[var(--color-brand-text-muted)] hover:opacity-95',
                     ].join(' ')}
                   >
                     <Image
@@ -77,7 +77,7 @@ export function Gallery({ images, productName }: GalleryProps) {
           )}
 
           {/* Main image */}
-          <div className="relative flex-1 h-[380px] sm:h-[440px] lg:h-[520px] overflow-hidden rounded-[var(--radius-md)] bg-[var(--color-brand-surface-alt)]">
+          <div className="relative h-[380px] flex-1 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] shadow-[var(--shadow-sm)] sm:h-[440px] lg:h-[620px]">
             {mainImage && (
               <Image
                 key={mainImage}
@@ -95,7 +95,7 @@ export function Gallery({ images, productName }: GalleryProps) {
               type="button"
               onClick={() => setZoomed(true)}
               aria-label="Agrandir l'image"
-              className="absolute top-3 end-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/80 text-[var(--color-brand-text)] shadow backdrop-blur-sm hover:bg-white transition-colors"
+              className="absolute end-3 top-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/45 bg-white/85 text-[var(--color-brand-text)] shadow backdrop-blur-sm transition-colors hover:bg-white"
             >
               <ZoomIn className="h-[18px] w-[18px]" strokeWidth={1.8} />
             </button>
@@ -112,10 +112,10 @@ export function Gallery({ images, productName }: GalleryProps) {
                 onClick={() => setActiveIndex(idx)}
                 aria-label={`Photo ${idx + 1}`}
                 className={[
-                  'relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition-all duration-150',
+                  'relative h-14 w-14 shrink-0 overflow-hidden rounded-[var(--radius-md)] border transition-all duration-150',
                   idx === activeIndex
                     ? 'border-[var(--color-brand-primary)] opacity-100'
-                    : 'border-[var(--color-brand-border)] opacity-55 hover:opacity-90',
+                    : 'border-[var(--color-brand-border)] opacity-60 hover:opacity-95',
                 ].join(' ')}
               >
                 <Image src={img} alt={`Photo ${idx + 1}`} fill className="object-cover" sizes="56px" />

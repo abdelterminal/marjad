@@ -25,7 +25,7 @@ export function ProductCTA({ product, isOutOfStock, waHref, isAr }: Props) {
     return (
       <button
         disabled
-        className="w-full h-12 rounded-[var(--radius-btn)] bg-[var(--color-brand-surface-alt)] text-sm font-semibold text-[var(--color-brand-text-subtle)] cursor-not-allowed"
+        className="h-12 w-full cursor-not-allowed rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-alt)] text-sm font-semibold text-[var(--color-brand-text-subtle)]"
       >
         {isAr ? 'نفد المخزون' : 'Rupture de stock'}
       </button>
@@ -35,13 +35,13 @@ export function ProductCTA({ product, isOutOfStock, waHref, isAr }: Props) {
   return (
     <div className="space-y-3">
       {/* Qty selector + Add to cart */}
-      <div className="flex items-center gap-3">
-        <div className="flex h-12 shrink-0 items-center rounded-[var(--radius-btn)] border border-[var(--color-brand-border)]">
+      <div className="flex items-center gap-3 rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface)] p-1.5">
+        <div className="flex h-11 shrink-0 items-center rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)]">
           <button
             type="button"
             onClick={() => setQty((q) => Math.max(1, q - 1))}
             aria-label={isAr ? 'تقليل الكمية' : 'Diminuer'}
-            className="flex h-full w-11 items-center justify-center text-[var(--color-brand-text-muted)] hover:text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors rounded-s-[var(--radius-btn)]"
+            className="flex h-full w-10 items-center justify-center rounded-s-[var(--radius-btn)] text-[var(--color-brand-text-muted)] transition-colors hover:bg-[var(--color-brand-surface-alt)] hover:text-[var(--color-brand-text)]"
           >
             <Minus className="h-3.5 w-3.5" />
           </button>
@@ -50,7 +50,7 @@ export function ProductCTA({ product, isOutOfStock, waHref, isAr }: Props) {
             type="button"
             onClick={() => setQty((q) => q + 1)}
             aria-label={isAr ? 'زيادة الكمية' : 'Augmenter'}
-            className="flex h-full w-11 items-center justify-center text-[var(--color-brand-text-muted)] hover:text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] transition-colors rounded-e-[var(--radius-btn)]"
+            className="flex h-full w-10 items-center justify-center rounded-e-[var(--radius-btn)] text-[var(--color-brand-text-muted)] transition-colors hover:bg-[var(--color-brand-surface-alt)] hover:text-[var(--color-brand-text)]"
           >
             <Plus className="h-3.5 w-3.5" />
           </button>
@@ -70,10 +70,11 @@ export function ProductCTA({ product, isOutOfStock, waHref, isAr }: Props) {
             w-full h-12
             rounded-[var(--radius-btn)]
             border border-[var(--color-brand-border)]
-            bg-white
+            bg-[var(--color-brand-surface-elevated)]
             text-[var(--color-brand-text)] text-sm font-semibold
-            hover:border-[var(--color-brand-primary)]/40 hover:text-[var(--color-brand-primary)]
-            transition-colors duration-150
+            shadow-[var(--shadow-sm)]
+            transition-all duration-150
+            hover:-translate-y-0.5 hover:border-[var(--color-brand-primary)]/40 hover:text-[var(--color-brand-primary)] hover:shadow-[var(--shadow-md)]
           "
         >
           <svg viewBox="0 0 24 24" fill="currentColor" className="h-4 w-4 shrink-0 text-[#25D366]" aria-hidden="true">
