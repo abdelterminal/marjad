@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import { MessageCircle, PackageCheck, ShieldCheck } from 'lucide-react';
 
 interface Testimonial {
   name: string;
@@ -65,7 +63,17 @@ interface Props {
 export function TestimonialsSection({ locale }: Props) {
   const isAr = locale === 'ar';
   const reviews = isAr ? testimonialsAr : testimonialsFr;
-  const [activeDot, setActiveDot] = useState(0);
+  const trustNotes = isAr
+    ? [
+        { icon: PackageCheck, label: 'طلب مؤكد' },
+        { icon: MessageCircle, label: 'تواصل واضح' },
+        { icon: ShieldCheck, label: 'تغليف بعناية' },
+      ]
+    : [
+        { icon: PackageCheck, label: 'Commande confirmée' },
+        { icon: MessageCircle, label: 'Échange clair' },
+        { icon: ShieldCheck, label: 'Emballage soigné' },
+      ];
 
   return (
     <section className="bg-[var(--color-brand-surface-alt)] py-16 lg:py-24">
@@ -84,24 +92,28 @@ export function TestimonialsSection({ locale }: Props) {
         {/* 3-column cards */}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           {reviews.map((review, i) => (
-            <div
+            <figure
               key={i}
-              className="flex flex-col rounded-[var(--radius-md)] bg-[var(--color-brand-surface-elevated)] p-6"
+              className="flex flex-col rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] p-6 shadow-[var(--shadow-xs)]"
             >
-              {/* Stars */}
-              <div className="mb-4 flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, j) => (
-                  <span key={j} className="text-base text-[var(--color-brand-secondary)]">★</span>
-                ))}
-              </div>
+              {(() => {
+                const note = trustNotes[i % trustNotes.length];
+                const Icon = note.icon;
+                return (
+                  <div className="mb-4 inline-flex w-fit items-center gap-2 rounded-full bg-[var(--color-brand-primary-light)] px-3 py-1 text-[11px] font-semibold text-[var(--color-brand-primary)]">
+                    <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                    {note.label}
+                  </div>
+                );
+              })()}
 
               {/* Text */}
-              <p className="flex-1 text-sm leading-relaxed text-[var(--color-brand-text)]">
+              <blockquote className="flex-1 text-sm leading-relaxed text-[var(--color-brand-text)]">
                 {review.text}
-              </p>
+              </blockquote>
 
               {/* Author */}
-              <div className="mt-6 flex items-center gap-3">
+              <figcaption className="mt-6 flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-sm font-semibold text-[var(--color-brand-primary)] select-none">
                   {review.initials}
                 </div>
@@ -111,26 +123,11 @@ export function TestimonialsSection({ locale }: Props) {
                     {review.role}, {review.city}
                   </p>
                 </div>
-              </div>
-            </div>
+              </figcaption>
+            </figure>
           ))}
         </div>
 
-        {/* Dot indicators */}
-        <div className="mt-8 flex items-center justify-center gap-2">
-          {[0, 1, 2].map((i) => (
-            <button
-              key={i}
-              onClick={() => setActiveDot(i)}
-              aria-label={`Page ${i + 1}`}
-              className={`rounded-full transition-all duration-300 ${
-                i === activeDot
-                  ? 'h-2 w-6 bg-[var(--color-brand-primary)]'
-                  : 'h-2 w-2 bg-[var(--color-brand-border)]'
-              }`}
-            />
-          ))}
-        </div>
 
       </div>
     </section>

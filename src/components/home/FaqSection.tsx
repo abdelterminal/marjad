@@ -10,7 +10,7 @@ const faqsFr = [
   },
   {
     q: 'Quels sont les détails de livraison ?',
-    a: 'Nous livrons partout au Maroc en 3 à 7 jours ouvrables selon votre ville. Les pièces sont soigneusement emballées pour garantir leur intégrité à l\'arrivée.',
+    a: 'Nous livrons partout au Maroc en 3 à 5 jours ouvrables selon votre ville. Les pièces sont soigneusement emballées pour garantir leur intégrité à l\'arrivée.',
   },
   {
     q: 'Puis-je retourner un produit ?',
@@ -29,7 +29,7 @@ const faqsAr = [
   },
   {
     q: 'ما هي تفاصيل التوصيل؟',
-    a: 'نوصل في جميع أنحاء المغرب في غضون 3 إلى 7 أيام عمل حسب مدينتك. يتم تغليف القطع بعناية لضمان سلامتها عند الوصول.',
+    a: 'نوصل في جميع أنحاء المغرب في غضون 3 إلى 5 أيام عمل حسب مدينتك. يتم تغليف القطع بعناية لضمان سلامتها عند الوصول.',
   },
   {
     q: 'هل يمكنني إرجاع المنتج؟',
@@ -63,11 +63,13 @@ export function FaqSection({ locale }: Props) {
             <div key={i}>
               <button
                 type="button"
-                className="flex w-full items-center justify-between gap-4 py-4 text-start focus-visible:outline-none"
+                id={`home-faq-trigger-${i}`}
+                className="group flex w-full cursor-pointer items-center justify-between gap-4 py-4 text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
                 onClick={() => setOpen(open === i ? null : i)}
                 aria-expanded={open === i}
+                aria-controls={`home-faq-panel-${i}`}
               >
-                <span className="flex-1 min-w-0 text-sm font-medium text-[var(--color-brand-text)]">{faq.q}</span>
+                <span className="flex-1 min-w-0 text-sm font-medium text-[var(--color-brand-text)] transition-colors group-hover:text-[var(--color-brand-primary)]">{faq.q}</span>
                 <ChevronDown
                   className={`h-4 w-4 shrink-0 text-[var(--color-brand-text-muted)] transition-transform duration-200 ${
                     open === i ? 'rotate-180' : ''
@@ -75,7 +77,12 @@ export function FaqSection({ locale }: Props) {
                 />
               </button>
               {open === i && (
-                <div className="pb-4 text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
+                <div
+                  id={`home-faq-panel-${i}`}
+                  role="region"
+                  aria-labelledby={`home-faq-trigger-${i}`}
+                  className="max-w-prose pb-4 text-sm leading-relaxed text-[var(--color-brand-text-muted)]"
+                >
                   {faq.a}
                 </div>
               )}
