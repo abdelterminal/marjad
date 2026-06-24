@@ -4,7 +4,7 @@ import { trackOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
-  const limited = checkRateLimit(req, {
+  const limited = await checkRateLimit(req, {
     key: 'orders:track',
     limit: 20,
     windowMs: 15 * 60 * 1000,

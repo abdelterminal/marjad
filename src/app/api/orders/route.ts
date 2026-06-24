@@ -7,7 +7,7 @@ import { checkRateLimit } from '@/lib/rate-limit';
 // POST /api/orders — public (guests allowed); attach userId if session exists
 export async function POST(req: NextRequest) {
   try {
-    const limited = checkRateLimit(req, {
+    const limited = await checkRateLimit(req, {
       key: 'orders:create',
       limit: 8,
       windowMs: 15 * 60 * 1000,
