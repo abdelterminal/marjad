@@ -170,10 +170,16 @@ export function Filters({ categories, currentCategory, currentMin, currentMax }:
 
   const buildUrl = useCallback(
     (cats: string[], min: string, max: string) => {
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(
+        typeof window !== 'undefined' ? window.location.search : '',
+      );
       if (cats.length === 1) params.set('category', cats[0]);
+      else params.delete('category');
       if (min) params.set('min', min);
+      else params.delete('min');
       if (max) params.set('max', max);
+      else params.delete('max');
+      params.delete('page');
       const qs = params.toString();
       return qs ? `${pathname}?${qs}` : pathname;
     },
@@ -189,7 +195,7 @@ export function Filters({ categories, currentCategory, currentMin, currentMax }:
     setSelectedCategories([]);
     setMinPrice('');
     setMaxPrice('');
-    router.push(pathname as '/');
+    router.push(buildUrl([], '', '') as '/');
     setSheetOpen(false);
   }
 

@@ -217,8 +217,21 @@ async function main() {
   });
   const catalogBody = await catalog.json().catch(() => null);
   const productSlug = catalogBody?.items?.[0]?.slug;
-  if (!catalog.ok || !productSlug) {
+  const productName = catalogBody?.items?.[0]?.nameFr;
+  if (!catalog.ok || !productSlug || !productName) {
     throw new Error('A published product is required for the product-detail load scenario.');
+  }
+
+  const searchProbe = await fetch(
+    url(`/api/products?q=${encodeURIComponent(productName)}&pageSize=24`),
+    { headers: { accept: 'application/json' } },
+  );
+  const searchProbeBody = await searchProbe.json().catch(() => null);
+  if (
+    !searchProbe.ok ||
+    !searchProbeBody?.items?.some((item) => item.slug === productSlug)
+  ) {
+    throw new Error('Product search did not return the known published product.');
   }
 
   await runScenario({
@@ -250,6 +263,17 @@ async function main() {
     p95Limit: readP95Limit,
     request: () =>
       fetch(url(`/api/products/${encodeURIComponent(productSlug)}`), {
+        headers: { accept: 'application/json' },
+      }),
+  });
+
+  await runScenario({
+    name: 'product-search',
+    requests: readRequests,
+    concurrency: readConcurrency,
+    p95Limit: readP95Limit,
+    request: () =>
+      fetch(url(`/api/products?q=${encodeURIComponent(productName)}&pageSize=24`), {
         headers: { accept: 'application/json' },
       }),
   });

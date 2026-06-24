@@ -6,6 +6,7 @@ import { ProductGrid } from '@/components/product/ProductGrid';
 import { Filters } from '@/components/product/Filters';
 import { SortSelect } from '@/components/product/SortSelect';
 import { Pagination } from '@/components/product/Pagination';
+import { ProductSearch } from '@/components/product/ProductSearch';
 import { Headphones, PackageCheck, SearchX, ShieldCheck, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 
@@ -17,6 +18,7 @@ import { createPageMetadata } from '@/lib/seo';
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{
+    q?: string;
     category?: string;
     min?: string;
     max?: string;
@@ -58,19 +60,37 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
   });
 }
 
-function EmptyProductsState({ locale, isAr }: { locale: string; isAr: boolean }) {
+function EmptyProductsState({
+  locale,
+  isAr,
+  query,
+}: {
+  locale: string;
+  isAr: boolean;
+  query?: string;
+}) {
   return (
     <div className="page-enter flex flex-col items-center justify-center rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--color-brand-surface-elevated)] px-6 py-16 text-center shadow-[var(--shadow-xs)]">
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-brand-primary-light)] text-[var(--color-brand-primary)]">
         <SearchX className="h-7 w-7" strokeWidth={1.5} aria-hidden="true" />
       </div>
       <h2 className="mt-5 font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-text)]">
-        {isAr ? 'لم نجد قطعاً بهذه الفلاتر.' : 'Aucune pièce ne correspond.'}
+        {query
+          ? isAr
+            ? `لا توجد نتائج لـ «${query}»`
+            : `Aucun résultat pour « ${query} »`
+          : isAr
+            ? 'لم نجد قطعاً بهذه الفلاتر.'
+            : 'Aucune pièce ne correspond.'}
       </h2>
       <p className="mt-2 max-w-[420px] text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
-        {isAr
-          ? 'جرّب إزالة الفلاتر أو تغيير السعر. المجموعة الكاملة ستظهر لك كل القطع المتاحة.'
-          : 'Essayez de retirer les filtres ou de modifier le prix. La collection complète affichera toutes les pièces disponibles.'}
+        {query
+          ? isAr
+            ? 'جرّب كلمة أقصر أو امسح البحث لعرض المجموعة الكاملة.'
+            : 'Essayez un terme plus court ou effacez la recherche pour retrouver toute la collection.'
+          : isAr
+            ? 'جرّب إزالة الفلاتر أو تغيير السعر. المجموعة الكاملة ستظهر لك كل القطع المتاحة.'
+            : 'Essayez de retirer les filtres ou de modifier le prix. La collection complète affichera toutes les pièces disponibles.'}
       </p>
       <a
         href={`/${locale}/products`}
@@ -87,6 +107,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const locale = await getLocale();
   const isAr = locale === 'ar';
 
+  const q = sp.q?.trim().slice(0, 80) || undefined;
   const category = sp.category ?? undefined;
   const minRaw = parseFloat(sp.min ?? '');
   const min = !isNaN(minRaw) ? Math.max(0, minRaw) : undefined;
@@ -99,7 +120,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const pageSize = 12;
 
   const [{ items: products, total }, categories] = await Promise.all([
-    listProducts({ category, min, max, sort, page, pageSize }),
+    listProducts({ q, category, min, max, sort, page, pageSize }),
     listCategories(),
   ]);
 
@@ -176,6 +197,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       </section>
 
       <div className="max-w-[var(--container-xl)] mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="mb-5 flex items-center gap-3">
+          <ProductSearch key={q ?? ''} currentQuery={q} />
+        </div>
         {/*
           Layout:
           - Mobile: toolbar (Filters button + sort + count), then grid
@@ -227,7 +251,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
               <SortSelect currentSort={sort} />
             </div>
             {products.length === 0 ? (
-              <EmptyProductsState locale={locale} isAr={isAr} />
+              <EmptyProductsState locale={locale} isAr={isAr} query={q} />
             ) : (
               <ProductGrid products={products} locale={locale} />
             )}
@@ -238,7 +262,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
         {/* Mobile content — below toolbar */}
         <div className="lg:hidden">
           {products.length === 0 ? (
-            <EmptyProductsState locale={locale} isAr={isAr} />
+            <EmptyProductsState locale={locale} isAr={isAr} query={q} />
           ) : (
             <ProductGrid products={products} locale={locale} />
           )}

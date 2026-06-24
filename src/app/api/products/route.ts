@@ -6,6 +6,7 @@ export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
 
   const parsed = productsQuerySchema.safeParse({
+    q: searchParams.get('q') ?? undefined,
     category: searchParams.get('category') ?? undefined,
     min: searchParams.get('min') ?? undefined,
     max: searchParams.get('max') ?? undefined,
@@ -21,10 +22,10 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const { category, min, max, sort, page, pageSize } = parsed.data;
+  const { q, category, min, max, sort, page, pageSize } = parsed.data;
 
   try {
-    const { items, total } = await listProducts({ category, min, max, sort, page, pageSize });
+    const { items, total } = await listProducts({ q, category, min, max, sort, page, pageSize });
     return NextResponse.json({ items, total, page, pageSize });
   } catch {
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });

@@ -4,6 +4,7 @@ import { and, eq, gte, lte, asc, desc, count, ilike, or, SQL } from 'drizzle-orm
 import type { AdminProductInput } from '@/lib/validators';
 
 export interface ProductFilters {
+  q?: string;
   category?: string;
   min?: number;
   max?: number;
@@ -13,9 +14,24 @@ export interface ProductFilters {
 }
 
 export async function listProducts(filters: ProductFilters = {}) {
-  const { category, min, max, sort = 'newest', page = 1, pageSize = 24 } = filters;
+  const { q, category, min, max, sort = 'newest', page = 1, pageSize = 24 } = filters;
 
   const conditions: SQL[] = [eq(products.isPublished, true)];
+
+  if (q) {
+    const escapedQuery = q.replace(/[\\%_]/g, '\\$&');
+    const pattern = `%${escapedQuery}%`;
+    conditions.push(
+      or(
+        ilike(products.nameFr, pattern),
+        ilike(products.nameAr, pattern),
+        ilike(products.descriptionFr, pattern),
+        ilike(products.descriptionAr, pattern),
+        ilike(products.detailsFr, pattern),
+        ilike(products.detailsAr, pattern),
+      )!,
+    );
+  }
 
   // Price range filter
   if (min !== undefined) {

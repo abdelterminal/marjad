@@ -49,6 +49,7 @@ export const trackOrderSchema = z.object({
 // ─── Products query params ─────────────────────────────────────────────────────
 
 export const productsQuerySchema = z.object({
+  q: z.string().trim().max(80).optional(),
   category: z.string().optional(),
   min: z.coerce.number().min(0).optional(),
   max: z.coerce.number().min(0).optional(),

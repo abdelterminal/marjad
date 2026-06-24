@@ -48,8 +48,26 @@ async function checkBuyingPath(page) {
     .first();
   await expectVisible(productLink, 'No visible product card link was found.');
 
+  const productName = await productLink.getAttribute('aria-label');
+  if (!productName) throw new Error('The first product link has no accessible name.');
+
+  log('searching the collection');
+  const searchInput = page.getByRole('searchbox', {
+    name: /rechercher un produit|البحث عن منتج/i,
+  });
+  await expectVisible(searchInput, 'Collection search input was not visible.');
+  await searchInput.fill(productName);
+  await page.getByRole('button', { name: /chercher|بحث/i }).click();
+  await page.waitForURL((current) => current.searchParams.get('q') === productName, {
+    timeout: 10_000,
+  });
+  await expectVisible(
+    page.getByRole('link', { name: productName }).first(),
+    'The searched product was not visible in the results.',
+  );
+
   log('opening first product');
-  await productLink.click();
+  await page.getByRole('link', { name: productName }).first().click();
   await page.waitForURL(/\/products\/[^/?#]+/, { timeout: 10_000 });
 
   const addToCart = page.getByRole('button', { name: /ajouter .* panier|ajouter au panier/i }).first();
