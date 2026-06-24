@@ -1,5 +1,3 @@
-import { getLocale } from 'next-intl/server';
-
 const messagesFr = [
   'Artisanat Marocain',
   'Livraison au Maroc',
@@ -18,10 +16,8 @@ const messagesAr = [
   'دعم بعد الطلب',
 ];
 
-export async function MarqueeStrip() {
-  const locale = await getLocale();
+export function MarqueeStrip({ locale }: { locale: string }) {
   const msgs = locale === 'ar' ? messagesAr : messagesFr;
-  // Duplicate for seamless loop
   const items = [...msgs, ...msgs];
 
   return (

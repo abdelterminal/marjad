@@ -36,7 +36,7 @@ export function ProductGrid({ products, locale }: ProductGridProps) {
         <p className="mb-2 font-[var(--font-display)] text-xl font-semibold text-[var(--color-brand-text)]">
           {isAr ? 'لا توجد قطع مطابقة' : 'Aucune pièce trouvée'}
         </p>
-        <p className="max-w-sm text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
+        <p className="max-w-[24rem] text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
           {isAr
             ? 'جرّب إزالة بعض الفلاتر أو تعديل نطاق السعر لعرض خيارات أكثر.'
             : 'Essayez de retirer un filtre ou d’ajuster le prix pour retrouver plus de pièces.'}

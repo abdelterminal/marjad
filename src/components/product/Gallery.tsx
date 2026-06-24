@@ -135,7 +135,7 @@ export function Gallery({ images, productName }: GalleryProps) {
           onClick={() => setZoomed(false)}
         >
           <div
-            className="relative max-h-[90vh] w-full max-w-3xl"
+            className="relative max-h-[90vh] w-full max-w-[48rem]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative aspect-[3/4] w-full">

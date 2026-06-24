@@ -313,7 +313,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <MarqueeStrip />
+      <MarqueeStrip locale={locale} />
 
       {/* ── CATEGORIES ───────────────────────────────────────────── */}
       {categories.length > 0 && (

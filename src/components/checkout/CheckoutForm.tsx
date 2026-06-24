@@ -201,7 +201,7 @@ export function CheckoutForm() {
             <p className="text-[11px] font-mono uppercase tracking-[0.18em] text-[var(--color-brand-primary)]">
               {isAr ? 'طلب آمن' : 'Commande sécurisée'}
             </p>
-            <h1 className="mt-3 max-w-3xl font-[var(--font-display)] text-[clamp(1.9rem,3vw,3.25rem)] font-bold leading-tight text-[var(--color-brand-text)]">
+            <h1 className="mt-3 max-w-[48rem] font-[var(--font-display)] text-[clamp(1.9rem,3vw,3.25rem)] font-bold leading-tight text-[var(--color-brand-text)]">
               {isAr ? 'أكمل الطلب، وسنتصل بك للتأكيد.' : 'Finalisez votre commande, nous confirmons par appel.'}
             </h1>
             <p className="mt-4 max-w-[720px] text-sm leading-relaxed text-[var(--color-brand-text-muted)]">

@@ -36,7 +36,7 @@ export default async function EditCategoryPage({ params }: PageProps) {
         <p className="mt-1 text-sm text-gray-500">{category.nameFr}</p>
       </div>
 
-      <div className="max-w-lg rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      <div className="max-w-[32rem] rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
         <CategoryForm
           category={{
             id: category.id,
