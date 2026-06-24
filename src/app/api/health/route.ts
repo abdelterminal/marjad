@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import * as Sentry from '@sentry/nextjs';
 import { sql } from 'drizzle-orm';
 import { db } from '@/db';
 
@@ -30,13 +29,7 @@ export async function GET() {
       },
     );
   } catch (error) {
-    Sentry.captureException(error, {
-      tags: {
-        check: 'database',
-        endpoint: 'health',
-      },
-      level: 'fatal',
-    });
+    console.error('[GET /api/health] Database check failed:', error);
     return NextResponse.json(
       {
         status: 'degraded',

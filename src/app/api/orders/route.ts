@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as Sentry from '@sentry/nextjs';
 import { auth } from '@/auth';
 import { createOrder, getUserOrders, StockError } from '@/lib/queries/orders';
 import { createOrderSchema } from '@/lib/validators';
@@ -45,11 +44,6 @@ export async function POST(req: NextRequest) {
     if (err instanceof StockError) {
       return NextResponse.json({ error: err.message }, { status: 409 });
     }
-    Sentry.captureException(err, {
-      tags: {
-        endpoint: 'orders:create',
-      },
-    });
     console.error('[POST /api/orders]', err);
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });
   }

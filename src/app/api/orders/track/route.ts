@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import * as Sentry from '@sentry/nextjs';
 import { trackOrder } from '@/lib/queries/orders';
 import { trackOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
@@ -35,11 +34,6 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(order);
   } catch (err) {
-    Sentry.captureException(err, {
-      tags: {
-        endpoint: 'orders:track',
-      },
-    });
     console.error('[POST /api/orders/track]', err);
     return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });
   }

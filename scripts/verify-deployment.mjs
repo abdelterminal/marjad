@@ -102,12 +102,6 @@ function validateEnvironment() {
     }
   }
 
-  if (environment === 'production') {
-    for (const name of ['SENTRY_DSN', 'NEXT_PUBLIC_SENTRY_DSN']) {
-      if (!process.env[name]?.trim()) warn(`${name} is not configured; error reporting is disabled.`);
-    }
-  }
-
   return { databaseURL, redisURL };
 }
 

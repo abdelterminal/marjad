@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 
 export default function GlobalError({
@@ -11,10 +9,6 @@ export default function GlobalError({
   error: Error & { digest?: string };
   unstable_retry: () => void;
 }) {
-  useEffect(() => {
-    Sentry.captureException(error);
-  }, [error]);
-
   return (
     <html lang="fr">
       <body
@@ -66,8 +60,7 @@ export default function GlobalError({
                 lineHeight: 1.7,
               }}
             >
-              Notre équipe a été informée. Vous pouvez réessayer maintenant ou
-              revenir à l&apos;accueil.
+              Vous pouvez réessayer maintenant ou revenir à l&apos;accueil.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
               <button
