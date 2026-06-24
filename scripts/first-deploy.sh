@@ -8,7 +8,7 @@
 #   1. Point marjad.ma DNS A record to this server's IP.
 #   2. Have your GitHub repo URL ready (default below).
 #   3. Create /var/www/marjad/.env.production manually after cloning
-#      (see docs/ENV_PRODUCTION.md for required variables).
+#      (use .env.local.example as the variable inventory).
 # =============================================================================
 set -e
 
@@ -104,9 +104,9 @@ certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
 # --------------------------------------------------------------------------
 echo ""
 echo "==> [8/11] Creating uploads directory..."
-mkdir -p "$PROJECT_DIR/uploads"
-chown -R www-data:www-data "$PROJECT_DIR/uploads"
-chmod 755 "$PROJECT_DIR/uploads"
+mkdir -p "$PROJECT_DIR/public/uploads"
+chown -R www-data:www-data "$PROJECT_DIR/public/uploads"
+chmod 775 "$PROJECT_DIR/public/uploads"
 
 # --------------------------------------------------------------------------
 # 10. Create .env.production (MANUAL STEP — warn the user)
@@ -116,9 +116,10 @@ echo "==> [9/11] .env.production setup..."
 echo ""
 echo "  *** ACTION REQUIRED ***"
 echo "  Create $PROJECT_DIR/.env.production with your secrets."
-echo "  See docs/ENV_PRODUCTION.md for the required variables."
+echo "  Use $PROJECT_DIR/.env.local.example as the variable inventory."
 echo "  Minimum required before the next step:"
-echo "    DATABASE_URL, AUTH_SECRET, AUTH_URL, REDIS_URL, NODE_ENV"
+echo "    DATABASE_URL, AUTH_SECRET, AUTH_URL, REDIS_URL"
+echo "    NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_WHATSAPP_NUMBER"
 echo ""
 read -rp "  Press ENTER once .env.production is in place, or Ctrl+C to abort..."
 
@@ -133,12 +134,22 @@ npm run build
 
 echo ""
 echo "==> Running database migrations..."
-npx drizzle-kit migrate
+NODE_ENV=production npx drizzle-kit migrate
+
+echo ""
+echo "==> Running deployment preflight..."
+NODE_ENV=production APP_ENV=production DEPLOY_ENV_FILE=.env.production \
+  npm run verify:deployment
 
 echo ""
 echo "==> [11/11] Starting PM2 and saving process list..."
 pm2 start ecosystem.config.js
 pm2 save
+
+echo ""
+echo "==> Verifying live application..."
+NODE_ENV=production APP_ENV=production DEPLOY_ENV_FILE=.env.production \
+  DEPLOY_VERIFY_URL="http://127.0.0.1:3000" npm run verify:deployment
 
 # Ensure PM2 restarts on server reboot
 pm2 startup systemd -u root --hp /root
