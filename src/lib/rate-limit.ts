@@ -49,8 +49,8 @@ return { count, ttl }
 function getClientIp(req: NextRequest) {
   const forwarded = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
   return (
-    req.headers.get('cf-connecting-ip') ||
     req.headers.get('x-real-ip') ||
+    req.headers.get('cf-connecting-ip') ||
     forwarded ||
     'unknown'
   );

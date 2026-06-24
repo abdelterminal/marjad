@@ -8,6 +8,7 @@
     "start": "next start",
     "test:smoke": "node scripts/smoke-buying-path.mjs",
     "test:concurrency": "node scripts/concurrency-checkout.mjs",
+    "test:load": "node scripts/load-performance.mjs",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
