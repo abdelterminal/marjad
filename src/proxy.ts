@@ -10,7 +10,7 @@ export default auth(async (req) => {
   const { pathname } = req.nextUrl;
 
   // ── Admin route protection at middleware level (defense layer 1) ─────────────
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
+  if (pathname.startsWith('/admin')) {
     const session = req.auth;
     if (!session?.user || (session.user as { role?: string }).role !== 'admin') {
       const url = req.nextUrl.clone();
@@ -38,6 +38,6 @@ export default auth(async (req) => {
 
 export const config = {
   // Match everything except Next.js internals, Vercel internals, and static files.
-  // Keep api/ in scope so the admin API guard above fires.
+  // Keep api/ in scope so route handlers can apply their own JSON auth guards.
   matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
 };
