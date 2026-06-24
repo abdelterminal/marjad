@@ -533,12 +533,12 @@ export function CheckoutForm() {
                 <span className="text-[var(--color-brand-text-muted)]">
                   {isAr ? 'التوصيل' : 'Livraison'}
                 </span>
-                <span className="font-medium text-[var(--color-brand-success)]">
-                  {isAr ? 'مجاني' : 'Gratuite'}
+                <span className="text-end text-xs font-medium text-[var(--color-brand-text-muted)]">
+                  {isAr ? 'يُؤكَّد مع الطلب' : 'Confirmée avec la commande'}
                 </span>
               </div>
               <div className="flex justify-between border-t border-[var(--color-brand-border)] pt-3 text-base font-semibold">
-                <span>{isAr ? 'الإجمالي' : 'Total'}</span>
+                <span>{isAr ? 'مجموع المنتجات' : 'Total articles'}</span>
                 <span className="price-display">{formatMAD(subtotal)}</span>
               </div>
             </div>

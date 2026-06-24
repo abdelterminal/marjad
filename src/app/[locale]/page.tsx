@@ -1,4 +1,4 @@
-/* Hallmark · macrostructure: Immersive commerce hero + categories + selection + story + COD + bestsellers + testimonials + FAQ
+/* Hallmark · macrostructure: Immersive commerce hero + categories + selection + story + COD + bestsellers + FAQ
  * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · golden #D4A853
  * pre-emit critique: P5 H5 E5 S5 R5 V5
  */
@@ -9,7 +9,6 @@ import { Link } from '@/i18n/navigation';
 import { listProducts } from '@/lib/queries/products';
 import { listCategories } from '@/lib/queries/categories';
 import { ProductCard } from '@/components/product/ProductCard';
-import { TestimonialsSection } from '@/components/home/TestimonialsSection';
 import { FaqSection } from '@/components/home/FaqSection';
 import { ArrowRight, Award, Banknote, Heart, Headphones, Leaf, MessageCircle, PackageCheck, Plus, Sparkles, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
@@ -190,7 +189,7 @@ export default async function HomePage() {
                 <div className="mt-9 grid max-w-[560px] grid-cols-1 gap-2.5 sm:grid-cols-3">
                   {[
                     { icon: PackageCheck, label: isAr ? 'الدفع عند الاستلام' : 'Paiement à la livraison' },
-                    { icon: MessageCircle, label: isAr ? 'تأكيد واتساب' : 'Confirmation WhatsApp' },
+                    { icon: MessageCircle, label: isAr ? 'تأكيد بالهاتف' : 'Confirmation par téléphone' },
                     { icon: Truck, label: isAr ? 'توصيل المغرب' : 'Livraison Maroc' },
                   ].map((item) => {
                     const Icon = item.icon;
@@ -553,8 +552,6 @@ export default async function HomePage() {
       )}
 
       {/* ── TESTIMONIALS ─────────────────────────────────────────── */}
-      <TestimonialsSection locale={locale} />
-
       {/* ── FAQ ──────────────────────────────────────────────────── */}
       <FaqSection locale={locale} />
 

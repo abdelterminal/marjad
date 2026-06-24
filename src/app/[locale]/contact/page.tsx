@@ -181,26 +181,59 @@ export default async function ContactPage() {
           className="flex items-start justify-center px-6 py-10 lg:items-center lg:px-10 lg:py-14"
           style={{ background: 'var(--color-brand-surface)' }}
         >
-          <div
-            id="contact-form"
-            className="w-full max-w-[420px] rounded-2xl p-6 shadow-md lg:p-7"
-            style={{
-              background: 'var(--color-brand-surface-elevated)',
-              border: '1px solid var(--color-brand-border)',
-            }}
-          >
-            <ContactForm
-              title={t('formCardTitle')}
-              nameLabel={t('formName')}
-              phoneLabel={t('formPhone')}
-              emailLabel={t('formEmail')}
-              subjectLabel={t('formSubject')}
-              subjects={subjects}
-              messageLabel={t('formMessage')}
-              submitLabel={t('formSendBtn')}
-              successMsg={t('formSuccess')}
-            />
-          </div>
+          {whatsappHref ? (
+            <div
+              id="contact-form"
+              className="w-full max-w-[420px] rounded-2xl p-6 shadow-md lg:p-7"
+              style={{
+                background: 'var(--color-brand-surface-elevated)',
+                border: '1px solid var(--color-brand-border)',
+              }}
+            >
+              <ContactForm
+                title={t('formCardTitle')}
+                nameLabel={t('formName')}
+                phoneLabel={t('formPhone')}
+                emailLabel={t('formEmail')}
+                subjectLabel={t('formSubject')}
+                subjects={subjects}
+                messageLabel={t('formMessage')}
+                submitLabel={t('formSendBtn')}
+                whatsappHref={whatsappHref}
+                locale={locale}
+              />
+            </div>
+          ) : (
+            <div
+              className="w-full max-w-[420px] rounded-2xl p-7 shadow-md"
+              style={{
+                background: 'var(--color-brand-surface-elevated)',
+                border: '1px solid var(--color-brand-border)',
+              }}
+            >
+              <Package
+                className="h-8 w-8 text-[var(--color-brand-primary)]"
+                strokeWidth={1.5}
+              />
+              <h2
+                className="mt-5 text-xl font-normal text-[var(--color-brand-text)]"
+                style={{ fontFamily: df }}
+              >
+                {isAr ? 'هل تحتاج مساعدة بشأن طلب؟' : 'Besoin d’aide avec une commande ?'}
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-[var(--color-brand-text-muted)]">
+                {isAr
+                  ? 'استخدم صفحة تتبع الطلب أو راجع معلومات التوصيل والإرجاع.'
+                  : 'Utilisez le suivi de commande ou consultez les informations de livraison et retours.'}
+              </p>
+              <Link
+                href="/suivi-commande"
+                className="form-submit mt-6 w-full"
+              >
+                {t('trackLink')}
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 

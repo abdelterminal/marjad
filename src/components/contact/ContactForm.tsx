@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { User, Phone, Mail, ChevronDown, Send, CheckCircle2, Loader2 } from 'lucide-react';
+import { User, Phone, Mail, ChevronDown, MessageCircle } from 'lucide-react';
 
 interface ContactFormProps {
   title: string;
@@ -12,7 +11,8 @@ interface ContactFormProps {
   subjects: string[];
   messageLabel: string;
   submitLabel: string;
-  successMsg: string;
+  whatsappHref: string;
+  locale: string;
 }
 
 const inputBase =
@@ -27,32 +27,25 @@ export function ContactForm({
   subjects,
   messageLabel,
   submitLabel,
-  successMsg,
+  whatsappHref,
+  locale,
 }: ContactFormProps) {
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-    setLoading(false);
-    setSuccess(true);
-  }
-
-  if (success) {
-    return (
-      <div className="flex flex-col items-center gap-4 py-10 text-center">
-        <CheckCircle2
-          className="h-12 w-12"
-          style={{ color: 'var(--color-brand-primary)' }}
-          strokeWidth={1.4}
-        />
-        <p className="text-[15px] font-medium" style={{ color: 'var(--color-brand-text)' }}>
-          {successMsg}
-        </p>
-      </div>
-    );
+    const data = new FormData(e.currentTarget);
+    const isAr = locale === 'ar';
+    const lines = [
+      isAr ? 'مرحباً مرجاد، أود التواصل معكم.' : 'Bonjour MARJAD, je souhaite vous contacter.',
+      '',
+      `${nameLabel}: ${String(data.get('name') ?? '').trim()}`,
+      `${phoneLabel}: ${String(data.get('phone') ?? '').trim() || '-'}`,
+      `${emailLabel}: ${String(data.get('email') ?? '').trim()}`,
+      `${subjectLabel}: ${String(data.get('subject') ?? '').trim()}`,
+      `${messageLabel}: ${String(data.get('message') ?? '').trim()}`,
+    ];
+    const target = new URL(whatsappHref);
+    target.searchParams.set('text', lines.join('\n'));
+    window.open(target.toString(), '_blank', 'noopener,noreferrer');
   }
 
   return (
@@ -149,14 +142,9 @@ export function ContactForm({
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading}
           className="form-submit w-full py-3.5"
         >
-          {loading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" strokeWidth={1.8} />
-          )}
+          <MessageCircle className="h-4 w-4" strokeWidth={1.8} />
           {submitLabel}
         </button>
       </form>
