@@ -16,6 +16,33 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Docker
+
+Build and run the app with Postgres and Redis:
+
+```bash
+cp .env.docker.example .env
+docker compose up --build
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+Run database migrations with the helper container after the services are up:
+
+```bash
+docker compose run --rm migrate
+```
+
+Useful commands:
+
+```bash
+docker compose up -d --build
+docker compose logs -f app
+docker compose down
+```
+
+The Compose stack keeps Postgres, Redis, and uploaded product images in named Docker volumes. For production, replace `AUTH_SECRET`, database passwords, `AUTH_URL`, and `NEXT_PUBLIC_SITE_URL` before building.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

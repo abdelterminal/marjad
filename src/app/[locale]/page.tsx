@@ -37,8 +37,14 @@ export default async function HomePage() {
   const isAr = locale === 'ar';
 
   const [{ items: featuredProducts }, categories] = await Promise.all([
-    listProducts({ sort: 'newest', pageSize: 10, page: 1 }),
-    listCategories(),
+    listProducts({ sort: 'newest', pageSize: 10, page: 1 }).catch((error) => {
+      console.error('[HomePage] Failed to load featured products:', error);
+      return { items: [], total: 0 };
+    }),
+    listCategories().catch((error) => {
+      console.error('[HomePage] Failed to load categories:', error);
+      return [];
+    }),
   ]);
 
   const featured = featuredProducts.filter((p) => p.isFeatured).slice(0, 5);

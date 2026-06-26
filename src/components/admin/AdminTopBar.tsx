@@ -13,7 +13,7 @@ export function AdminTopBar({ onMenuClick }: Props) {
       <button
         type="button"
         onClick={onMenuClick}
-        className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors lg:hidden"
+        className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors md:hidden"
         aria-label="Ouvrir le menu"
       >
         <Menu className="h-5 w-5" />

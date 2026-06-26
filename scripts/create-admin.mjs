@@ -62,7 +62,11 @@ const existing = await pool.query(
 if (existing.rows.length > 0) {
   const user = existing.rows[0];
   if (user.role === 'admin') {
-    console.log(`✓ Admin user already exists: ${email}`);
+    await pool.query(
+      'UPDATE users SET password = $1 WHERE email = $2',
+      [hashedPassword, email],
+    );
+    console.log(`✓ Admin password updated: ${email}`);
   } else {
     // Promote to admin + update password
     await pool.query(

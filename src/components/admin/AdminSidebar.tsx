@@ -29,7 +29,7 @@ export function AdminSidebar({ open, onClose }: Props) {
       className={[
         'fixed inset-y-0 left-0 z-40 flex w-60 flex-col bg-white border-r border-gray-200',
         'transition-transform duration-300 ease-in-out',
-        open ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
+        open ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
       ].join(' ')}
     >
       {/* Logo */}
@@ -45,7 +45,7 @@ export function AdminSidebar({ open, onClose }: Props) {
         <button
           type="button"
           onClick={onClose}
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors lg:hidden"
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700 transition-colors md:hidden"
           aria-label="Fermer"
         >
           <X className="h-4 w-4" />

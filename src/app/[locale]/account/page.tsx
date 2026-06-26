@@ -76,8 +76,9 @@ export default async function AccountPage() {
             const firstImage = order.items[0]?.product?.images?.[0];
 
             return (
-              <div
+              <Link
                 key={order.id}
+                href={`/account/orders/${order.id}`}
                 className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-white overflow-hidden"
               >
                 {/* Card header */}
@@ -140,7 +141,7 @@ export default async function AccountPage() {
                     {formatMAD(total)}
                   </p>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

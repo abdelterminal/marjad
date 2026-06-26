@@ -178,100 +178,192 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
         })}
       </section>
 
-      <DataTable
-        headers={['Commande', 'Client & contact', 'Adresse', 'Panier', 'Total', 'Statut', 'Date', '']}
-      >
+      {/* Mobile card list — hidden on md+ */}
+      <div className="space-y-3 md:hidden">
         {orders.length === 0 ? (
-          <tr>
-            <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
-              Aucune commande
-            </td>
-          </tr>
+          <p className="rounded-xl border border-gray-200 bg-white px-4 py-8 text-center text-sm text-gray-400">
+            Aucune commande
+          </p>
         ) : (
           orders.map((order) => {
-            const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
-            const primaryItem = order.items[0]?.product?.nameFr ?? 'Commande COD';
-            const extraItems = Math.max(order.items.length - 1, 0);
             const isPending = order.status === 'pending';
             const phone = normalizePhone(order.customerPhone);
             const whatsappPhone = getWhatsappPhone(order.customerPhone);
             const whatsappMessage = encodeURIComponent(getWhatsappMessage(order));
+            const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+            const primaryItem = order.items[0]?.product?.nameFr ?? 'Commande COD';
+            const extraItems = Math.max(order.items.length - 1, 0);
 
             return (
-              <tr
+              <div
                 key={order.id}
-                className={isPending ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-gray-50'}
+                className={`rounded-xl border bg-white p-4 space-y-3 ${
+                  isPending ? 'border-amber-200 bg-amber-50/30' : 'border-gray-200'
+                }`}
               >
-                <td className="px-4 py-4 align-top">
-                  <div className="font-mono text-sm font-semibold text-gray-950">#{order.id}</div>
-                  <div className="mt-1 text-xs font-medium uppercase tracking-wide text-gray-400">
-                    {isPending ? 'À confirmer' : 'COD'}
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <div className="font-mono text-sm font-bold text-gray-950">#{order.id}</div>
+                    <p className="mt-0.5 text-sm font-semibold text-gray-900">{order.customerName}</p>
+                    <p className="text-xs text-gray-500">{order.customerPhone}</p>
                   </div>
-                </td>
-                <td className="min-w-[220px] px-4 py-4 align-top">
-                  <div className="text-sm font-semibold text-gray-950">{order.customerName}</div>
-                  <div className="mt-1 text-sm text-gray-500">{order.customerPhone}</div>
-                  <RiskHints hints={order.riskHints} />
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    <a
-                      href={`tel:${phone}`}
-                      className="inline-flex h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:border-gray-900 hover:text-gray-950"
-                    >
-                      <Phone className="size-3.5" />
-                      Appeler
-                    </a>
-                    <a
-                      href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800 transition hover:border-emerald-500 hover:bg-emerald-100"
-                    >
-                      <MessageCircle className="size-3.5" />
-                      WhatsApp
-                    </a>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <AdminStatusBadge status={order.status} />
+                    <span className="text-sm font-bold text-gray-950">{formatMAD(parseFloat(order.total))}</span>
                   </div>
-                </td>
-                <td className="min-w-[160px] px-4 py-4 align-top text-sm text-gray-600">
-                  <div className="font-medium text-gray-900">{order.city}</div>
-                  <div className="mt-1 line-clamp-2 text-xs leading-5 text-gray-500">
-                    {order.address}
-                  </div>
-                </td>
-                <td className="min-w-[190px] px-4 py-4 align-top">
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
-                    <ShoppingBag className="size-4 text-gray-400" />
+                </div>
+
+                {/* Location + items */}
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-gray-500">
+                  <span>{order.city}</span>
+                  <span className="text-gray-300">·</span>
+                  <span>
+                    <ShoppingBag className="mr-1 inline size-3 text-gray-400" />
                     {itemCount} article{itemCount > 1 ? 's' : ''}
-                  </div>
-                  <div className="mt-1 line-clamp-1 text-xs text-gray-500">
-                    {primaryItem}
                     {extraItems > 0 ? ` +${extraItems}` : ''}
-                  </div>
-                </td>
-                <td className="px-4 py-4 align-top text-sm font-semibold text-gray-950">
-                  {formatMAD(parseFloat(order.total))}
-                </td>
-                <td className="px-4 py-4 align-top">
-                  <AdminStatusBadge status={order.status} />
-                </td>
-                <td className="px-4 py-4 align-top text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString('fr-MA')}
-                </td>
-                <td className="px-4 py-4 align-top">
-                  <div className="flex min-w-[180px] flex-col gap-2">
-                    <OrderQuickActions orderId={order.id} status={order.status} />
-                    <Link
-                      href={`/admin/orders/${order.id}`}
-                      className="inline-flex h-8 w-fit items-center justify-center rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:border-gray-950 hover:text-gray-950"
-                    >
-                      Détail
-                    </Link>
-                  </div>
-                </td>
-              </tr>
+                  </span>
+                  <span className="text-gray-300">·</span>
+                  <span>{new Date(order.createdAt).toLocaleDateString('fr-MA')}</span>
+                </div>
+
+                {/* Item name */}
+                <p className="line-clamp-1 text-xs text-gray-500">{primaryItem}</p>
+
+                {/* Risk hints */}
+                <RiskHints hints={order.riskHints} />
+
+                {/* Contact buttons */}
+                <div className="flex flex-wrap gap-2">
+                  <a
+                    href={`tel:${phone}`}
+                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 transition hover:border-gray-900"
+                  >
+                    <Phone className="size-3.5" />
+                    Appeler
+                  </a>
+                  <a
+                    href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100"
+                  >
+                    <MessageCircle className="size-3.5" />
+                    WhatsApp
+                  </a>
+                  <Link
+                    href={`/admin/orders/${order.id}`}
+                    className="inline-flex h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 transition hover:border-gray-900"
+                  >
+                    Détail
+                  </Link>
+                </div>
+
+                {/* Quick status actions */}
+                <OrderQuickActions orderId={order.id} status={order.status} />
+              </div>
             );
           })
         )}
-      </DataTable>
+      </div>
+
+      {/* Desktop table — hidden on mobile */}
+      <div className="hidden md:block">
+        <DataTable
+          headers={['Commande', 'Client & contact', 'Adresse', 'Panier', 'Total', 'Statut', 'Date', '']}
+        >
+          {orders.length === 0 ? (
+            <tr>
+              <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-400">
+                Aucune commande
+              </td>
+            </tr>
+          ) : (
+            orders.map((order) => {
+              const itemCount = order.items.reduce((sum, item) => sum + item.quantity, 0);
+              const primaryItem = order.items[0]?.product?.nameFr ?? 'Commande COD';
+              const extraItems = Math.max(order.items.length - 1, 0);
+              const isPending = order.status === 'pending';
+              const phone = normalizePhone(order.customerPhone);
+              const whatsappPhone = getWhatsappPhone(order.customerPhone);
+              const whatsappMessage = encodeURIComponent(getWhatsappMessage(order));
+
+              return (
+                <tr
+                  key={order.id}
+                  className={isPending ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-gray-50'}
+                >
+                  <td className="px-4 py-4 align-top">
+                    <div className="font-mono text-sm font-semibold text-gray-950">#{order.id}</div>
+                    <div className="mt-1 text-xs font-medium uppercase tracking-wide text-gray-400">
+                      {isPending ? 'À confirmer' : 'COD'}
+                    </div>
+                  </td>
+                  <td className="min-w-[220px] px-4 py-4 align-top">
+                    <div className="text-sm font-semibold text-gray-950">{order.customerName}</div>
+                    <div className="mt-1 text-sm text-gray-500">{order.customerPhone}</div>
+                    <RiskHints hints={order.riskHints} />
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <a
+                        href={`tel:${phone}`}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:border-gray-900 hover:text-gray-950"
+                      >
+                        <Phone className="size-3.5" />
+                        Appeler
+                      </a>
+                      <a
+                        href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800 transition hover:border-emerald-500 hover:bg-emerald-100"
+                      >
+                        <MessageCircle className="size-3.5" />
+                        WhatsApp
+                      </a>
+                    </div>
+                  </td>
+                  <td className="min-w-[160px] px-4 py-4 align-top text-sm text-gray-600">
+                    <div className="font-medium text-gray-900">{order.city}</div>
+                    <div className="mt-1 line-clamp-2 text-xs leading-5 text-gray-500">
+                      {order.address}
+                    </div>
+                  </td>
+                  <td className="min-w-[190px] px-4 py-4 align-top">
+                    <div className="flex items-center gap-2 text-sm font-medium text-gray-900">
+                      <ShoppingBag className="size-4 text-gray-400" />
+                      {itemCount} article{itemCount > 1 ? 's' : ''}
+                    </div>
+                    <div className="mt-1 line-clamp-1 text-xs text-gray-500">
+                      {primaryItem}
+                      {extraItems > 0 ? ` +${extraItems}` : ''}
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 align-top text-sm font-semibold text-gray-950">
+                    {formatMAD(parseFloat(order.total))}
+                  </td>
+                  <td className="px-4 py-4 align-top">
+                    <AdminStatusBadge status={order.status} />
+                  </td>
+                  <td className="px-4 py-4 align-top text-sm text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString('fr-MA')}
+                  </td>
+                  <td className="px-4 py-4 align-top">
+                    <div className="flex min-w-[180px] flex-col gap-2">
+                      <OrderQuickActions orderId={order.id} status={order.status} />
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="inline-flex h-8 w-fit items-center justify-center rounded-full border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm transition hover:border-gray-950 hover:text-gray-950"
+                      >
+                        Détail
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
+          )}
+        </DataTable>
+      </div>
 
       <AdminPagination page={page} total={total} pageSize={25} />
     </div>

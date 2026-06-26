@@ -130,6 +130,21 @@ export async function getUserOrders(userId: number) {
   });
 }
 
+export async function getUserOrderById(userId: number, orderId: number) {
+  return db.query.orders.findFirst({
+    where: sql`${orders.id} = ${orderId} AND ${orders.userId} = ${userId}`,
+    with: {
+      items: {
+        with: {
+          product: {
+            columns: { id: true, nameFr: true, nameAr: true, slug: true, images: true },
+          },
+        },
+      },
+    },
+  });
+}
+
 function normalizeMoroccoPhone(phone: string) {
   const compact = phone.replace(/[\s\-.\(\)]/g, '');
   return compact.startsWith('+212') ? `0${compact.slice(4)}` : compact;

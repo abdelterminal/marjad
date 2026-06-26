@@ -29,7 +29,10 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
 
   let categoryName: string | null = null;
   if (sp.category) {
-    const categories = await listCategories();
+    const categories = await listCategories().catch((error) => {
+      console.error('[ProductsPage metadata] Failed to load categories:', error);
+      return [];
+    });
     const category = categories.find((cat) => cat.slug === sp.category);
     categoryName = category ? (isAr ? category.nameAr : category.nameFr) : null;
   }
@@ -115,8 +118,14 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const pageSize = 12;
 
   const [{ items: products, total }, categories] = await Promise.all([
-    listProducts({ q, category, min, max, sort, page, pageSize }),
-    listCategories(),
+    listProducts({ q, category, min, max, sort, page, pageSize }).catch((error) => {
+      console.error('[ProductsPage] Failed to load products:', error);
+      return { items: [], total: 0 };
+    }),
+    listCategories().catch((error) => {
+      console.error('[ProductsPage] Failed to load categories:', error);
+      return [];
+    }),
   ]);
 
   const totalPages = Math.ceil(total / pageSize);

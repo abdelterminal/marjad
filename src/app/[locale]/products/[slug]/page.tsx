@@ -33,7 +33,10 @@ interface ProductDetailPageProps {
 export async function generateMetadata({ params }: ProductDetailPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   const isAr = locale === 'ar';
-  const product = await getProductBySlug(slug);
+  const product = await getProductBySlug(slug).catch((error) => {
+    console.error('[ProductDetail metadata] Failed to load product:', error);
+    return null;
+  });
 
   if (!product) {
     return createPageMetadata({
@@ -67,7 +70,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const locale = await getLocale();
   const isAr = locale === 'ar';
 
-  const product = await getProductBySlug(slug);
+  const product = await getProductBySlug(slug).catch((error) => {
+    console.error('[ProductDetailPage] Failed to load product:', error);
+    return null;
+  });
   if (!product) notFound();
 
   const name = isAr ? product.nameAr : product.nameFr;
@@ -88,7 +94,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const formattedPrice = formatMAD(price);
 
   const relatedRaw = product.category
-    ? (await listProducts({ category: product.category.slug, pageSize: 5 })).items
+    ? (
+        await listProducts({ category: product.category.slug, pageSize: 5 }).catch((error) => {
+          console.error('[ProductDetailPage] Failed to load related products:', error);
+          return { items: [], total: 0 };
+        })
+      ).items
     : [];
   const related = relatedRaw.filter((p) => p.slug !== slug).slice(0, 4);
 

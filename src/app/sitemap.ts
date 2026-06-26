@@ -3,6 +3,9 @@ import { listCategories } from '@/lib/queries/categories';
 import { listProducts } from '@/lib/queries/products';
 import { absoluteUrl, siteConfig } from '@/lib/seo';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 const staticRoutes = [
   '',
   '/products',

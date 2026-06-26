@@ -153,48 +153,93 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
 
-        <DataTable
-          headers={['Réf.', 'Client', 'Ville', 'Statut', 'Total', 'Date', 'Actions']}
-        >
+        {/* Mobile cards */}
+        <div className="space-y-3 md:hidden">
           {stats.needsActionOrders.length === 0 ? (
-            <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
-                Rien à traiter pour le moment
-              </td>
-            </tr>
+            <p className="rounded-xl border border-gray-200 bg-white px-4 py-8 text-center text-sm text-gray-400">
+              Rien à traiter pour le moment
+            </p>
           ) : (
             stats.needsActionOrders.map((order) => (
-              <tr key={order.id} className={order.status === 'pending' ? 'bg-amber-50/50 hover:bg-amber-50' : 'hover:bg-gray-50/70'}>
-                <td className="px-4 py-3 text-sm font-mono text-gray-900">#{order.id}</td>
-                <td className="px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
-                  <p className="mt-0.5 text-xs text-gray-500">{order.customerPhone}</p>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{order.city}</td>
-                <td className="px-4 py-3">
-                  <AdminStatusBadge status={order.status} />
-                </td>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                  {formatMAD(parseFloat(order.total))}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString('fr-MA')}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex min-w-[180px] flex-col gap-2">
-                    <OrderQuickActions orderId={order.id} status={order.status} />
-                    <Link
-                      href={`/admin/orders/${order.id}`}
-                      className="text-xs font-semibold text-gray-700 underline underline-offset-2 hover:text-gray-950"
-                    >
-                      Voir le détail
-                    </Link>
+              <div
+                key={order.id}
+                className={`rounded-xl border p-4 space-y-3 ${
+                  order.status === 'pending'
+                    ? 'border-amber-200 bg-amber-50/50'
+                    : 'border-gray-200 bg-white'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="font-mono text-sm font-bold text-gray-900">#{order.id}</span>
+                    <p className="mt-0.5 text-sm font-semibold text-gray-900">{order.customerName}</p>
+                    <p className="text-xs text-gray-500">{order.customerPhone}</p>
                   </div>
-                </td>
-              </tr>
+                  <div className="flex shrink-0 flex-col items-end gap-1.5">
+                    <AdminStatusBadge status={order.status} />
+                    <span className="text-sm font-bold text-gray-900">{formatMAD(parseFloat(order.total))}</span>
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500">
+                  {order.city} · {new Date(order.createdAt).toLocaleDateString('fr-MA')}
+                </p>
+                <OrderQuickActions orderId={order.id} status={order.status} />
+                <Link
+                  href={`/admin/orders/${order.id}`}
+                  className="block text-xs font-semibold text-gray-700 underline underline-offset-2 hover:text-gray-950"
+                >
+                  Voir le détail →
+                </Link>
+              </div>
             ))
           )}
-        </DataTable>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block">
+          <DataTable
+            headers={['Réf.', 'Client', 'Ville', 'Statut', 'Total', 'Date', 'Actions']}
+          >
+            {stats.needsActionOrders.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
+                  Rien à traiter pour le moment
+                </td>
+              </tr>
+            ) : (
+              stats.needsActionOrders.map((order) => (
+                <tr key={order.id} className={order.status === 'pending' ? 'bg-amber-50/50 hover:bg-amber-50' : 'hover:bg-gray-50/70'}>
+                  <td className="px-4 py-3 text-sm font-mono text-gray-900">#{order.id}</td>
+                  <td className="px-4 py-3">
+                    <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
+                    <p className="mt-0.5 text-xs text-gray-500">{order.customerPhone}</p>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{order.city}</td>
+                  <td className="px-4 py-3">
+                    <AdminStatusBadge status={order.status} />
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                    {formatMAD(parseFloat(order.total))}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString('fr-MA')}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="flex min-w-[180px] flex-col gap-2">
+                      <OrderQuickActions orderId={order.id} status={order.status} />
+                      <Link
+                        href={`/admin/orders/${order.id}`}
+                        className="text-xs font-semibold text-gray-700 underline underline-offset-2 hover:text-gray-950"
+                      >
+                        Voir le détail
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </DataTable>
+        </div>
       </div>
 
       {/* Recent orders */}
@@ -209,45 +254,82 @@ export default async function AdminDashboardPage() {
           </Link>
         </div>
 
-        <DataTable
-          headers={['Réf.', 'Client', 'Ville', 'Statut', 'Total', 'Date', '']}
-        >
+        {/* Mobile cards */}
+        <div className="space-y-3 md:hidden">
           {stats.recentOrders.length === 0 ? (
-            <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
-                Aucune commande pour le moment
-              </td>
-            </tr>
+            <p className="rounded-xl border border-gray-200 bg-white px-4 py-8 text-center text-sm text-gray-400">
+              Aucune commande pour le moment
+            </p>
           ) : (
             stats.recentOrders.map((order) => (
-              <tr key={order.id} className="hover:bg-gray-50">
-                <td className="px-4 py-3 text-sm font-mono text-gray-900">#{order.id}</td>
-                <td className="px-4 py-3">
-                  <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
-                  <p className="mt-0.5 text-xs text-gray-500">{order.customerPhone}</p>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{order.city}</td>
-                <td className="px-4 py-3">
+              <div key={order.id} className="rounded-xl border border-gray-200 bg-white p-4 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <span className="font-mono text-sm font-bold text-gray-900">#{order.id}</span>
+                    <p className="mt-0.5 text-sm font-medium text-gray-900">{order.customerName}</p>
+                  </div>
                   <AdminStatusBadge status={order.status} />
-                </td>
-                <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                  {formatMAD(parseFloat(order.total))}
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-500">
-                  {new Date(order.createdAt).toLocaleDateString('fr-MA')}
-                </td>
-                <td className="px-4 py-3">
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-500">{order.city}</span>
+                  <span className="font-semibold text-gray-900">{formatMAD(parseFloat(order.total))}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleDateString('fr-MA')}</span>
                   <Link
                     href={`/admin/orders/${order.id}`}
                     className="text-sm font-medium text-gray-700 hover:text-gray-900 underline underline-offset-2"
                   >
                     Voir
                   </Link>
-                </td>
-              </tr>
+                </div>
+              </div>
             ))
           )}
-        </DataTable>
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block">
+          <DataTable
+            headers={['Réf.', 'Client', 'Ville', 'Statut', 'Total', 'Date', '']}
+          >
+            {stats.recentOrders.length === 0 ? (
+              <tr>
+                <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-400">
+                  Aucune commande pour le moment
+                </td>
+              </tr>
+            ) : (
+              stats.recentOrders.map((order) => (
+                <tr key={order.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm font-mono text-gray-900">#{order.id}</td>
+                  <td className="px-4 py-3">
+                    <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
+                    <p className="mt-0.5 text-xs text-gray-500">{order.customerPhone}</p>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-500">{order.city}</td>
+                  <td className="px-4 py-3">
+                    <AdminStatusBadge status={order.status} />
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                    {formatMAD(parseFloat(order.total))}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-500">
+                    {new Date(order.createdAt).toLocaleDateString('fr-MA')}
+                  </td>
+                  <td className="px-4 py-3">
+                    <Link
+                      href={`/admin/orders/${order.id}`}
+                      className="text-sm font-medium text-gray-700 hover:text-gray-900 underline underline-offset-2"
+                    >
+                      Voir
+                    </Link>
+                  </td>
+                </tr>
+              ))
+            )}
+          </DataTable>
+        </div>
       </div>
     </div>
   );

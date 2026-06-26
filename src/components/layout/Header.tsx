@@ -13,7 +13,10 @@ export async function Header() {
   const t = await getTranslations();
   const locale = await getLocale();
   const isAr = locale === 'ar';
-  const categories = await listCategories();
+  const categories = await listCategories().catch((error) => {
+    console.error('[Header] Failed to load categories:', error);
+    return [];
+  });
 
   const navLinks = [
     {
@@ -69,7 +72,7 @@ export async function Header() {
             </Link>
 
             {/* Catégories dropdown */}
-            <CategoriesDropdown categories={categories} locale={locale} />
+            {categories.length > 0 ? <CategoriesDropdown categories={categories} locale={locale} /> : null}
 
             {/* Remaining links */}
             {navLinks.slice(1).map(({ label, href }) => (
