@@ -1,7 +1,7 @@
 /**
  * One-time script to create an admin user.
  * Usage: node scripts/create-admin.mjs <email> <password>
- * Example: node scripts/create-admin.mjs admin@marjad.ma MonMotDePasse123
+ * Example: node scripts/create-admin.mjs admin@example.com '<strong-password>'
  */
 
 import { readFileSync } from 'fs';
