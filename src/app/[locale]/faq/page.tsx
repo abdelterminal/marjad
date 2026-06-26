@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: FaqPageProps): Promise<Metada
 const faqFr = [
   {
     q: "Comment se passe une commande chez MARJAD ?",
-    a: "C'est simple : vous choisissez votre pièce, vous l'ajoutez au panier, et vous remplissez vos coordonnées. Aucun paiement en ligne. Notre équipe vous rappelle dans les 24h pour confirmer l'adresse et la quantité, puis on prépare votre commande avec soin.",
+    a: "C'est simple : vous choisissez votre pièce, vous l'ajoutez au panier, et vous remplissez vos coordonnées. Aucun paiement en ligne. Notre équipe vous rappelle pour confirmer l'adresse et la quantité, puis on prépare votre commande avec soin.",
   },
   {
     q: "Est-ce que je dois payer à l'avance ?",
@@ -66,7 +66,7 @@ const faqFr = [
 const faqAr = [
   {
     q: "كيف تتم عملية الطلب في مرجاد؟",
-    a: "الأمر بسيط: تختار القطعة التي تعجبك، تضيفها إلى السلة، ثم تملأ بياناتك. لا دفع إلكتروني. فريقنا يتصل بك خلال 24 ساعة لتأكيد العنوان والكمية، وبعدها نجهز طلبك بعناية.",
+    a: "الأمر بسيط: تختار القطعة التي تعجبك، تضيفها إلى السلة، ثم تملأ بياناتك. لا دفع إلكتروني. فريقنا يتصل بك لتأكيد العنوان والكمية، وبعدها نجهز طلبك بعناية.",
   },
   {
     q: "هل يجب أن أدفع مسبقًا؟",

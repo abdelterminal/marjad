@@ -142,7 +142,7 @@ export function CheckoutForm() {
     {
       icon: <PhoneCall className="h-4 w-4" aria-hidden="true" />,
       title: isAr ? 'اتصال للتأكيد' : 'Appel de confirmation',
-      body: isAr ? 'نتصل بك خلال 24 ساعة لتأكيد الطلب والعنوان.' : "Nous vous appelons sous 24h pour confirmer l'adresse.",
+      body: isAr ? 'نتصل بك لتأكيد الطلب والعنوان.' : "Nous vous appelons pour confirmer l'adresse.",
     },
     {
       icon: <Truck className="h-4 w-4" aria-hidden="true" />,

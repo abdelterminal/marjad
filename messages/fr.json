@@ -131,7 +131,7 @@
     "cod": "Paiement à la livraison",
     "placeOrder": "Confirmer la commande",
     "orderConfirmed": "Commande confirmée !",
-    "orderConfirmedMsg": "Nous vous contactons sous 24h pour confirmer la livraison.",
+    "orderConfirmedMsg": "Nous vous contactons pour confirmer la livraison.",
     "orderNumber": "N° de commande",
     "estimatedDelivery": "Livraison estimée : 3–5 jours ouvrables (Maroc)",
     "contactWhatsapp": "Contacter sur WhatsApp",
@@ -264,7 +264,7 @@
     "formEmail": "Votre e-mail",
     "formMessage": "Votre message",
     "formSend": "Envoyer",
-    "formNote": "Nous vous répondrons dans les 24 heures.",
+    "formNote": "Nous vous répondrons avec soin.",
     "heroHeadline": "Parlons de votre commande",
     "heroCopy": "Une question sur une pièce, une livraison ou un paiement à la réception ? Notre équipe vous répond avec soin.",
     "whatsappBtn": "Écrire sur WhatsApp",
@@ -299,6 +299,6 @@
     "faq2Q": "Comment fonctionne le paiement à la livraison ?",
     "faq2A": "Vous réglez uniquement à la réception de votre colis, en espèces. Aucun paiement en ligne n'est requis avant livraison.",
     "faq3Q": "Puis-je modifier ou annuler ma commande ?",
-    "faq3A": "Oui — contactez-nous dans les 24h suivant votre commande via WhatsApp ou téléphone et nous ferons le nécessaire."
+    "faq3A": "Oui — contactez-nous rapidement via WhatsApp ou téléphone et nous ferons le nécessaire."
   }
 }

@@ -28,12 +28,12 @@ export default async function LivraisonRetoursPage() {
 
   const deliverySteps = isAr
     ? [
-        { icon: <Phone className="h-5 w-5" />, title: 'تأكيد الطلب', body: 'فريقنا يتصل بك خلال 24 ساعة لتأكيد العنوان والكمية والسعر.' },
+        { icon: <Phone className="h-5 w-5" />, title: 'تأكيد الطلب', body: 'فريقنا يتصل بك لتأكيد العنوان والكمية والسعر.' },
         { icon: <ShieldCheck className="h-5 w-5" />, title: 'التحضير والتغليف', body: 'كل قطعة تُغلف بعناية ومواد مناسبة لطبيعتها، حسب الحجم ونوع المنتج.' },
         { icon: <Truck className="h-5 w-5" />, title: 'التوصيل', body: 'يصل الطلب إلى بابك في 3 إلى 5 أيام عمل. الدفع للمندوب عند الاستلام.' },
       ]
     : [
-        { icon: <Phone className="h-5 w-5" />, title: 'Confirmation de commande', body: "Notre équipe vous rappelle dans les 24h pour confirmer l'adresse, la quantité et le prix." },
+        { icon: <Phone className="h-5 w-5" />, title: 'Confirmation de commande', body: "Notre équipe vous rappelle pour confirmer l'adresse, la quantité et le prix." },
         { icon: <ShieldCheck className="h-5 w-5" />, title: 'Préparation & emballage', body: 'Chaque pièce est emballée avec soin, selon sa taille et sa nature.' },
         { icon: <Truck className="h-5 w-5" />, title: 'Livraison', body: 'Votre commande arrive à votre porte en 3 à 5 jours ouvrables. Vous réglez à la réception.' },
       ];
