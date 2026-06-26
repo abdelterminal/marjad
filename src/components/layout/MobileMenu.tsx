@@ -5,7 +5,6 @@ import { ChevronDown, Menu, Package, User, X } from 'lucide-react';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import { useSession } from 'next-auth/react';
-import { useAuthModal } from '@/components/auth/AuthProvider';
 import {
   Sheet,
   SheetContent,
@@ -31,7 +30,6 @@ export function MobileMenu({ categories = [], locale: localeProp }: Props) {
   const locale = localeProp ?? currentLocale;
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { openAuthModal } = useAuthModal();
   const [open, setOpen] = useState(false);
   const [catsOpen, setCatsOpen] = useState(false);
   const isAr = locale === 'ar';
@@ -45,11 +43,6 @@ export function MobileMenu({ categories = [], locale: localeProp }: Props) {
   ];
 
   function close() { setOpen(false); }
-
-  function handleLogin() {
-    close();
-    openAuthModal('login');
-  }
 
   return (
     <>
@@ -187,13 +180,13 @@ export function MobileMenu({ categories = [], locale: localeProp }: Props) {
                 </Link>
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={handleLogin}
+              <Link
+                href="/account/login"
+                onClick={close}
                 className="inline-flex h-11 w-full items-center justify-center rounded-[var(--radius-btn)] bg-[var(--color-brand-primary)] px-4 text-sm font-semibold text-white hover:bg-[var(--color-brand-primary-hover)] transition-colors"
               >
                 {t('common.login')}
-              </button>
+              </Link>
             )}
           </div>
         </SheetContent>

@@ -2,9 +2,8 @@
 
 import { useSession, signOut } from 'next-auth/react';
 import { useLocale } from 'next-intl';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { User, LogOut, Package } from 'lucide-react';
-import { useAuthModal } from '@/components/auth/AuthProvider';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,7 +16,6 @@ export function HeaderUserMenu() {
   const { data: session, status } = useSession();
   const locale = useLocale();
   const router = useRouter();
-  const { openAuthModal } = useAuthModal();
   const isAr = locale === 'ar';
 
   if (status === 'loading') {
@@ -28,12 +26,12 @@ export function HeaderUserMenu() {
 
   if (!session?.user) {
     return (
-      <button
-        onClick={() => openAuthModal('login')}
+      <Link
+        href="/account/login"
         className="hidden sm:inline-flex items-center justify-center h-9 px-4 rounded-[var(--radius-btn)] border border-[var(--color-brand-border)] text-sm font-semibold text-[var(--color-brand-text)] hover:bg-[var(--color-brand-surface-alt)] hover:border-[var(--color-brand-primary)] hover:text-[var(--color-brand-primary)] transition-all duration-[var(--transition-fast)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2"
       >
         {isAr ? 'تسجيل الدخول' : 'Connexion'}
-      </button>
+      </Link>
     );
   }
 
