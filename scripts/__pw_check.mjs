@@ -6,7 +6,7 @@ await page.goto("http://localhost:3000/login", { waitUntil: "networkidle" });
 await page.fill("input[type=email]", "admin@marjad.ma");
 await page.fill("input[type=password]", "TonMotDePasse123");
 await page.click("button[type=submit]");
-try { await page.waitForURL("**/admin**", { timeout: 8000 }); } catch(e) {}
+try { await page.waitForURL("**/admin**", { timeout: 8000 }); } catch {}
 await page.goto("http://localhost:3000/admin/products/new", { waitUntil: "networkidle" });
 const info = await page.evaluate(() => ({
   mainW: document.querySelector("main")?.offsetWidth,

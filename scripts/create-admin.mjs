@@ -4,7 +4,6 @@
  * Example: node scripts/create-admin.mjs admin@marjad.ma MonMotDePasse123
  */
 
-import { createRequire } from 'module';
 import { readFileSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -41,15 +40,10 @@ if (password.length < 8) {
 }
 
 const { default: bcrypt } = await import('bcryptjs');
-const { drizzle } = await import('drizzle-orm/node-postgres');
 const { default: pg } = await import('pg');
 
 const { Pool } = pg;
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const db = drizzle(pool);
-
-// Dynamically import schema to avoid TS compilation step
-const require = createRequire(import.meta.url);
 
 // Try to use the compiled schema or just run raw SQL
 const hashedPassword = await bcrypt.hash(password, 10);
