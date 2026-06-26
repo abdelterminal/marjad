@@ -12,7 +12,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       {/* Mobile overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-30 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-30 bg-black/40 lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}

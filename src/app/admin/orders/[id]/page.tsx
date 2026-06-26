@@ -120,7 +120,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
       </div>
 
       <section className="grid gap-3 md:grid-cols-4">
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm md:col-span-2">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 md:col-span-2">
           <div className="flex items-start gap-3">
             <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gray-950 text-white">
               <PackageCheck className="size-4" />
@@ -132,7 +132,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-gray-200 bg-white p-4">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
             <Banknote className="size-3.5" />
             Total COD
@@ -140,7 +140,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
           <p className="mt-2 text-xl font-bold text-gray-950">{formatMAD(parseFloat(order.total))}</p>
           <p className="mt-1 text-xs text-gray-500">{itemCount} article{itemCount > 1 ? 's' : ''}</p>
         </div>
-        <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+        <div className="rounded-xl border border-gray-200 bg-white p-4">
           <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-gray-400">
             <MapPin className="size-3.5" />
             Livraison
@@ -200,7 +200,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
           </div>
 
           {/* Status timeline */}
-          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+          <div className="overflow-hidden rounded-xl border border-gray-200 bg-white p-5">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 className="font-semibold text-gray-900">Suivi de la commande</h2>
               <span className="text-xs font-medium text-gray-400">COD Maroc</span>
@@ -253,7 +253,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
         {/* Right column */}
         <div className="space-y-6">
           {/* Customer info */}
-          <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm space-y-4">
+          <div className="rounded-xl border border-gray-200 bg-white p-5 space-y-4">
             <div>
               <h2 className="font-semibold text-gray-900">Client & confirmation</h2>
               <p className="mt-1 text-xs leading-5 text-gray-500">
@@ -311,7 +311,7 @@ export default async function AdminOrderDetailPage({ params }: PageProps) {
           </div>
 
           {order.riskHints.length > 0 && (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
               <div className="flex items-start gap-3">
                 <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
                   <AlertTriangle className="size-4" />

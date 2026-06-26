@@ -4,9 +4,9 @@ import { NextResponse } from 'next/server';
 
 // ─── Page / Server Component guards (redirect on failure) ──────────────────────
 
-export async function requireUser() {
+export async function requireUser(locale = 'fr') {
   const session = await auth();
-  if (!session?.user) redirect('/');
+  if (!session?.user) redirect(`/${locale}/account/login`);
   return session.user;
 }
 

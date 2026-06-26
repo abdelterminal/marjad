@@ -25,7 +25,7 @@ export function AdminPagination({ page, total, pageSize = 24 }: AdminPaginationP
   }
 
   return (
-    <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3">
+    <div className="flex items-center justify-between border-t border-gray-200 px-1 py-3">
       <p className="text-sm text-gray-500">
         Page {page} sur {totalPages} — {total} résultat{total !== 1 ? 's' : ''}
       </p>

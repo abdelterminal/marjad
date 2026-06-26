@@ -122,7 +122,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
         </div>
         <a
           href={`/api/admin/orders/export${status ? `?status=${encodeURIComponent(status)}` : ''}`}
-          className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm font-semibold text-gray-700 shadow-sm transition hover:border-gray-950 hover:text-gray-950"
+          className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-gray-900 hover:text-gray-900"
         >
           <Download className="size-4" />
           <span className="hidden sm:inline">Export CSV{status ? ' filtré' : ''}</span>
@@ -140,10 +140,10 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
           return (
             <div
               key={preset.exportPreset}
-              className={`rounded-lg border p-4 transition ${
+              className={`rounded-xl border p-4 transition ${
                 isActive
-                  ? 'border-gray-950 bg-gray-950 text-white shadow-sm'
-                  : 'border-gray-200 bg-white text-gray-950 hover:border-gray-300'
+                  ? 'border-gray-900 bg-gray-900 text-white'
+                  : 'border-gray-200 bg-white text-gray-900 hover:border-gray-300'
               }`}
             >
               <div className="text-sm font-semibold">{preset.title}</div>

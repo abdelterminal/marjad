@@ -70,7 +70,7 @@ export function ProfileForm({
   const labelClass = 'form-label';
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="form-panel flex max-w-[28rem] flex-col gap-5 p-5 sm:p-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="form-panel flex flex-col gap-5 p-5 sm:p-6">
       {/* Success */}
       {success && (
         <div role="status" className="p-3 rounded-[var(--radius-sm)] bg-[var(--color-brand-success-light)] border-s-[3px] border-[var(--color-brand-success)] flex items-center gap-2 text-sm text-[var(--color-brand-success)]">

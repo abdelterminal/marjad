@@ -44,7 +44,7 @@ export default async function AdminDashboardPage() {
         </div>
         <Link
           href="/admin/orders?status=pending"
-          className="inline-flex h-10 w-fit items-center gap-2 rounded-full bg-gray-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-gray-800"
+          className="inline-flex h-9 w-fit items-center gap-2 rounded-full bg-gray-900 px-4 text-sm font-medium text-white transition hover:bg-gray-700"
         >
           <Phone className="size-4" />
           Traiter les commandes
@@ -77,7 +77,27 @@ export default async function AdminDashboardPage() {
         />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          { label: "Aujourd'hui", value: stats.todayOrders, icon: ShoppingCart },
+          { label: 'Confirmées', value: stats.confirmedOrders, icon: CheckCircle },
+          { label: 'Expédiées', value: stats.shippedOrders, icon: Truck },
+          { label: 'CA livré', value: formatMAD(parseFloat(stats.deliveredRevenue)), icon: Banknote },
+        ].map((item) => {
+          const Icon = item.icon;
+          return (
+            <div key={item.label} className="rounded-xl border border-gray-200 bg-white px-5 py-4">
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm text-gray-500">{item.label}</p>
+                <Icon className="size-4 text-gray-400" />
+              </div>
+              <p className="mt-2 text-xl font-bold text-gray-900">{item.value}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-3">
         {[
           {
             icon: CheckCircle,
@@ -100,37 +120,17 @@ export default async function AdminDashboardPage() {
         ].map((metric) => {
           const Icon = metric.icon;
           return (
-            <div key={metric.label} className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div key={metric.label} className="rounded-xl border border-gray-200 bg-white p-5">
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <p className="text-sm text-gray-500">{metric.label}</p>
-                  <p className="mt-1 text-3xl font-bold text-gray-950">{metric.value}</p>
+                  <p className="mt-1 text-2xl font-bold text-gray-900">{metric.value}</p>
                 </div>
-                <div className="flex size-10 items-center justify-center rounded-lg bg-gray-100 text-gray-600">
+                <div className="flex size-9 items-center justify-center rounded-lg bg-gray-100 text-gray-500">
                   <Icon className="size-4" />
                 </div>
               </div>
-              <p className="mt-3 text-xs leading-5 text-gray-500">{metric.detail}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {[
-          { label: "Aujourd'hui", value: stats.todayOrders, icon: ShoppingCart },
-          { label: 'Confirmées', value: stats.confirmedOrders, icon: CheckCircle },
-          { label: 'Expédiées', value: stats.shippedOrders, icon: Truck },
-          { label: 'CA livré', value: formatMAD(parseFloat(stats.deliveredRevenue)), icon: Banknote },
-        ].map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.label} className="rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-gray-500">{item.label}</p>
-                <Icon className="size-4 text-gray-400" />
-              </div>
-              <p className="mt-2 text-xl font-bold text-gray-950">{item.value}</p>
+              <p className="mt-3 text-xs leading-5 text-gray-400">{metric.detail}</p>
             </div>
           );
         })}
@@ -164,7 +164,7 @@ export default async function AdminDashboardPage() {
             </tr>
           ) : (
             stats.needsActionOrders.map((order) => (
-              <tr key={order.id} className={order.status === 'pending' ? 'bg-amber-50/60 hover:bg-amber-50' : 'hover:bg-gray-50'}>
+              <tr key={order.id} className={order.status === 'pending' ? 'bg-amber-50/50 hover:bg-amber-50' : 'hover:bg-gray-50/70'}>
                 <td className="px-4 py-3 text-sm font-mono text-gray-900">#{order.id}</td>
                 <td className="px-4 py-3">
                   <p className="text-sm font-medium text-gray-900">{order.customerName}</p>
