@@ -24,9 +24,10 @@ AUTH_SECRET=<generate: openssl rand -hex 32>
 
 # The canonical public URL of the app (no trailing slash).
 AUTH_URL=https://marjad.ma
+NEXT_PUBLIC_SITE_URL=https://marjad.ma
 
 # -----------------------------------------------------------------------
-# Redis (used for future rate limiting — must be running)
+# Redis (required for shared production rate limiting)
 # -----------------------------------------------------------------------
 REDIS_URL=redis://localhost:6379
 
@@ -45,7 +46,8 @@ NODE_ENV=production
 | `DATABASE_URL` | Hostinger VPS / PostgreSQL | User set during DB setup. Default PostgreSQL user is `postgres`. |
 | `AUTH_SECRET` | `openssl rand -hex 32` | **Must be generated fresh for production.** The dev placeholder is NOT safe. |
 | `AUTH_URL` | Your domain | Must match the domain in the Nginx config and Let's Encrypt cert. |
-| `REDIS_URL` | Local Redis | Redis is running but not wired to rate limiting yet. The env var must still be present. |
+| `NEXT_PUBLIC_SITE_URL` | Your domain | Must match `AUTH_URL`; deployment verification rejects mismatched canonical origins. |
+| `REDIS_URL` | Local Redis | Required in production so rate limits are shared across app instances. |
 | `NODE_ENV` | Hardcoded | Must be `production` — Next.js disables dev-only code paths on this value. |
 
 ---
