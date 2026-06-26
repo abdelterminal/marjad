@@ -39,6 +39,11 @@ if (password.length < 8) {
   process.exit(1);
 }
 
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL is missing. Set it before creating an admin user.');
+  process.exit(1);
+}
+
 const { default: bcrypt } = await import('bcryptjs');
 const { default: pg } = await import('pg');
 
@@ -75,5 +80,6 @@ if (existing.rows.length > 0) {
   console.log(`✓ Admin user created: ${email}`);
 }
 
-console.log('You can now log in at http://localhost:3000/login');
+const loginBaseURL = process.env.AUTH_URL ?? process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000';
+console.log(`You can now log in at ${loginBaseURL.replace(/\/$/, '')}/login`);
 await pool.end();
