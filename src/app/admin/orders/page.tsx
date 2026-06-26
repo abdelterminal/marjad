@@ -223,7 +223,7 @@ export default async function AdminOrdersPage({ searchParams }: PageProps) {
                     <a
                       href={`https://wa.me/${whatsappPhone}?text=${whatsappMessage}`}
                       target="_blank"
-                      rel="noreferrer"
+                      rel="noopener noreferrer"
                       className="inline-flex h-8 items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 text-xs font-semibold text-emerald-800 transition hover:border-emerald-500 hover:bg-emerald-100"
                     >
                       <MessageCircle className="size-3.5" />
