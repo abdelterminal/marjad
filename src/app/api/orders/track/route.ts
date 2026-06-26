@@ -3,6 +3,12 @@ import { trackOrder } from '@/lib/queries/orders';
 import { trackOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
 
+function noStoreJson(body: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  headers.set('Cache-Control', 'no-store');
+  return NextResponse.json(body, { ...init, headers });
+}
+
 export async function POST(req: NextRequest) {
   const limited = await checkRateLimit(req, {
     key: 'orders:track',
@@ -15,12 +21,12 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
 
   const parsed = trackOrderSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
+    return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },
       { status: 422 },
     );
@@ -29,12 +35,12 @@ export async function POST(req: NextRequest) {
   try {
     const order = await trackOrder(parsed.data.orderId, parsed.data.phone);
     if (!order) {
-      return NextResponse.json({ error: 'Commande introuvable.' }, { status: 404 });
+      return noStoreJson({ error: 'Commande introuvable.' }, { status: 404 });
     }
 
-    return NextResponse.json(order);
+    return noStoreJson(order);
   } catch (err) {
     console.error('[POST /api/orders/track]', err);
-    return NextResponse.json({ error: 'Erreur serveur.' }, { status: 500 });
+    return noStoreJson({ error: 'Erreur serveur.' }, { status: 500 });
   }
 }
