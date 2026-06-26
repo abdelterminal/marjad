@@ -7,11 +7,6 @@ import { Link } from '@/i18n/navigation';
 import { formatMAD } from '@/lib/money';
 import { AddToCartButton } from './AddToCartButton';
 
-/* Hallmark · component: product card · genre: luxury ecommerce · theme: custom/MARJAD
- * states: default · hover · focus · active · disabled · loading · error · success
- * contrast: pass
- */
-
 type ProductCardProduct = {
   id: number;
   slug: string;

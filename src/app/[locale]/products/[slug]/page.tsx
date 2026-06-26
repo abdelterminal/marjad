@@ -26,11 +26,6 @@ import { ExpandableDescription } from '@/components/product/ExpandableDescriptio
 import { ProductViewEvent } from '@/components/analytics/ProductViewEvent';
 import { getWhatsAppHref } from '@/lib/contact';
 
-/* Hallmark · macrostructure: Editorial PDP · genre: luxury ecommerce · tone: warm Moroccan
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 interface ProductDetailPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }

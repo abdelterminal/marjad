@@ -6,11 +6,6 @@ import { AlertCircle, CheckCircle2, Loader2, PackageCheck, Phone, Search, Truck 
 import Image from 'next/image';
 import { formatMAD } from '@/lib/money';
 
-/* Hallmark · component: order tracking form · genre: luxury ecommerce · theme: custom/MARJAD
- * states: default · hover · focus · active · disabled · loading · error · success
- * contrast: pass
- */
-
 type TrackedOrder = {
   id: number;
   customerName: string;

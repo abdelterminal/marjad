@@ -4,11 +4,6 @@ import { Truck, RotateCcw, ShieldCheck, Phone, Clock, MapPin } from 'lucide-reac
 import type { Metadata } from 'next';
 import { createPageMetadata } from '@/lib/seo';
 
-/* Hallmark · macrostructure: Policy editorial · genre: luxury ecommerce · tone: transparent Moroccan COD
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 interface LivraisonRetoursPageProps {
   params: Promise<{ locale: string }>;
 }

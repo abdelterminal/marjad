@@ -1,9 +1,3 @@
-/* Hallmark · macrostructure: studied-DNA · tone: warm editorial · anchor hue: terracotta
- * theme: studied-DNA (source: image — MARJAD about page reference)
- * paper: #FAF7F2 · accent: #C4622D · display: Playfair Display + body: Inter
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 import { getTranslations, getLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';

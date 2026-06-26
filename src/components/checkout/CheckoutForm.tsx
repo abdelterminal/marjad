@@ -16,11 +16,6 @@ import { useIsClient } from '@/lib/use-is-client';
 import { trackCheckoutStart, trackOrderSubmitted } from '@/lib/analytics';
 import { getWhatsAppHref } from '@/lib/contact';
 
-/* Hallmark · macrostructure: Checkout split · genre: luxury ecommerce · tone: calm Moroccan COD
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 type OrderFormData = Omit<z.infer<typeof createOrderSchema>, 'items'>;
 
 export function CheckoutForm() {

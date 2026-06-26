@@ -4,11 +4,6 @@ import { TrackOrderForm } from '@/components/order/TrackOrderForm';
 import { createPageMetadata } from '@/lib/seo';
 import { Banknote, PhoneCall, ShieldCheck, Truck } from 'lucide-react';
 
-/* Hallmark · macrostructure: Support utility · genre: luxury ecommerce · tone: reassuring Moroccan COD
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 interface TrackOrderPageProps {
   params: Promise<{ locale: string }>;
 }

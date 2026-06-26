@@ -1,10 +1,5 @@
 import { ProductCard } from './ProductCard';
 
-/* Hallmark · component: product grid · genre: luxury ecommerce · theme: custom/MARJAD
- * states: default · hover · focus · active · disabled · loading · error · success
- * contrast: pass
- */
-
 type ProductGridProduct = {
   id: number;
   slug: string;

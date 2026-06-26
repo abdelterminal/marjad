@@ -11,11 +11,6 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 
-/* Hallmark · component: collection filters · genre: luxury ecommerce · theme: custom/MARJAD
- * states: default · hover · focus · active · disabled · loading · error · success
- * contrast: pass
- */
-
 type Category = {
   id: number;
   slug: string;

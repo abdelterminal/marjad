@@ -1,7 +1,3 @@
-/* Hallmark · macrostructure: Immersive commerce hero + categories + selection + story + COD + bestsellers + FAQ
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · golden #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';

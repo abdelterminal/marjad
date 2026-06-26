@@ -10,11 +10,6 @@ import { ProductSearch } from '@/components/product/ProductSearch';
 import { Headphones, PackageCheck, SearchX, ShieldCheck, Truck } from 'lucide-react';
 import { createPageMetadata } from '@/lib/seo';
 
-/* Hallmark · macrostructure: Curated catalogue · genre: luxury ecommerce · tone: quiet Moroccan
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
   searchParams: Promise<{

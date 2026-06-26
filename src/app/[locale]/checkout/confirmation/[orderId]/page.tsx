@@ -10,11 +10,6 @@ import Image from 'next/image';
 import { getWhatsAppHref } from '@/lib/contact';
 import { createPageMetadata } from '@/lib/seo';
 
-/* Hallmark · macrostructure: Confirmation receipt · genre: luxury ecommerce · tone: reassuring COD
- * theme: custom/MARJAD — terracotta #C4622D · cream #FAF7F2 · brass #D4A853
- * pre-emit critique: P5 H5 E5 S5 R5 V5
- */
-
 interface ConfirmationPageProps {
   params: Promise<{ locale: string; orderId: string }>;
 }
