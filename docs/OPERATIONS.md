@@ -130,6 +130,11 @@ The active Certbot-managed file is `/etc/nginx/sites-available/marjad`.
 The tracked `nginx/marjad.conf` is the installation template; do not symlink
 Certbot directly into the Git working tree.
 
+The template only serves UUID-named WebP files under `/uploads/`, hides the
+Nginx version, bounds slow-client timeouts, and applies security headers. After
+copying template changes into the active Certbot-managed file, preserve its TLS
+certificate directives.
+
 ```bash
 nginx -t
 systemctl reload nginx

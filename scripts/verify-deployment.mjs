@@ -222,6 +222,10 @@ async function validateFilesystemAndConfig() {
       'proxy_set_header X-Real-IP $remote_addr',
       'proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for',
       'client_max_body_size 10m',
+      'client_header_timeout 15s',
+      'server_tokens off',
+      '"^/uploads/([0-9a-f-]{36}\\.webp)$"',
+      'Strict-Transport-Security "max-age=31536000"',
     ];
     const missing = requiredNginxSnippets.filter((snippet) => !nginx.includes(snippet));
     if (missing.length > 0) {
