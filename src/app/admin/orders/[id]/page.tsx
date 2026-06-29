@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { getOrderById } from '@/lib/queries/orders';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { OrderActions } from '@/components/admin/OrderActions';
+import { requireAdmin } from '@/lib/auth-guards';
 import { formatMAD } from '@/lib/money';
 
 interface PageProps {
@@ -68,6 +69,7 @@ function getWhatsappMessage(order: NonNullable<Awaited<ReturnType<typeof getOrde
 }
 
 export default async function AdminOrderDetailPage({ params }: PageProps) {
+  await requireAdmin();
   const { id } = await params;
   const orderId = parseInt(id);
 

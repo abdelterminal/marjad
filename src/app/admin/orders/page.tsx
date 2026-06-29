@@ -7,6 +7,7 @@ import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { OrderQuickActions } from '@/components/admin/OrderQuickActions';
 import { formatMAD } from '@/lib/money';
 import { StatusTabs } from '@/components/admin/StatusTabs';
+import { requireAdmin } from '@/lib/auth-guards';
 
 export const dynamic = 'force-dynamic';
 
@@ -107,6 +108,7 @@ interface PageProps {
 }
 
 export default async function AdminOrdersPage({ searchParams }: PageProps) {
+  await requireAdmin();
   const params = await searchParams;
   const status = params.status ?? '';
   const page = Math.max(1, parseInt(params.page ?? '1') || 1);

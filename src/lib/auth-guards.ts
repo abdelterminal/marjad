@@ -4,6 +4,7 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { NextResponse } from 'next/server';
+import { cache } from 'react';
 
 const noStoreError = (error: string, status: 401 | 403) =>
   NextResponse.json(
@@ -34,12 +35,12 @@ export async function requireUser(locale = 'fr') {
   return session.user;
 }
 
-export async function requireAdmin() {
+export const requireAdmin = cache(async () => {
   const session = await auth();
   if (!session?.user || session.user.role !== 'admin') redirect('/login');
   if (!(await hasCurrentAdminRole(session.user.id))) redirect('/login');
   return session.user;
-}
+});
 
 // ─── Route Handler guards (return Response on failure) ─────────────────────────
 

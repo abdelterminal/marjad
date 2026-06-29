@@ -5,10 +5,12 @@ import { CategoryForm } from '@/components/admin/CategoryForm';
 import { DeleteCategoryButton } from '@/components/admin/DeleteCategoryButton';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { requireAdmin } from '@/lib/auth-guards';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AdminCategoriesPage() {
+  await requireAdmin();
   const categories = await listCategories();
 
   return (

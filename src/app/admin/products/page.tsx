@@ -8,6 +8,7 @@ import { SearchInput } from '@/components/admin/SearchInput';
 import { DeleteProductButton } from '@/components/admin/DeleteProductButton';
 import { Button } from '@/components/ui/button';
 import { formatMAD } from '@/lib/money';
+import { requireAdmin } from '@/lib/auth-guards';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,6 +17,7 @@ interface PageProps {
 }
 
 export default async function AdminProductsPage({ searchParams }: PageProps) {
+  await requireAdmin();
   const params = await searchParams;
   const q = params.q ?? '';
   const page = Math.max(1, parseInt(params.page ?? '1') || 1);

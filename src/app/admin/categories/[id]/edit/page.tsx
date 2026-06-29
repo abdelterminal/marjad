@@ -5,12 +5,14 @@ import { db } from '@/db';
 import { categories } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { CategoryForm } from '@/components/admin/CategoryForm';
+import { requireAdmin } from '@/lib/auth-guards';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditCategoryPage({ params }: PageProps) {
+  await requireAdmin();
   const { id } = await params;
   const categoryId = parseInt(id);
 

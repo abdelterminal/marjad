@@ -162,6 +162,17 @@ async function main() {
       403,
       'Demoted admin denial',
     );
+    const demotedPageResponse = await api.get(url('/admin/orders'), {
+      maxRedirects: 0,
+    });
+    if (
+      ![303, 307].includes(demotedPageResponse.status()) ||
+      new URL(demotedPageResponse.headers().location, baseURL).pathname !== '/login'
+    ) {
+      throw new Error(
+        `Demoted admin page expected a login redirect, got HTTP ${demotedPageResponse.status()}.`,
+      );
+    }
     await client.query(`UPDATE users SET role = 'admin' WHERE email = $1`, [adminEmail]);
     await expectStatus(
       await api.get(url('/api/admin/dashboard')),

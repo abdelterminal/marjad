@@ -17,6 +17,7 @@ import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { OrderQuickActions } from '@/components/admin/OrderQuickActions';
 import { getDashboardStats } from '@/lib/queries/orders';
 import { formatMAD } from '@/lib/money';
+import { requireAdmin } from '@/lib/auth-guards';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,6 +27,7 @@ function pct(part: number, total: number) {
 }
 
 export default async function AdminDashboardPage() {
+  await requireAdmin();
   const stats = await getDashboardStats();
   const actionableOrders = stats.pendingOrders + stats.confirmedOrders;
   const completedOrders = stats.deliveredOrders + stats.cancelledOrders;

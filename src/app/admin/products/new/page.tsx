@@ -1,8 +1,11 @@
 import Link from 'next/link';
 import { ChevronLeft } from 'lucide-react';
 import { ProductForm } from '@/components/admin/ProductForm';
+import { requireAdmin } from '@/lib/auth-guards';
 
-export default function NewProductPage() {
+export default async function NewProductPage() {
+  await requireAdmin();
+
   return (
     <div className="space-y-8">
       <div>

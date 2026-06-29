@@ -5,12 +5,14 @@ import { db } from '@/db';
 import { products } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import { ProductForm } from '@/components/admin/ProductForm';
+import { requireAdmin } from '@/lib/auth-guards';
 
 interface PageProps {
   params: Promise<{ id: string }>;
 }
 
 export default async function EditProductPage({ params }: PageProps) {
+  await requireAdmin();
   const { id } = await params;
   const productId = parseInt(id);
 
