@@ -47,6 +47,9 @@ openssl rand -hex 32
 
 - Container service names are `postgres` and `redis`; do not use `localhost` in
   `DATABASE_URL` or `REDIS_URL`.
+- `POSTGRES_PASSWORD` and the password embedded in `DATABASE_URL` must match.
+  Production verification rejects defaults, placeholders, and values shorter
+  than 12 characters.
 - `DB_POOL_MAX` is per app container. Keep the total across all app replicas
   comfortably below PostgreSQL's connection limit.
 - Memory limits are safety ceilings, not reservations. Tune them to the VPS

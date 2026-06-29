@@ -14,7 +14,7 @@ services:
         condition: service_healthy
     environment:
       APP_ENV: ${APP_ENV:-production}
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/marjad}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with a strong PostgreSQL password}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET to a random value of at least 32 characters}
       AUTH_URL: ${AUTH_URL:-http://localhost:3000}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
@@ -51,7 +51,7 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/marjad}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with a strong PostgreSQL password}
       DB_POOL_MAX: ${DB_POOL_MAX:-10}
       DB_CONNECT_TIMEOUT_MS: ${DB_CONNECT_TIMEOUT_MS:-5000}
       DB_IDLE_TIMEOUT_MS: ${DB_IDLE_TIMEOUT_MS:-30000}
@@ -95,7 +95,7 @@ services:
         condition: service_healthy
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/marjad}
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL with a strong PostgreSQL password}
     profiles:
       - tools
     command: npm run db:migrate
@@ -108,7 +108,7 @@ services:
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-marjad}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set a strong POSTGRES_PASSWORD}
     ports:
       - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
     volumes:

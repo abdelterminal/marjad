@@ -71,6 +71,23 @@ function validateEnvironment() {
     }
   }
 
+  if (databaseURL && environment === 'production') {
+    try {
+      const password = decodeURIComponent(new URL(databaseURL).password);
+      if (
+        password.length < 12 ||
+        /^(postgres|password|admin|marjad)$/i.test(password) ||
+        /change-me|placeholder|replace-with/i.test(password)
+      ) {
+        fail('DATABASE_URL must contain a non-placeholder password of at least 12 characters.');
+      } else {
+        pass('DATABASE_URL contains an acceptable production password.');
+      }
+    } catch {
+      fail('DATABASE_URL is not a valid PostgreSQL URL.');
+    }
+  }
+
   for (const [name, value] of [
     ['AUTH_URL', authURL],
     ['NEXT_PUBLIC_SITE_URL', siteURL],
