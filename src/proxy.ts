@@ -38,6 +38,6 @@ export default auth(async (req) => {
 
 export const config = {
   // Match everything except Next.js internals, Vercel internals, and static files.
-  // Keep api/ in scope so route handlers can apply their own JSON auth guards.
-  matcher: ['/((?!_next|_vercel|.*\\..*).*)'],
+  // Keep protected APIs in scope; health monitoring does not need an auth session.
+  matcher: ['/((?!api/health(?:/|$)|_next|_vercel|.*\\..*).*)'],
 };
