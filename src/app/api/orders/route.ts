@@ -1,14 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { auth } from '@/auth';
 import { createOrder, getUserOrders, StockError } from '@/lib/queries/orders';
 import { createOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
-
-function noStoreJson(body: unknown, init?: ResponseInit) {
-  const headers = new Headers(init?.headers);
-  headers.set('Cache-Control', 'no-store');
-  return NextResponse.json(body, { ...init, headers });
-}
+import { noStoreJson } from '@/lib/http';
 
 // POST /api/orders — public (guests allowed); attach userId if session exists
 export async function POST(req: NextRequest) {

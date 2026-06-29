@@ -1,12 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
 import { ImageValidationError, saveUploadedImage } from '@/lib/images';
-
-function noStoreJson(body: unknown, init?: ResponseInit) {
-  const headers = new Headers(init?.headers);
-  headers.set('Cache-Control', 'no-store');
-  return NextResponse.json(body, { ...init, headers });
-}
+import { noStoreJson } from '@/lib/http';
 
 // POST /api/admin/uploads — multipart form with field 'file'
 export async function POST(req: NextRequest) {

@@ -1,16 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { registerSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
-
-function noStoreJson(body: unknown, init?: ResponseInit) {
-  const headers = new Headers(init?.headers);
-  headers.set('Cache-Control', 'no-store');
-  return NextResponse.json(body, { ...init, headers });
-}
+import { noStoreJson } from '@/lib/http';
 
 export async function POST(req: NextRequest) {
   const limited = await checkRateLimit(req, {

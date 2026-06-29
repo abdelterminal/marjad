@@ -1,15 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { requireUserApi } from '@/lib/auth-guards';
 import { profileUpdateSchema } from '@/lib/validators';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-
-const noStoreJson = (body: unknown, status = 200) =>
-  NextResponse.json(body, {
-    status,
-    headers: { 'Cache-Control': 'no-store' },
-  });
+import { noStoreJson } from '@/lib/http';
 
 // PATCH /api/auth/profile — update the logged-in user's name and/or phone
 export async function PATCH(req: NextRequest) {
@@ -25,14 +20,14 @@ export async function PATCH(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, 400);
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
 
   const parsed = profileUpdateSchema.safeParse(body);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },
-      422,
+      { status: 422 },
     );
   }
 
@@ -40,7 +35,7 @@ export async function PATCH(req: NextRequest) {
 
   // Nothing to update
   if (!name && !phone) {
-    return noStoreJson({ error: 'Aucun champ à mettre à jour.' }, 400);
+    return noStoreJson({ error: 'Aucun champ à mettre à jour.' }, { status: 400 });
   }
 
   const [updated] = await db
@@ -53,7 +48,7 @@ export async function PATCH(req: NextRequest) {
     .returning({ name: users.name, phone: users.phone });
 
   if (!updated) {
-    return noStoreJson({ error: 'Utilisateur introuvable.' }, 404);
+    return noStoreJson({ error: 'Utilisateur introuvable.' }, { status: 404 });
   }
 
   return noStoreJson({ name: updated.name, phone: updated.phone });
