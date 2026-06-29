@@ -1,185 +1,157 @@
-# MARJAD — Operations Runbook
+# MARJAD Operations Runbook
 
-Quick reference for day-to-day VPS operations.
-All commands run on the VPS (SSH in first: `ssh root@<vps-ip>`).
-
----
-
-## Deploy (routine update)
-
-```bash
-bash /var/www/marjad/scripts/deploy.sh
-```
-
-What it does: `git pull` → `npm ci` → `npm run build` → `drizzle-kit migrate` → `pm2 reload`.
-
----
-
-## Rollback
-
-If a deploy introduces a regression, roll back to the previous commit:
+All commands run on the VPS after `ssh root@<vps-ip>`.
 
 ```bash
 cd /var/www/marjad
-git reset --hard HEAD~1
-npm run build
-pm2 reload marjad --update-env
 ```
 
-For a multi-commit rollback, replace `HEAD~1` with the target commit SHA:
+## Routine deploy
+
 ```bash
-git reset --hard <commit-sha>
+bash scripts/deploy.sh
 ```
 
-**Note:** Rollback does NOT reverse database migrations. If the schema changed, a manual migration rollback may be needed — check `drizzle/` for the relevant SQL.
+The script pulls `main`, preserves the current app image as `marjad:rollback`,
+builds the new image, starts PostgreSQL/Redis, applies migrations, runs
+deployment preflight, replaces the app container, waits for health, and performs
+live verification.
 
----
+If the new container does not become healthy or live verification fails, the
+script restores the previous app image automatically. Database migrations are
+not reversed.
 
-## View logs
+## Manual app rollback
 
 ```bash
-# Live tail
-pm2 logs marjad
+docker tag marjad:rollback marjad:latest
+docker compose --env-file .env.production up -d --no-deps --force-recreate app
+docker compose --env-file .env.production ps
+```
 
-# Last 200 lines
-pm2 logs marjad --lines 200
+To roll the repository back as well:
 
-# Error log only
-tail -f /var/log/pm2/marjad-error.log
+```bash
+git log --oneline -10
+git reset --hard <known-good-commit>
+```
 
-# Access log (Nginx)
+Only use repository rollback after selecting a verified commit. Never assume a
+database migration can be reversed automatically.
+
+## Status and logs
+
+```bash
+docker compose --env-file .env.production ps
+docker compose --env-file .env.production logs -f app
+docker compose --env-file .env.production logs --tail=200 app
+docker compose --env-file .env.production logs -f postgres redis
+docker stats
+
 tail -f /var/log/nginx/access.log
-
-# Error log (Nginx)
 tail -f /var/log/nginx/error.log
 ```
 
----
-
-## Process management
+## Service management
 
 ```bash
-# Status overview
-pm2 status
-
-# Restart (brief downtime)
-pm2 restart marjad
-
-# Reload (zero-downtime for fork mode — preferred)
-pm2 reload marjad
-
-# Stop
-pm2 stop marjad
-
-# Start from config
-pm2 start /var/www/marjad/ecosystem.config.js
+docker compose --env-file .env.production restart app
+docker compose --env-file .env.production stop app
+docker compose --env-file .env.production up -d app
+docker compose --env-file .env.production down
 ```
 
----
+Do not use `down -v` in production; it removes persistent database and Redis
+volumes.
 
-## Database access
+## Health checks
 
 ```bash
-# Interactive psql session
-psql -U postgres -d marjad
-
-# Run a one-liner query
-psql -U postgres -d marjad -c "SELECT count(*) FROM orders;"
-
-# Dump database (backup)
-pg_dump -U postgres marjad > /root/marjad-backup-$(date +%Y%m%d).sql
-
-# Restore from dump
-psql -U postgres -d marjad < /root/marjad-backup-<date>.sql
+curl --fail https://marjad.ma/api/health
+docker inspect --format='{{.State.Health.Status}}' \
+  "$(docker compose --env-file .env.production ps -q app)"
 ```
 
----
+## Database
 
-## Run database migrations manually
-
-Always run after a deploy if the schema changed:
+Interactive PostgreSQL:
 
 ```bash
-cd /var/www/marjad
-npx drizzle-kit migrate
+docker compose --env-file .env.production exec postgres \
+  sh -c 'psql -U "$POSTGRES_USER" "$POSTGRES_DB"'
 ```
 
----
-
-## Upload directory backup
+Apply migrations and prepare runtime state manually:
 
 ```bash
-# Sync uploads to a remote destination
-rsync -av /var/www/marjad/uploads/ <backup-user>@<backup-host>:/backups/marjad/uploads/
-
-# Or to a local path
-rsync -av /var/www/marjad/uploads/ /root/backups/uploads/
+docker compose --env-file .env.production run --rm init
 ```
 
----
-
-## Nginx
+Create a backup:
 
 ```bash
-# Test config syntax
+mkdir -p /root/backups
+docker compose --env-file .env.production exec -T postgres \
+  sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' \
+  > "/root/backups/marjad-$(date +%Y%m%d-%H%M%S).sql"
+```
+
+Restore a backup into staging first:
+
+```bash
+cat /root/backups/<backup>.sql | \
+  docker compose --env-file .env.production exec -T postgres \
+  sh -c 'psql -U "$POSTGRES_USER" "$POSTGRES_DB"'
+```
+
+## Upload backups
+
+```bash
+rsync -av /var/www/marjad/public/uploads/ \
+  <backup-user>@<backup-host>:/backups/marjad/uploads/
+```
+
+Restore to `/var/www/marjad/public/uploads/`, then run:
+
+```bash
+docker compose --env-file .env.production run --rm init
+```
+
+## Nginx and TLS
+
+The active Certbot-managed file is `/etc/nginx/sites-available/marjad`.
+The tracked `nginx/marjad.conf` is the installation template; do not symlink
+Certbot directly into the Git working tree.
+
+```bash
 nginx -t
-
-# Reload config (no downtime)
 systemctl reload nginx
-
-# Restart Nginx
-systemctl restart nginx
-
-# Check status
 systemctl status nginx
-```
 
----
-
-## SSL certificate renewal
-
-Certbot auto-renews via a systemd timer. To force a manual renewal:
-
-```bash
-certbot renew --dry-run   # test
-certbot renew             # live renewal
-```
-
-Check renewal timer:
-```bash
+certbot renew --dry-run
 systemctl status certbot.timer
 ```
 
----
+## Environment changes
 
-## Disk usage
+Production variables live in `/var/www/marjad/.env.production`.
 
 ```bash
-# Overall
+nano .env.production
+chmod 600 .env.production
+bash scripts/deploy.sh
+```
+
+Public `NEXT_PUBLIC_*` values are embedded during the Docker build, so a rebuild
+is required after changing them.
+
+## Disk maintenance
+
+```bash
 df -h
-
-# Uploads folder size
-du -sh /var/www/marjad/uploads/
-
-# PM2 log sizes
-ls -lh /var/log/pm2/
+du -sh /var/www/marjad/public/uploads/
+docker system df
+docker image prune
 ```
 
----
-
-## Environment variables
-
-The production env file lives at `/var/www/marjad/.env.production` (not in git).
-To update a variable:
-
-```bash
-nano /var/www/marjad/.env.production
-# edit and save, then reload PM2 to pick up changes:
-pm2 reload marjad --update-env
-```
-
----
-
-## First-time setup
-
-See `scripts/first-deploy.sh` and `docs/ENV_PRODUCTION.md`.
+Do not prune volumes.

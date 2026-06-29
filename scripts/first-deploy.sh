@@ -1,165 +1,74 @@
 #!/bin/bash
-# =============================================================================
-# MARJAD — First-time VPS setup script
-# Run as root on a fresh Ubuntu 22.04 VPS.
-# Usage: bash first-deploy.sh
-#
-# BEFORE running this script:
-#   1. Point marjad.ma DNS A record to this server's IP.
-#   2. Have your GitHub repo URL ready (default below).
-#   3. Create /var/www/marjad/.env.production manually after cloning
-#      (use .env.local.example as the variable inventory).
-# =============================================================================
-set -e
+# MARJAD first-time setup for a fresh Ubuntu VPS. Run as root.
+set -Eeuo pipefail
 
-DOMAIN="marjad.ma"
-REPO_URL="https://github.com/abdelterminal/marjad.git"
-PROJECT_DIR="/var/www/marjad"
-NODE_VERSION="20"
+DOMAIN="${DOMAIN:-marjad.ma}"
+ADMIN_EMAIL="${LETSENCRYPT_EMAIL:-admin@$DOMAIN}"
+REPO_URL="${REPO_URL:-https://github.com/abdelterminal/marjad.git}"
+PROJECT_DIR="${PROJECT_DIR:-/var/www/marjad}"
 
-echo "========================================================"
-echo " MARJAD — First-time VPS setup"
-echo " Domain : $DOMAIN"
-echo " Repo   : $REPO_URL"
-echo " Dir    : $PROJECT_DIR"
-echo "========================================================"
-
-# --------------------------------------------------------------------------
-# 1. System packages
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [1/11] Updating system packages..."
+echo "==> Installing system prerequisites..."
 apt-get update -y
-apt-get install -y curl git nginx certbot python3-certbot-nginx
+apt-get install -y ca-certificates curl gnupg git nginx certbot python3-certbot-nginx
 
-# --------------------------------------------------------------------------
-# 2. Install Node.js 20 via nvm (for the current user / root)
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [2/11] Installing Node.js $NODE_VERSION via nvm..."
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+echo "==> Installing Docker Engine and Compose plugin..."
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+  -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
 
-# Load nvm in this shell session
-export NVM_DIR="$HOME/.nvm"
-# shellcheck source=/dev/null
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# shellcheck source=/etc/os-release
+. /etc/os-release
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $VERSION_CODENAME stable" \
+  > /etc/apt/sources.list.d/docker.list
 
-nvm install "$NODE_VERSION"
-nvm use "$NODE_VERSION"
-nvm alias default "$NODE_VERSION"
+apt-get update -y
+apt-get install -y docker-ce docker-ce-cli containerd.io \
+  docker-buildx-plugin docker-compose-plugin
+systemctl enable --now docker nginx
 
-node -v
-npm -v
-
-# --------------------------------------------------------------------------
-# 3. Install PM2 globally
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [3/11] Installing PM2 globally..."
-npm install -g pm2
-
-# --------------------------------------------------------------------------
-# 4. Create project directory and clone repo
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [4/11] Cloning repository..."
-mkdir -p /var/www
+echo "==> Cloning MARJAD..."
+mkdir -p "$(dirname "$PROJECT_DIR")"
 git clone "$REPO_URL" "$PROJECT_DIR"
+cd "$PROJECT_DIR"
 
-# --------------------------------------------------------------------------
-# 5. Symlink Nginx config + enable site
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [5/11] Configuring Nginx..."
-ln -sf "$PROJECT_DIR/nginx/marjad.conf" /etc/nginx/sites-available/marjad
+echo "==> Preparing upload storage..."
+mkdir -p public/uploads
+chmod 755 public/uploads
+
+echo "==> Installing Nginx configuration..."
+install -m 644 "$PROJECT_DIR/nginx/marjad.conf" /etc/nginx/sites-available/marjad
 ln -sf /etc/nginx/sites-available/marjad /etc/nginx/sites-enabled/marjad
-
-# Remove default Nginx site if present
 rm -f /etc/nginx/sites-enabled/default
-
-# --------------------------------------------------------------------------
-# 6. Test Nginx config
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [6/11] Testing Nginx configuration..."
 nginx -t
-
-# --------------------------------------------------------------------------
-# 7. Reload Nginx (HTTP only — certbot adds HTTPS next)
-# --------------------------------------------------------------------------
 systemctl reload nginx
 
-# --------------------------------------------------------------------------
-# 8. Request Let's Encrypt SSL certificate
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [7/11] Requesting Let's Encrypt certificate for $DOMAIN..."
+if [ ! -f .env.production ]; then
+  cp .env.docker.example .env.production
+  chmod 600 .env.production
+fi
+
+echo
+echo "ACTION REQUIRED: edit $PROJECT_DIR/.env.production."
+echo "Replace every placeholder and set production HTTPS URLs."
+echo "Generate AUTH_SECRET with:"
+echo "  openssl rand -hex 32"
+echo
+read -rp "Press ENTER after .env.production is ready, or Ctrl+C to abort..."
+
+echo "==> Building and starting the Docker Compose stack..."
+DEPLOY_ENV_FILE=.env.production PROJECT_DIR="$PROJECT_DIR" bash scripts/deploy.sh
+
+echo "==> Requesting the TLS certificate..."
 certbot --nginx -d "$DOMAIN" -d "www.$DOMAIN" \
-    --non-interactive --agree-tos --email admin@"$DOMAIN" \
-    --redirect
-# certbot will auto-edit marjad.conf to add the 443 block and HTTP→HTTPS redirect.
+  --non-interactive --agree-tos --email "$ADMIN_EMAIL" --redirect
 
-# --------------------------------------------------------------------------
-# 9. Create uploads directory with correct permissions
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [8/11] Creating uploads directory..."
-mkdir -p "$PROJECT_DIR/public/uploads"
-chown -R www-data:www-data "$PROJECT_DIR/public/uploads"
-chmod 775 "$PROJECT_DIR/public/uploads"
+nginx -t
+systemctl reload nginx
 
-# --------------------------------------------------------------------------
-# 10. Create .env.production (MANUAL STEP — warn the user)
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [9/11] .env.production setup..."
-echo ""
-echo "  *** ACTION REQUIRED ***"
-echo "  Create $PROJECT_DIR/.env.production with your secrets."
-echo "  Use $PROJECT_DIR/.env.local.example as the variable inventory."
-echo "  Minimum required before the next step:"
-echo "    DATABASE_URL, AUTH_SECRET, AUTH_URL, REDIS_URL"
-echo "    NEXT_PUBLIC_SITE_URL, NEXT_PUBLIC_WHATSAPP_NUMBER"
-echo ""
-read -rp "  Press ENTER once .env.production is in place, or Ctrl+C to abort..."
-
-# --------------------------------------------------------------------------
-# 11. Install deps, build, migrate, start PM2
-# --------------------------------------------------------------------------
-echo ""
-echo "==> [10/11] Installing dependencies and building..."
-cd "$PROJECT_DIR"
-npm ci --production=false
-npm run build
-
-echo ""
-echo "==> Running database migrations..."
-NODE_ENV=production npx drizzle-kit migrate
-
-echo ""
-echo "==> Running deployment preflight..."
-NODE_ENV=production APP_ENV=production DEPLOY_ENV_FILE=.env.production \
-  npm run verify:deployment
-
-echo ""
-echo "==> [11/11] Starting PM2 and saving process list..."
-pm2 start ecosystem.config.js
-pm2 save
-
-echo ""
-echo "==> Verifying live application..."
-NODE_ENV=production APP_ENV=production DEPLOY_ENV_FILE=.env.production \
-  DEPLOY_VERIFY_URL="http://127.0.0.1:3000" npm run verify:deployment
-
-# Ensure PM2 restarts on server reboot
-pm2 startup systemd -u root --hp /root
-# Run the generated command (pm2 startup prints a command; exec captures & runs it)
-env PATH="$PATH:/usr/bin" pm2 startup systemd -u root --hp /root | tail -1 | bash
-
-echo ""
-echo "========================================================"
-echo " First-time setup complete!"
-echo "  Site  : https://$DOMAIN"
-echo "  Logs  : pm2 logs marjad --lines 100"
-echo "  Status: pm2 status"
-echo "========================================================"
+echo
+echo "MARJAD setup complete."
+echo "Site:   https://$DOMAIN"
+echo "Status: cd $PROJECT_DIR && docker compose --env-file .env.production ps"
+echo "Logs:   cd $PROJECT_DIR && docker compose --env-file .env.production logs -f app"

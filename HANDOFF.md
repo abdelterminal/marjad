@@ -20,10 +20,10 @@ MARJAD is a full-stack e-commerce store for interior decoration products (tablea
 | Auth | NextAuth v5 beta — Credentials provider, JWT sessions, bcrypt |
 | Cart | Zustand (localStorage persist, client-only) |
 | i18n | next-intl 4.x — FR + AR, RTL for Arabic |
-| Server | PM2 + Nginx (Hostinger VPS) |
+| Server | Docker Compose + host Nginx (Hostinger VPS) |
 | Images | sharp → WebP, served by Nginx from `/uploads/` |
 | Payment | COD only (no payment gateway) |
-| Cache/Rate | Redis provisioned, not yet wired (Phase 2) |
+| Cache/Rate | Redis-backed shared rate limiting |
 
 ---
 
@@ -98,7 +98,9 @@ messages/
 ├── fr.json                     # French UI strings
 └── ar.json                     # Arabic UI strings
 scripts/
-└── deploy.sh                   # Ongoing deploy script (git pull + pm2 restart)
+├── deploy.sh                   # Docker build, migrate, verify, replace, rollback
+├── first-deploy.sh             # Fresh VPS Docker/Nginx setup
+└── docker-init.mjs             # Migrations, admin provisioning, upload ownership
 ```
 
 ---
@@ -110,7 +112,7 @@ scripts/
 | `DATABASE_URL` | Drizzle DB connection | Yes |
 | `AUTH_SECRET` | NextAuth JWT signing key | Yes — must be high-entropy on VPS |
 | `AUTH_URL` | NextAuth canonical URL | Yes (`https://your-domain.com` on VPS, `http://localhost:3000` locally) |
-| `REDIS_URL` | Reserved for Phase 2 rate limiting | No (scaffolded, unused in Phase 1) |
+| `REDIS_URL` | Shared rate limiting | Yes in production |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | Order confirmation WhatsApp CTA | Yes — set to the brand's WhatsApp number |
 
 Example `.env.local`:
@@ -127,64 +129,17 @@ NEXT_PUBLIC_WHATSAPP_NUMBER=212XXXXXXXXX
 
 ## First deploy to VPS
 
-> Note: `scripts/first-deploy.sh` should be created before running this. Until then follow the steps manually.
-
-1. SSH into the VPS: `ssh user@your-hostinger-vps-ip`
-2. Install Node 20+, PM2, PostgreSQL, Redis, Nginx, Certbot (if not already present)
-3. Clone the repo:
+1. Point the domain DNS records to the VPS.
+2. SSH as root and run the tracked setup script:
    ```bash
-   git clone https://github.com/abdelterminal/marjad.git /var/www/marjad
-   cd /var/www/marjad
+   curl -fsSL https://raw.githubusercontent.com/abdelterminal/marjad/main/scripts/first-deploy.sh \
+     -o /root/marjad-first-deploy.sh
+   bash /root/marjad-first-deploy.sh
    ```
-4. Create production env file:
-   ```bash
-   cp .env.local.example .env.local
-   # Edit .env.local — set DATABASE_URL, AUTH_SECRET (openssl rand -hex 32), AUTH_URL, NEXT_PUBLIC_WHATSAPP_NUMBER
-   ```
-5. Install dependencies and run migrations:
-   ```bash
-   npm ci
-   npx drizzle-kit migrate
-   ```
-6. Build the production bundle:
-   ```bash
-   npm run build
-   ```
-7. Create the uploads directory (served by Nginx, not Next.js):
-   ```bash
-   mkdir -p /var/www/marjad/uploads
-   ```
-8. Start the app with PM2:
-   ```bash
-   pm2 start npm --name marjad -- start
-   pm2 save
-   pm2 startup   # follow the printed command to enable auto-start on reboot
-   ```
-9. Configure Nginx to proxy `:3000` and serve `/uploads/` statically, then enable HTTPS via Certbot:
-   ```nginx
-   # /etc/nginx/sites-available/marjad
-   server {
-       listen 443 ssl;
-       server_name your-domain.com;
-       # Certbot fills in ssl_certificate / ssl_certificate_key
-
-       location /uploads/ {
-           alias /var/www/marjad/uploads/;
-       }
-       location / {
-           proxy_pass http://127.0.0.1:3000;
-           proxy_http_version 1.1;
-           proxy_set_header Upgrade $http_upgrade;
-           proxy_set_header Connection 'upgrade';
-           proxy_set_header Host $host;
-           proxy_cache_bypass $http_upgrade;
-       }
-   }
-   ```
-   ```bash
-   sudo certbot --nginx -d your-domain.com
-   sudo nginx -t && sudo systemctl reload nginx
-   ```
+3. The script installs Docker, Nginx, and Certbot; clones the repository; pauses
+   for `.env.production`; deploys the Compose stack; and requests TLS.
+4. Use `docs/ENV_PRODUCTION.md` for the environment contract and
+   `docs/OPERATIONS.md` for backup, rollback, logs, and service commands.
 
 ---
 
@@ -200,7 +155,9 @@ cd /var/www/marjad
 bash scripts/deploy.sh
 ```
 
-`scripts/deploy.sh` should run: `git pull && npm ci && npm run build && pm2 restart marjad`
+The deploy script builds a new Docker image, runs migrations and preflight,
+replaces the app container, verifies health, and restores `marjad:rollback` if
+the new container fails.
 
 ---
 
@@ -228,7 +185,8 @@ These must be resolved before the site goes live:
 - **Logo / brand assets**: The header uses a "MARJAD" text placeholder. Drop the real SVG logo into `public/` and update the Header component (`src/components/layout/Header.tsx`).
 - **Domain name**: Point the Hostinger domain DNS to the VPS, update `AUTH_URL` in `.env.local` to `https://your-domain.com`, and run Certbot for TLS.
 - **AUTH_SECRET on VPS**: Generate a strong secret with `openssl rand -hex 32` and set it in the VPS `.env.local`. Never use the dev placeholder — a guessable secret allows forging admin JWT tokens and bypassing all auth guards.
-- **Rate limiting (SEC-002)**: Login (`/api/auth`), registration (`/api/auth/register`), and order creation (`POST /api/orders`) have no rate limiting. Redis is already provisioned — wire up a sliding-window limiter before going public to prevent brute-force and inventory-denial attacks. This is the only remaining security major.
+- **Production rehearsal**: Run the complete smoke, concurrency, load, admin,
+  upload, backup, and rollback checks against staging before launch.
 
 ---
 
@@ -236,7 +194,6 @@ These must be resolved before the site goes live:
 
 Features not built but architecturally ready:
 
-- **Rate limiting** on login / register / order creation (Redis is provisioned and in `REDIS_URL`)
 - **Email / WhatsApp order notifications** (trigger on `pending` → admin and customer)
 - **Courier integration** (Sendit or Cathedis API for shipping labels and tracking)
 - **Online payment gateway** (YouCan Pay or CMI — `payment_method` column already exists with `'cod'` default)

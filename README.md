@@ -27,10 +27,10 @@ docker compose up --build
 
 Then open [http://localhost:3000](http://localhost:3000).
 
-Run database migrations with the helper container after the services are up:
+Run database migrations and runtime initialization manually when needed:
 
 ```bash
-docker compose run --rm migrate
+docker compose run --rm init
 ```
 
 Useful commands:
@@ -39,6 +39,12 @@ Useful commands:
 docker compose up -d --build
 docker compose logs -f app
 docker compose down
+```
+
+For production, use `.env.production` explicitly:
+
+```bash
+docker compose --env-file .env.production up -d --build
 ```
 
 The Compose stack keeps Postgres and Redis in named Docker volumes. Product

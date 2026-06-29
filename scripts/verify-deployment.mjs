@@ -21,6 +21,7 @@ dotenv.config({
 });
 
 const environment = process.env.APP_ENV ?? process.env.NODE_ENV ?? 'development';
+const runtime = process.env.DEPLOY_RUNTIME ?? 'host';
 const verifyURL = process.env.DEPLOY_VERIFY_URL?.trim();
 const runFullQA = process.env.DEPLOY_RUN_FULL_QA === 'true';
 const failures = [];
@@ -180,15 +181,39 @@ async function validateFilesystemAndConfig() {
     fail(`Upload storage is not writable: ${error instanceof Error ? error.message : error}`);
   }
 
-  try {
-    await access(path.join(projectRoot, '.next', 'BUILD_ID'), constants.R_OK);
-    pass('Production build output exists.');
-  } catch {
-    fail('Production build output is missing; run npm run build.');
-  }
-
   const nginxPath = path.join(projectRoot, 'nginx', 'marjad.conf');
-  const pm2Path = path.join(projectRoot, 'ecosystem.config.js');
+
+  if (runtime === 'docker') {
+    try {
+      const [dockerfile, compose] = await Promise.all([
+        readFile(path.join(projectRoot, 'Dockerfile'), 'utf8'),
+        readFile(path.join(projectRoot, 'docker-compose.yml'), 'utf8'),
+      ]);
+      const requiredDockerSnippets = [
+        'USER nextjs',
+        'condition: service_healthy',
+        '127.0.0.1:${APP_PORT:-3000}:3000',
+        'source: ${UPLOADS_PATH:-./public/uploads}',
+        'AUTH_SECRET: ${AUTH_SECRET:?',
+      ];
+      const combined = `${dockerfile}\n${compose}`;
+      const missing = requiredDockerSnippets.filter((snippet) => !combined.includes(snippet));
+      if (missing.length > 0) {
+        fail(`Docker runtime is missing required protections: ${missing.join('; ')}`);
+      } else {
+        pass('Docker runtime contains the required production protections.');
+      }
+    } catch (error) {
+      fail(`Could not read Docker runtime config: ${error instanceof Error ? error.message : error}`);
+    }
+  } else {
+    try {
+      await access(path.join(projectRoot, '.next', 'BUILD_ID'), constants.R_OK);
+      pass('Production build output exists.');
+    } catch {
+      fail('Production build output is missing; run npm run build.');
+    }
+  }
 
   try {
     const nginx = await readFile(nginxPath, 'utf8');
@@ -208,20 +233,6 @@ async function validateFilesystemAndConfig() {
     fail(`Could not read Nginx config: ${error instanceof Error ? error.message : error}`);
   }
 
-  try {
-    const pm2 = await readFile(pm2Path, 'utf8');
-    if (
-      !pm2.includes("cwd: '/var/www/marjad'") ||
-      !pm2.includes("NODE_ENV: 'production'") ||
-      !pm2.includes('max_memory_restart')
-    ) {
-      fail('PM2 config is missing cwd, production mode, or memory restart protection.');
-    } else {
-      pass('PM2 config contains the required runtime protections.');
-    }
-  } catch (error) {
-    fail(`Could not read PM2 config: ${error instanceof Error ? error.message : error}`);
-  }
 }
 
 async function validateLiveDeployment() {
