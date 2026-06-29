@@ -2,6 +2,7 @@
  * Docker startup initializer — runs on every container start.
  * 1. Applies any pending DB migrations via drizzle-orm migrator.
  * 2. Creates/updates the admin user if ADMIN_EMAIL + ADMIN_PASSWORD are set.
+ * 3. Prepares the shared host upload directory for the non-root app container.
  */
 
 import { drizzle } from 'drizzle-orm/node-postgres';
@@ -10,6 +11,7 @@ import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { chown, mkdir } from 'fs/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -20,6 +22,15 @@ if (!process.env.DATABASE_URL) {
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
+
+const uploadDir = resolve(__dirname, '../public/uploads');
+await mkdir(uploadDir, { recursive: true });
+try {
+  await chown(uploadDir, 1001, 1001);
+} catch (error) {
+  if (process.platform !== 'win32') throw error;
+  console.warn('[init] Upload directory ownership is managed by Docker Desktop');
+}
 
 console.log('[init] Running migrations…');
 await migrate(db, { migrationsFolder: resolve(__dirname, '../drizzle') });

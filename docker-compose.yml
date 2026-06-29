@@ -10,6 +10,10 @@ services:
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/marjad}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+    volumes:
+      - type: bind
+        source: ${UPLOADS_PATH:-./public/uploads}
+        target: /app/public/uploads
     command: node scripts/docker-init.mjs
     restart: "no"
 
@@ -46,7 +50,9 @@ services:
     ports:
       - "127.0.0.1:${APP_PORT:-3000}:3000"
     volumes:
-      - uploads:/app/public/uploads
+      - type: bind
+        source: ${UPLOADS_PATH:-./public/uploads}
+        target: /app/public/uploads
     healthcheck:
       test:
         [
@@ -106,4 +112,3 @@ services:
 volumes:
   postgres_data:
   redis_data:
-  uploads:
