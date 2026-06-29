@@ -50,6 +50,9 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL:-postgresql://postgres:postgres@postgres:5432/marjad}
+      DB_POOL_MAX: ${DB_POOL_MAX:-10}
+      DB_CONNECT_TIMEOUT_MS: ${DB_CONNECT_TIMEOUT_MS:-5000}
+      DB_IDLE_TIMEOUT_MS: ${DB_IDLE_TIMEOUT_MS:-30000}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET to a random value of at least 32 characters}
       AUTH_URL: ${AUTH_URL:-http://localhost:3000}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}

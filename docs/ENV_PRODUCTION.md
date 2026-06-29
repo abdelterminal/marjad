@@ -12,6 +12,9 @@ POSTGRES_DB=marjad
 POSTGRES_USER=marjad
 POSTGRES_PASSWORD=<strong-unique-password>
 DATABASE_URL=postgresql://marjad:<same-password>@postgres:5432/marjad
+DB_POOL_MAX=10
+DB_CONNECT_TIMEOUT_MS=5000
+DB_IDLE_TIMEOUT_MS=30000
 
 REDIS_URL=redis://redis:6379
 
@@ -40,6 +43,8 @@ openssl rand -hex 32
 
 - Container service names are `postgres` and `redis`; do not use `localhost` in
   `DATABASE_URL` or `REDIS_URL`.
+- `DB_POOL_MAX` is per app container. Keep the total across all app replicas
+  comfortably below PostgreSQL's connection limit.
 - `AUTH_URL` and `NEXT_PUBLIC_SITE_URL` must use the same HTTPS origin.
 - `AUTH_SECRET` must be unique to production. Compose/init rejects missing,
   short, or placeholder values.
