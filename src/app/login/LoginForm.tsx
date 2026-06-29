@@ -72,7 +72,7 @@ export function LoginForm() {
                 Espace admin
               </h1>
               <p className="mt-5 text-sm leading-7 text-white/76">
-                Gérez les produits, les commandes et les catégories depuis un accès réservé à l'équipe.
+                Gérez les produits, les commandes et les catégories depuis un accès réservé à l&apos;équipe.
               </p>
             </div>
 
