@@ -27,7 +27,8 @@ try {
   // .env.local not found, rely on environment
 }
 
-const [, , email, password] = process.argv;
+const [, , rawEmail, password] = process.argv;
+const email = rawEmail?.trim().toLowerCase();
 
 if (!email || !password) {
   console.error('Usage: node scripts/create-admin.mjs <email> <password>');

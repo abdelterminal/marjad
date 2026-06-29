@@ -46,7 +46,7 @@ console.log('[init] Running migrations…');
 await migrate(db, { migrationsFolder: resolve(__dirname, '../drizzle') });
 console.log('[init] Migrations applied');
 
-const email = process.env.ADMIN_EMAIL;
+const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 const password = process.env.ADMIN_PASSWORD;
 
 if (email && password) {

@@ -10,6 +10,7 @@ const runId = `qa-auth-${Date.now()}`;
 const normalizedEmail = `${runId}@example.test`;
 const concurrentEmail = `${runId}-concurrent@example.test`;
 const password = `Qa-${Date.now()}-Secure`;
+const qaIp = `203.0.113.${(Date.now() % 250) + 1}`;
 
 function url(path) {
   return new URL(path, baseURL).toString();
@@ -25,7 +26,7 @@ async function register(email) {
     headers: {
       accept: 'application/json',
       'content-type': 'application/json',
-      'x-real-ip': '203.0.113.91',
+      'x-real-ip': qaIp,
     },
     body: JSON.stringify({
       name: '  QA Customer  ',
@@ -45,6 +46,23 @@ async function main() {
   const browser = await chromium.launch({ headless: true });
 
   try {
+    log('enforcing normalized email at the database boundary');
+    try {
+      await pool.query(
+        `INSERT INTO users (name, email, role, created_at)
+         VALUES ('QA Invalid Identity', $1, 'customer', NOW())`,
+        [`${runId}-Mixed@Example.Test`],
+      );
+      throw new Error('Database accepted a non-normalized email.');
+    } catch (error) {
+      if (error instanceof Error && error.message === 'Database accepted a non-normalized email.') {
+        throw error;
+      }
+      if (error?.code !== '23514') {
+        throw new Error(`Expected email check violation 23514, got ${error?.code ?? 'unknown'}.`);
+      }
+    }
+
     log('registering normalized customer identity');
     const registration = await register(`  ${normalizedEmail.toUpperCase()}  `);
     const registrationBody = await registration.json();

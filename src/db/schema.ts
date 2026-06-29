@@ -9,8 +9,9 @@ import {
   timestamp,
   pgEnum,
   index,
+  check,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
@@ -76,16 +77,22 @@ export const products = pgTable(
 
 // ─── Users ────────────────────────────────────────────────────────────────────
 
-export const users = pgTable('users', {
-  id: serial('id').primaryKey(),
-  name: varchar('name', { length: 255 }).notNull(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
-  emailVerified: timestamp('email_verified'),
-  password: varchar('password', { length: 255 }),
-  phone: varchar('phone', { length: 20 }),
-  role: userRoleEnum('role').default('customer').notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-});
+export const users = pgTable(
+  'users',
+  {
+    id: serial('id').primaryKey(),
+    name: varchar('name', { length: 255 }).notNull(),
+    email: varchar('email', { length: 255 }).notNull().unique(),
+    emailVerified: timestamp('email_verified'),
+    password: varchar('password', { length: 255 }),
+    phone: varchar('phone', { length: 20 }),
+    role: userRoleEnum('role').default('customer').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => [
+    check('users_email_normalized_check', sql`${table.email} = lower(btrim(${table.email}))`),
+  ],
+);
 
 // ─── NextAuth Tables ──────────────────────────────────────────────────────────
 
