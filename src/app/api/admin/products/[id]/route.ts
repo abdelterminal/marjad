@@ -41,7 +41,8 @@ export async function PATCH(
     if (message.includes('introuvable')) {
       return NextResponse.json({ error: message }, { status: 404 });
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[admin/products] Failed to update product:', err);
+    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
 
@@ -70,6 +71,7 @@ export async function DELETE(
         { status: 409 },
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[admin/products] Failed to delete product:', err);
+    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
   }
 }

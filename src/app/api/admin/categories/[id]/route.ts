@@ -48,7 +48,8 @@ export async function PATCH(
     if (message.includes('introuvable')) {
       return NextResponse.json({ error: message }, { status: 404 });
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[admin/categories] Failed to update category:', err);
+    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
 
@@ -77,6 +78,7 @@ export async function DELETE(
         { status: 409 },
       );
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[admin/categories] Failed to delete category:', err);
+    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
