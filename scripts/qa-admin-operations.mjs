@@ -13,6 +13,7 @@ const runId = `qa-admin-${Date.now()}`;
 const adminEmail = `${runId}-admin@example.test`;
 const customerEmail = `${runId}-customer@example.test`;
 const password = `Qa-${Date.now()}-Secure`;
+const maxSessionAgeSeconds = 7 * 24 * 60 * 60;
 
 function url(path) {
   return new URL(path, baseURL).toString();
@@ -137,6 +138,22 @@ async function main() {
       '/admin',
     );
     const api = adminContext.request;
+
+    log('checking bounded session lifetime');
+    const sessionCookie = (await adminContext.cookies()).find((cookie) =>
+      cookie.name.endsWith('authjs.session-token'),
+    );
+    const remainingSessionSeconds = sessionCookie?.expires
+      ? sessionCookie.expires - Date.now() / 1000
+      : 0;
+    if (
+      remainingSessionSeconds <= maxSessionAgeSeconds - 60 ||
+      remainingSessionSeconds > maxSessionAgeSeconds + 60
+    ) {
+      throw new Error(
+        `Expected a seven-day auth cookie, got ${Math.round(remainingSessionSeconds)} seconds.`,
+      );
+    }
 
     log('verifying immediate admin role revocation');
     await client.query(`UPDATE users SET role = 'customer' WHERE email = $1`, [adminEmail]);

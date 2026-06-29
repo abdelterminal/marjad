@@ -10,6 +10,8 @@ class RateLimitedSignin extends CredentialsSignin {
   code = 'rate_limited';
 }
 
+const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
@@ -36,7 +38,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
-  session: { strategy: 'jwt' },
+  session: {
+    strategy: 'jwt',
+    maxAge: SESSION_MAX_AGE_SECONDS,
+  },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
