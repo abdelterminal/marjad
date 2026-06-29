@@ -256,10 +256,15 @@ async function validateLiveDeployment() {
       signal: AbortSignal.timeout(10_000),
     });
     const body = await response.json().catch(() => null);
-    if (response.status !== 200 || body?.status !== 'ok') {
+    if (
+      response.status !== 200 ||
+      body?.status !== 'ok' ||
+      body?.checks?.database !== 'ok' ||
+      body?.checks?.redis !== 'ok'
+    ) {
       fail(`Live health check returned HTTP ${response.status}.`);
     } else {
-      pass('Live health endpoint reports app and database healthy.');
+      pass('Live health endpoint reports app, database, and Redis healthy.');
     }
     const cacheControl = response.headers.get('cache-control') ?? '';
     if (!cacheControl.includes('no-store')) {

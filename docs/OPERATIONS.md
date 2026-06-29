@@ -70,6 +70,9 @@ volumes.
 
 ## Health checks
 
+`/api/health` returns `200` only when the app, PostgreSQL, and Redis are ready.
+Any dependency failure returns `503` for Docker and external uptime alerts.
+
 ```bash
 curl --fail https://marjad.ma/api/health
 docker inspect --format='{{.State.Health.Status}}' \

@@ -114,6 +114,21 @@ async function getRedisClient() {
   return redisState.connectPromise;
 }
 
+export async function isRedisReady() {
+  const client = await getRedisClient();
+  if (!client) return false;
+
+  try {
+    return (await client.ping()) === 'PONG';
+  } catch (error) {
+    console.error('[rate-limit] Redis health check failed:', error);
+    redisState.client = null;
+    redisState.unavailableUntil = Date.now() + REDIS_RETRY_DELAY_MS;
+    if (client.isOpen) await client.disconnect().catch(() => undefined);
+    return false;
+  }
+}
+
 async function checkRedisRateLimit(
   bucketKey: string,
   { limit, windowMs }: RateLimitOptions,
