@@ -368,10 +368,17 @@ async function runOptionalQA() {
   const common = {
     PLAYWRIGHT_BASE_URL: verifyURL,
     LOAD_BASE_URL: verifyURL,
+    AUTH_QA_BASE_URL: verifyURL,
     ADMIN_QA_BASE_URL: verifyURL,
   };
 
-  for (const script of ['test:smoke', 'test:concurrency', 'test:load', 'test:admin']) {
+  for (const script of [
+    'test:smoke',
+    'test:concurrency',
+    'test:load',
+    'test:auth',
+    'test:admin',
+  ]) {
     console.log(`[deploy-check] running npm run ${script}`);
     try {
       await runCommand('npm', ['run', script], common);

@@ -10,6 +10,7 @@
     "test:concurrency": "node scripts/concurrency-checkout.mjs",
     "test:load": "node scripts/load-performance.mjs",
     "test:admin": "node scripts/qa-admin-operations.mjs",
+    "test:auth": "node scripts/qa-auth.mjs",
     "verify:deployment": "node scripts/verify-deployment.mjs",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",

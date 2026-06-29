@@ -7,6 +7,15 @@ import { registerSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { noStoreJson } from '@/lib/http';
 
+function isUniqueViolation(error: unknown) {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    error.code === '23505'
+  );
+}
+
 export async function POST(req: NextRequest) {
   const limited = await checkRateLimit(req, {
     key: 'auth:register',
@@ -59,6 +68,12 @@ export async function POST(req: NextRequest) {
 
     return noStoreJson({ id: newUser.id, email: newUser.email }, { status: 201 });
   } catch (error) {
+    if (isUniqueViolation(error)) {
+      return noStoreJson(
+        { error: 'Impossible de créer le compte avec ces informations.' },
+        { status: 409 },
+      );
+    }
     console.error('[POST /api/auth/register]', error);
     return noStoreJson(
       { error: 'Une erreur est survenue. Veuillez réessayer.' },
