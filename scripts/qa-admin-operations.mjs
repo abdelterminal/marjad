@@ -32,10 +32,10 @@ async function expectStatus(response, expected, label) {
   return response;
 }
 
-async function login(context, email, expectedRole) {
+async function login(context, email, expectedRole, loginPath = '/login', expectedPath) {
   const page = await context.newPage();
   try {
-    await page.goto(url('/login'), { waitUntil: 'domcontentloaded' });
+    await page.goto(url(loginPath), { waitUntil: 'domcontentloaded' });
     await page.locator('input[type="email"]').fill(email);
     await page.locator('input[type="password"]').fill(password);
     await page.getByRole('button', { name: /se connecter/i }).click();
@@ -44,7 +44,15 @@ async function login(context, email, expectedRole) {
     while (Date.now() < deadline) {
       const sessionResponse = await context.request.get(url('/api/auth/session'));
       const session = await sessionResponse.json();
-      if (sessionResponse.ok() && session?.user?.role === expectedRole) return;
+      if (sessionResponse.ok() && session?.user?.role === expectedRole) {
+        if (expectedPath) {
+          await page.waitForURL(
+            (current) => current.origin === new URL(baseURL).origin && current.pathname === expectedPath,
+            { timeout: 10_000 },
+          );
+        }
+        return;
+      }
       await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
@@ -121,7 +129,13 @@ async function main() {
     );
 
     adminContext = await browser.newContext();
-    await login(adminContext, adminEmail, 'admin');
+    await login(
+      adminContext,
+      adminEmail,
+      'admin',
+      '/login?callbackUrl=https%3A%2F%2Fexample.com',
+      '/admin',
+    );
     const api = adminContext.request;
 
     log('validating authenticated image uploads');

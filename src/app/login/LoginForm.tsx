@@ -2,14 +2,12 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Loader2, LockKeyhole, ShieldCheck } from 'lucide-react';
 
 export function LoginForm() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') ?? '/admin';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +27,7 @@ export function LoginForm() {
       if (result?.error) {
         setError('Identifiants incorrects. Vérifiez votre email et mot de passe.');
       } else {
-        router.push(callbackUrl);
+        router.push('/admin');
         router.refresh();
       }
     } catch {
