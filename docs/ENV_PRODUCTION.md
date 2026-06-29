@@ -7,6 +7,10 @@ Compose reads it with `--env-file .env.production`; it is never committed.
 APP_ENV=production
 APP_PORT=3000
 UPLOADS_PATH=./public/uploads
+APP_MEMORY_LIMIT=768m
+TOOLS_MEMORY_LIMIT=768m
+POSTGRES_MEMORY_LIMIT=768m
+REDIS_MEMORY_LIMIT=256m
 
 POSTGRES_DB=marjad
 POSTGRES_USER=marjad
@@ -45,6 +49,8 @@ openssl rand -hex 32
   `DATABASE_URL` or `REDIS_URL`.
 - `DB_POOL_MAX` is per app container. Keep the total across all app replicas
   comfortably below PostgreSQL's connection limit.
+- Memory limits are safety ceilings, not reservations. Tune them to the VPS
+  after observing production usage; do not remove them.
 - `AUTH_URL` and `NEXT_PUBLIC_SITE_URL` must use the same HTTPS origin.
 - `AUTH_SECRET` must be unique to production. Compose/init rejects missing,
   short, or placeholder values.

@@ -49,6 +49,8 @@ docker compose --env-file .env.production logs -f postgres redis
 docker stats
 docker inspect --format='{{json .HostConfig.LogConfig}}' \
   "$(docker compose --env-file .env.production ps -q app)"
+docker inspect --format='memory={{.HostConfig.Memory}} pids={{.HostConfig.PidsLimit}}' \
+  "$(docker compose --env-file .env.production ps -q app)"
 
 tail -f /var/log/nginx/access.log
 tail -f /var/log/nginx/error.log
