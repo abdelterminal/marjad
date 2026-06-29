@@ -64,6 +64,13 @@ export const products = pgTable(
     index('products_slug_idx').on(t.slug),
     index('products_category_id_idx').on(t.categoryId),
     index('products_is_published_idx').on(t.isPublished),
+    index('products_published_created_idx').on(t.isPublished, t.createdAt),
+    index('products_published_price_idx').on(t.isPublished, t.price),
+    index('products_category_published_created_idx').on(
+      t.categoryId,
+      t.isPublished,
+      t.createdAt,
+    ),
   ],
 );
 
@@ -125,16 +132,25 @@ export const orders = pgTable(
   (t) => [
     index('orders_status_idx').on(t.status),
     index('orders_user_id_idx').on(t.userId),
+    index('orders_status_created_idx').on(t.status, t.createdAt),
+    index('orders_user_created_idx').on(t.userId, t.createdAt),
   ],
 );
 
-export const orderItems = pgTable('order_items', {
-  id: serial('id').primaryKey(),
-  orderId: integer('order_id').references(() => orders.id, { onDelete: 'cascade' }).notNull(),
-  productId: integer('product_id').references(() => products.id).notNull(),
-  quantity: integer('quantity').notNull(),
-  unitPrice: numeric('unit_price', { precision: 10, scale: 2 }).notNull(),
-});
+export const orderItems = pgTable(
+  'order_items',
+  {
+    id: serial('id').primaryKey(),
+    orderId: integer('order_id').references(() => orders.id, { onDelete: 'cascade' }).notNull(),
+    productId: integer('product_id').references(() => products.id).notNull(),
+    quantity: integer('quantity').notNull(),
+    unitPrice: numeric('unit_price', { precision: 10, scale: 2 }).notNull(),
+  },
+  (t) => [
+    index('order_items_order_id_idx').on(t.orderId),
+    index('order_items_product_id_idx').on(t.productId),
+  ],
+);
 
 // ─── Relations ────────────────────────────────────────────────────────────────
 
