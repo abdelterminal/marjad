@@ -8,5 +8,7 @@ export async function GET() {
   if (guard.response) return guard.response;
 
   const stats = await getDashboardStats();
-  return NextResponse.json(stats);
+  return NextResponse.json(stats, {
+    headers: { 'Cache-Control': 'no-store' },
+  });
 }

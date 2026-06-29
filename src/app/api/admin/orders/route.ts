@@ -14,9 +14,17 @@ export async function GET(req: NextRequest) {
   // Validate status if provided
   const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
   if (status && !validStatuses.includes(status)) {
-    return NextResponse.json({ error: 'Statut invalide.' }, { status: 400 });
+    return NextResponse.json(
+      { error: 'Statut invalide.' },
+      {
+        status: 400,
+        headers: { 'Cache-Control': 'no-store' },
+      },
+    );
   }
 
   const result = await adminListOrders(status, page);
-  return NextResponse.json(result);
+  return NextResponse.json(result, {
+    headers: { 'Cache-Control': 'no-store' },
+  });
 }

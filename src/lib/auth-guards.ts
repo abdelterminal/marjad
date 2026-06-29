@@ -2,6 +2,15 @@ import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { NextResponse } from 'next/server';
 
+const noStoreError = (error: string, status: 401 | 403) =>
+  NextResponse.json(
+    { error },
+    {
+      status,
+      headers: { 'Cache-Control': 'no-store' },
+    },
+  );
+
 // ─── Page / Server Component guards (redirect on failure) ──────────────────────
 
 export async function requireUser(locale = 'fr') {
@@ -23,7 +32,7 @@ export async function requireUserApi() {
   if (!session?.user) {
     return {
       user: null,
-      response: NextResponse.json({ error: 'Authentification requise.' }, { status: 401 }),
+      response: noStoreError('Authentification requise.', 401),
     } as const;
   }
   return { user: session.user, response: null } as const;
@@ -34,7 +43,7 @@ export async function requireAdminApi() {
   if (!session?.user || session.user.role !== 'admin') {
     return {
       user: null,
-      response: NextResponse.json({ error: 'Accès refusé.' }, { status: 403 }),
+      response: noStoreError('Accès refusé.', 403),
     } as const;
   }
   return { user: session.user, response: null } as const;
