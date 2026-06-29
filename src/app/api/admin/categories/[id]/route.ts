@@ -3,6 +3,7 @@ import { requireAdminApi } from '@/lib/auth-guards';
 import { adminCategorySchema } from '@/lib/validators';
 import { updateCategory, deleteCategory } from '@/lib/queries/categories';
 import { slugify } from '@/lib/slug';
+import { noStoreJson } from '@/lib/http';
 
 // PATCH /api/admin/categories/[id]
 export async function PATCH(
@@ -15,19 +16,19 @@ export async function PATCH(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
 
   const parsed = adminCategorySchema.partial().safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
+    return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },
       { status: 422 },
     );
@@ -42,14 +43,14 @@ export async function PATCH(
 
   try {
     const category = await updateCategory(id, data);
-    return NextResponse.json(category);
+    return noStoreJson(category);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur interne.';
     if (message.includes('introuvable')) {
-      return NextResponse.json({ error: message }, { status: 404 });
+      return noStoreJson({ error: message }, { status: 404 });
     }
     console.error('[admin/categories] Failed to update category:', err);
-    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
+    return noStoreJson({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
 
@@ -64,7 +65,7 @@ export async function DELETE(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
   try {
@@ -73,12 +74,12 @@ export async function DELETE(
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur interne.';
     if (message === 'CATEGORY_HAS_PRODUCTS') {
-      return NextResponse.json(
+      return noStoreJson(
         { error: 'Cette catégorie contient des produits et ne peut pas être supprimée.' },
         { status: 409 },
       );
     }
     console.error('[admin/categories] Failed to delete category:', err);
-    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
+    return noStoreJson({ error: 'Erreur interne.' }, { status: 500 });
   }
 }

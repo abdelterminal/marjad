@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
 import { adminProductSchema } from '@/lib/validators';
 import { adminListProducts, createProduct, isProductSlugTaken } from '@/lib/queries/products';
 import { slugify, ensureUniqueSlug } from '@/lib/slug';
+import { noStoreJson } from '@/lib/http';
 
 // GET /api/admin/products?q=&page=
 export async function GET(req: NextRequest) {
@@ -14,7 +15,7 @@ export async function GET(req: NextRequest) {
   const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
 
   const result = await adminListProducts(q, page);
-  return NextResponse.json(result);
+  return noStoreJson(result);
 }
 
 // POST /api/admin/products
@@ -26,12 +27,12 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
 
   const parsed = adminProductSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
+    return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },
       { status: 422 },
     );
@@ -42,10 +43,10 @@ export async function POST(req: NextRequest) {
   // Auto-generate unique slug from nameFr
   const base = slugify(data.nameFr);
   if (!base) {
-    return NextResponse.json({ error: 'Le nom FR ne produit pas de slug valide.' }, { status: 422 });
+    return noStoreJson({ error: 'Le nom FR ne produit pas de slug valide.' }, { status: 422 });
   }
   const slug = await ensureUniqueSlug(base, isProductSlugTaken);
 
   const product = await createProduct({ ...data, slug });
-  return NextResponse.json(product, { status: 201 });
+  return noStoreJson(product, { status: 201 });
 }

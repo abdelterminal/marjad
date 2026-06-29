@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
 import { adminProductSchema } from '@/lib/validators';
 import { updateProduct, deleteProduct } from '@/lib/queries/products';
+import { noStoreJson } from '@/lib/http';
 
 // PATCH /api/admin/products/[id]
 export async function PATCH(
@@ -14,20 +15,20 @@ export async function PATCH(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
   }
 
   // Partial validation — allow any subset of product fields
   const parsed = adminProductSchema.partial().safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
+    return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },
       { status: 422 },
     );
@@ -35,14 +36,14 @@ export async function PATCH(
 
   try {
     const product = await updateProduct(id, parsed.data);
-    return NextResponse.json(product);
+    return noStoreJson(product);
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur interne.';
     if (message.includes('introuvable')) {
-      return NextResponse.json({ error: message }, { status: 404 });
+      return noStoreJson({ error: message }, { status: 404 });
     }
     console.error('[admin/products] Failed to update product:', err);
-    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
+    return noStoreJson({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
 
@@ -57,7 +58,7 @@ export async function DELETE(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
   try {
@@ -66,12 +67,12 @@ export async function DELETE(
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Erreur interne.';
     if (message === 'PRODUCT_HAS_ORDERS') {
-      return NextResponse.json(
+      return noStoreJson(
         { error: 'Ce produit est référencé par des commandes et ne peut pas être supprimé.' },
         { status: 409 },
       );
     }
     console.error('[admin/products] Failed to delete product:', err);
-    return NextResponse.json({ error: 'Erreur interne.' }, { status: 500 });
+    return noStoreJson({ error: 'Erreur interne.' }, { status: 500 });
   }
 }
