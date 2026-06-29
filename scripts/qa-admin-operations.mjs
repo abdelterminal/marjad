@@ -138,6 +138,20 @@ async function main() {
     );
     const api = adminContext.request;
 
+    log('verifying immediate admin role revocation');
+    await client.query(`UPDATE users SET role = 'customer' WHERE email = $1`, [adminEmail]);
+    await expectStatus(
+      await api.get(url('/api/admin/dashboard')),
+      403,
+      'Demoted admin denial',
+    );
+    await client.query(`UPDATE users SET role = 'admin' WHERE email = $1`, [adminEmail]);
+    await expectStatus(
+      await api.get(url('/api/admin/dashboard')),
+      200,
+      'Restored admin access',
+    );
+
     log('validating authenticated image uploads');
     await expectStatus(
       await api.post(url('/api/admin/uploads'), {
