@@ -42,6 +42,9 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/sharp ./node_modules/sharp
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/@img/sharp-linuxmusl-x64 ./node_modules/@img/sharp-linuxmusl-x64
+COPY --from=deps --chown=nextjs:nodejs /app/node_modules/@img/sharp-libvips-linuxmusl-x64 ./node_modules/@img/sharp-libvips-linuxmusl-x64
 
 RUN mkdir -p /app/public/uploads \
   && chown -R nextjs:nodejs /app/public/uploads

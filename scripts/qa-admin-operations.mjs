@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import pg from 'pg';
 import { chromium } from 'playwright';
+import { unlink } from 'node:fs/promises';
+import path from 'node:path';
 
 dotenv.config({ path: '.env.local', quiet: true });
 
@@ -92,6 +94,7 @@ async function main() {
 
   let adminContext;
   let customerContext;
+  let uploadedFile;
 
   try {
     log('checking health and creating disposable users');
@@ -120,6 +123,43 @@ async function main() {
     adminContext = await browser.newContext();
     await login(adminContext, adminEmail, 'admin');
     const api = adminContext.request;
+
+    log('validating authenticated image uploads');
+    await expectStatus(
+      await api.post(url('/api/admin/uploads'), {
+        multipart: {
+          file: {
+            name: 'corrupt.png',
+            mimeType: 'image/png',
+            buffer: Buffer.from('not an image'),
+          },
+        },
+      }),
+      400,
+      'Reject corrupt image',
+    );
+
+    const uploadResponse = await expectStatus(
+      await api.post(url('/api/admin/uploads'), {
+        multipart: {
+          file: {
+            name: 'pixel.png',
+            mimeType: 'image/png',
+            buffer: Buffer.from(
+              'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+              'base64',
+            ),
+          },
+        },
+      }),
+      201,
+      'Upload valid image',
+    );
+    const upload = await uploadResponse.json();
+    if (!/^\/uploads\/[0-9a-f-]{36}\.webp$/.test(upload.path)) {
+      throw new Error(`Upload returned an invalid path: ${upload.path}`);
+    }
+    uploadedFile = path.join(process.cwd(), 'public', 'uploads', path.basename(upload.path));
 
     log('checking dashboard, order list validation, and export authorization');
     await expectStatus(await api.get(url('/api/admin/dashboard')), 200, 'Admin dashboard');
@@ -168,7 +208,7 @@ async function main() {
           price: '299.00',
           stock: 2,
           categoryId: firstCategory.id,
-          images: [],
+          images: [upload.path],
           isPublished: true,
           isFeatured: false,
         },
@@ -297,6 +337,7 @@ async function main() {
     await customerContext?.close();
     await browser.close();
     await cleanup(client);
+    if (uploadedFile) await unlink(uploadedFile).catch(() => undefined);
     client.release();
     await pool.end();
   }
