@@ -88,6 +88,23 @@ function validateEnvironment() {
     }
   }
 
+  if (redisURL && environment === 'production') {
+    try {
+      const password = decodeURIComponent(new URL(redisURL).password);
+      if (
+        password.length < 16 ||
+        /^(redis|password|admin|marjad)$/i.test(password) ||
+        /change-me|placeholder|replace-with/i.test(password)
+      ) {
+        fail('REDIS_URL must contain a non-placeholder password of at least 16 characters.');
+      } else {
+        pass('REDIS_URL contains an acceptable production password.');
+      }
+    } catch {
+      fail('REDIS_URL is not a valid Redis URL.');
+    }
+  }
+
   for (const [name, value] of [
     ['AUTH_URL', authURL],
     ['NEXT_PUBLIC_SITE_URL', siteURL],

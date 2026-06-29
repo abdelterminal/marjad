@@ -56,6 +56,13 @@ tail -f /var/log/nginx/access.log
 tail -f /var/log/nginx/error.log
 ```
 
+Use authenticated Redis CLI access:
+
+```bash
+docker compose --env-file .env.production exec redis \
+  sh -c 'REDISCLI_AUTH="$REDIS_PASSWORD" redis-cli ping'
+```
+
 ## Service management
 
 ```bash

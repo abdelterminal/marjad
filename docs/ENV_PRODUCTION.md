@@ -20,7 +20,8 @@ DB_POOL_MAX=10
 DB_CONNECT_TIMEOUT_MS=5000
 DB_IDLE_TIMEOUT_MS=30000
 
-REDIS_URL=redis://redis:6379
+REDIS_PASSWORD=<strong-unique-password>
+REDIS_URL=redis://:<same-password>@redis:6379
 
 AUTH_SECRET=<64-character-random-hex-value>
 AUTH_URL=https://marjad.ma
@@ -50,6 +51,8 @@ openssl rand -hex 32
 - `POSTGRES_PASSWORD` and the password embedded in `DATABASE_URL` must match.
   Production verification rejects defaults, placeholders, and values shorter
   than 12 characters.
+- `REDIS_PASSWORD` and the password embedded in `REDIS_URL` must match.
+  Production verification requires at least 16 non-placeholder characters.
 - `DB_POOL_MAX` is per app container. Keep the total across all app replicas
   comfortably below PostgreSQL's connection limit.
 - Memory limits are safety ceilings, not reservations. Tune them to the VPS

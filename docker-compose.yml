@@ -18,7 +18,7 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET to a random value of at least 32 characters}
       AUTH_URL: ${AUTH_URL:-http://localhost:3000}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL with the Redis password}
       NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-212XXXXXXXXX}
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
@@ -58,7 +58,7 @@ services:
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET to a random value of at least 32 characters}
       AUTH_URL: ${AUTH_URL:-http://localhost:3000}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3000}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      REDIS_URL: ${REDIS_URL:?Set REDIS_URL with the Redis password}
       NEXT_PUBLIC_WHATSAPP_NUMBER: ${NEXT_PUBLIC_WHATSAPP_NUMBER:-212XXXXXXXXX}
       NEXT_PUBLIC_SUPPORT_PHONE: ${NEXT_PUBLIC_SUPPORT_PHONE:-}
       NEXT_PUBLIC_META_PIXEL_ID: ${NEXT_PUBLIC_META_PIXEL_ID:-}
@@ -125,12 +125,22 @@ services:
 
   redis:
     image: redis:8-alpine
+    command:
+      [
+        "redis-server",
+        "--appendonly",
+        "yes",
+        "--requirepass",
+        "${REDIS_PASSWORD:?Set a strong REDIS_PASSWORD}",
+      ]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set a strong REDIS_PASSWORD}
     ports:
       - "127.0.0.1:${REDIS_PORT:-6379}:6379"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$${REDIS_PASSWORD}\" redis-cli ping | grep -q PONG"]
       interval: 10s
       timeout: 5s
       retries: 5
