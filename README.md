@@ -43,6 +43,9 @@ docker compose down
 
 The Compose stack keeps Postgres, Redis, and uploaded product images in named Docker volumes. For production, replace `AUTH_SECRET`, database passwords, `AUTH_URL`, and `NEXT_PUBLIC_SITE_URL` before building.
 
+The app, PostgreSQL, and Redis ports bind to `127.0.0.1` only. In production,
+public traffic should reach the app through the host Nginx reverse proxy.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.

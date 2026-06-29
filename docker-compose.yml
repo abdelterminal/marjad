@@ -44,7 +44,7 @@ services:
       NEXT_PUBLIC_GOOGLE_TAG_ID: ${NEXT_PUBLIC_GOOGLE_TAG_ID:-}
       NEXT_PUBLIC_ANALYTICS_DEBUG: ${NEXT_PUBLIC_ANALYTICS_DEBUG:-false}
     ports:
-      - "${APP_PORT:-3000}:3000"
+      - "127.0.0.1:${APP_PORT:-3000}:3000"
     volumes:
       - uploads:/app/public/uploads
     healthcheck:
