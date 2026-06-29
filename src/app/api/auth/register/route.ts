@@ -4,14 +4,33 @@ import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { registerSchema } from '@/lib/validators';
+import { checkRateLimit } from '@/lib/rate-limit';
+
+function noStoreJson(body: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  headers.set('Cache-Control', 'no-store');
+  return NextResponse.json(body, { ...init, headers });
+}
 
 export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
+  const limited = await checkRateLimit(req, {
+    key: 'auth:register',
+    limit: 5,
+    windowMs: 15 * 60 * 1000,
+  });
+  if (limited) return limited;
 
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
+  }
+
+  try {
     const parsed = registerSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json(
+      return noStoreJson(
         { error: 'Données invalides', fields: parsed.error.flatten().fieldErrors },
         { status: 422 },
       );
@@ -24,7 +43,7 @@ export async function POST(req: NextRequest) {
       where: eq(users.email, email),
     });
     if (existing) {
-      return NextResponse.json(
+      return noStoreJson(
         { error: 'Impossible de créer le compte avec ces informations.' },
         { status: 409 },
       );
@@ -43,9 +62,10 @@ export async function POST(req: NextRequest) {
       })
       .returning({ id: users.id, email: users.email });
 
-    return NextResponse.json({ id: newUser.id, email: newUser.email }, { status: 201 });
-  } catch {
-    return NextResponse.json(
+    return noStoreJson({ id: newUser.id, email: newUser.email }, { status: 201 });
+  } catch (error) {
+    console.error('[POST /api/auth/register]', error);
+    return noStoreJson(
       { error: 'Une erreur est survenue. Veuillez réessayer.' },
       { status: 500 },
     );
