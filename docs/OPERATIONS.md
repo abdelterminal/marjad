@@ -47,6 +47,8 @@ docker compose --env-file .env.production logs -f app
 docker compose --env-file .env.production logs --tail=200 app
 docker compose --env-file .env.production logs -f postgres redis
 docker stats
+docker inspect --format='{{json .HostConfig.LogConfig}}' \
+  "$(docker compose --env-file .env.production ps -q app)"
 
 tail -f /var/log/nginx/access.log
 tail -f /var/log/nginx/error.log
@@ -154,4 +156,5 @@ docker system df
 docker image prune
 ```
 
-Do not prune volumes.
+Compose rotates each service's JSON logs at 10 MB and keeps five files. Do not
+prune volumes.
