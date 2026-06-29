@@ -1,9 +1,14 @@
-import NextAuth from 'next-auth';
+import NextAuth, { CredentialsSignin } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
+import { checkRateLimit } from '@/lib/rate-limit';
+
+class RateLimitedSignin extends CredentialsSignin {
+  code = 'rate_limited';
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -12,7 +17,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
+        const limited = await checkRateLimit(request, {
+          key: 'auth:credentials',
+          limit: 15,
+          windowMs: 15 * 60 * 1000,
+        });
+        if (limited) throw new RateLimitedSignin();
+
         if (!credentials?.email || !credentials?.password) return null;
         const user = await db.query.users.findFirst({
           where: eq(users.email, credentials.email as string),

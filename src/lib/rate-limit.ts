@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import { createClient } from 'redis';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 type Bucket = {
   count: number;
@@ -46,7 +46,7 @@ local ttl = redis.call('PTTL', KEYS[1])
 return { count, ttl }
 `;
 
-function getClientIp(req: NextRequest) {
+function getClientIp(req: Request) {
   const forwarded = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim();
   return (
     req.headers.get('x-real-ip') ||
@@ -56,7 +56,7 @@ function getClientIp(req: NextRequest) {
   );
 }
 
-function getBucketKey(req: NextRequest, key: string) {
+function getBucketKey(req: Request, key: string) {
   const clientHash = createHash('sha256').update(getClientIp(req)).digest('hex').slice(0, 32);
   return `marjad:rate-limit:${key}:${clientHash}`;
 }
@@ -159,7 +159,7 @@ function checkLocalRateLimit(
 }
 
 export async function checkRateLimit(
-  req: NextRequest,
+  req: Request,
   options: RateLimitOptions,
 ) {
   const bucketKey = getBucketKey(req, options.key);
