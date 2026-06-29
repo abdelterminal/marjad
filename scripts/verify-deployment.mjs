@@ -62,7 +62,7 @@ function validateEnvironment() {
   if (authSecret) {
     if (
       authSecret.length < 32 ||
-      /your-random-secret|change-me|placeholder|secret-here/i.test(authSecret)
+      /your-random-secret|change-me|change-this|placeholder|secret-here|replace-with/i.test(authSecret)
     ) {
       fail('AUTH_SECRET must be a non-placeholder value of at least 32 characters.');
     } else {

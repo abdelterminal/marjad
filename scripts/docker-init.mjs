@@ -20,6 +20,16 @@ if (!process.env.DATABASE_URL) {
   process.exit(1);
 }
 
+const authSecret = process.env.AUTH_SECRET?.trim();
+if (
+  !authSecret ||
+  authSecret.length < 32 ||
+  /your-random-secret|change-me|change-this|placeholder|secret-here|replace-with/i.test(authSecret)
+) {
+  console.error('[init] AUTH_SECRET must be a non-placeholder value of at least 32 characters');
+  process.exit(1);
+}
+
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 const db = drizzle(pool);
 

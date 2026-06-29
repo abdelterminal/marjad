@@ -49,6 +49,15 @@ database passwords, `AUTH_URL`, and `NEXT_PUBLIC_SITE_URL` before building.
 The app, PostgreSQL, and Redis ports bind to `127.0.0.1` only. In production,
 public traffic should reach the app through the host Nginx reverse proxy.
 
+Generate a private Auth.js signing secret before starting the stack:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+Set the generated value as `AUTH_SECRET` in `.env`. Compose and the init
+container reject missing, short, or placeholder secrets.
+
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
