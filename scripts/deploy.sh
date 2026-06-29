@@ -45,7 +45,10 @@ echo "$LOG_PREFIX ==> Building app and tools images..."
 "${COMPOSE[@]}" build app init
 
 echo "$LOG_PREFIX ==> Starting PostgreSQL and Redis..."
-"${COMPOSE[@]}" up -d postgres redis
+"${COMPOSE[@]}" up -d --wait postgres redis
+
+echo "$LOG_PREFIX ==> Creating pre-migration backup..."
+DEPLOY_ENV_FILE="$ENV_FILE" PROJECT_DIR="$PROJECT_DIR" bash scripts/backup.sh
 
 echo "$LOG_PREFIX ==> Applying migrations and preparing runtime state..."
 "${COMPOSE[@]}" run --rm init

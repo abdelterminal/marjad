@@ -101,19 +101,26 @@ Apply migrations and prepare runtime state manually:
 docker compose --env-file .env.production run --rm init
 ```
 
-Create a backup:
+Create an atomic database/upload backup:
 
 ```bash
-mkdir -p /root/backups
-docker compose --env-file .env.production exec -T postgres \
-  sh -c 'pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB"' \
-  > "/root/backups/marjad-$(date +%Y%m%d-%H%M%S).sql"
+bash scripts/backup.sh
 ```
 
-Restore a backup into staging first:
+Backups default to `/var/backups/marjad`, retain 14 days, and include SHA-256
+manifests. Every routine deploy creates one before migrations. Override with
+`BACKUP_DIR`, `BACKUP_RETENTION_DAYS`, or `UPLOADS_DIR`.
+
+Schedule a daily backup:
 
 ```bash
-cat /root/backups/<backup>.sql | \
+0 3 * * * cd /var/www/marjad && /bin/bash scripts/backup.sh >> /var/log/marjad-backup.log 2>&1
+```
+
+Restore a database backup into staging first:
+
+```bash
+gunzip -c /var/backups/marjad/<backup>.sql.gz | \
   docker compose --env-file .env.production exec -T postgres \
   sh -c 'psql -U "$POSTGRES_USER" "$POSTGRES_DB"'
 ```
@@ -128,6 +135,8 @@ rsync -av /var/www/marjad/public/uploads/ \
 Restore to `/var/www/marjad/public/uploads/`, then run:
 
 ```bash
+tar -xzf /var/backups/marjad/<uploads-backup>.tar.gz \
+  -C /var/www/marjad/public/uploads/
 docker compose --env-file .env.production run --rm init
 ```
 
