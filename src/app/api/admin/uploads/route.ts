@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
-import { saveUploadedImage } from '@/lib/images';
+import { ImageValidationError, saveUploadedImage } from '@/lib/images';
+
+function noStoreJson(body: unknown, init?: ResponseInit) {
+  const headers = new Headers(init?.headers);
+  headers.set('Cache-Control', 'no-store');
+  return NextResponse.json(body, { ...init, headers });
+}
 
 // POST /api/admin/uploads — multipart form with field 'file'
 export async function POST(req: NextRequest) {
@@ -11,19 +17,22 @@ export async function POST(req: NextRequest) {
   try {
     formData = await req.formData();
   } catch {
-    return NextResponse.json({ error: 'Formulaire multipart invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Formulaire multipart invalide.' }, { status: 400 });
   }
 
   const file = formData.get('file');
   if (!file || !(file instanceof File)) {
-    return NextResponse.json({ error: "Champ 'file' manquant ou invalide." }, { status: 400 });
+    return noStoreJson({ error: "Champ 'file' manquant ou invalide." }, { status: 400 });
   }
 
   try {
     const path = await saveUploadedImage(file);
-    return NextResponse.json({ path }, { status: 201 });
+    return noStoreJson({ path }, { status: 201 });
   } catch (err) {
-    const message = err instanceof Error ? err.message : 'Erreur lors du traitement de l\'image.';
-    return NextResponse.json({ error: message }, { status: 400 });
+    if (err instanceof ImageValidationError) {
+      return noStoreJson({ error: err.message }, { status: 400 });
+    }
+    console.error('[POST /api/admin/uploads]', err);
+    return noStoreJson({ error: 'Erreur lors du traitement de l’image.' }, { status: 500 });
   }
 }
