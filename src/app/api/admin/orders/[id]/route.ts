@@ -3,6 +3,12 @@ import { requireAdminApi } from '@/lib/auth-guards';
 import { orderStatusSchema } from '@/lib/validators';
 import { getOrderById, updateOrderStatus, InvalidTransitionError } from '@/lib/queries/orders';
 
+const noStoreJson = (body: unknown, status = 200) =>
+  NextResponse.json(body, {
+    status,
+    headers: { 'Cache-Control': 'no-store' },
+  });
+
 // GET /api/admin/orders/[id]
 export async function GET(
   _req: NextRequest,
@@ -14,15 +20,15 @@ export async function GET(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, 400);
   }
 
   const order = await getOrderById(id);
   if (!order) {
-    return NextResponse.json({ error: 'Commande introuvable.' }, { status: 404 });
+    return noStoreJson({ error: 'Commande introuvable.' }, 404);
   }
 
-  return NextResponse.json(order);
+  return noStoreJson(order);
 }
 
 // PATCH /api/admin/orders/[id]  — update status
@@ -36,35 +42,36 @@ export async function PATCH(
   const { id: idStr } = await params;
   const id = Number(idStr);
   if (!Number.isInteger(id) || id <= 0) {
-    return NextResponse.json({ error: 'ID invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'ID invalide.' }, 400);
   }
 
   let body: unknown;
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ error: 'Corps JSON invalide.' }, { status: 400 });
+    return noStoreJson({ error: 'Corps JSON invalide.' }, 400);
   }
 
   const parsed = orderStatusSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json(
+    return noStoreJson(
       { error: 'Statut invalide.', fields: parsed.error.flatten().fieldErrors },
-      { status: 422 },
+      422,
     );
   }
 
   try {
     const order = await updateOrderStatus(id, parsed.data.status);
-    return NextResponse.json(order);
+    return noStoreJson(order);
   } catch (err) {
     if (err instanceof InvalidTransitionError) {
-      return NextResponse.json({ error: err.message }, { status: 422 });
+      return noStoreJson({ error: err.message }, 422);
     }
     const message = err instanceof Error ? err.message : 'Erreur interne.';
     if (message.includes('introuvable')) {
-      return NextResponse.json({ error: message }, { status: 404 });
+      return noStoreJson({ error: message }, 404);
     }
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error('[admin/orders] Failed to update order status:', err);
+    return noStoreJson({ error: 'Erreur interne.' }, 500);
   }
 }
