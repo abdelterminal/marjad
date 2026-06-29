@@ -142,14 +142,27 @@ docker compose --env-file .env.production run --rm init
 
 ## Nginx and TLS
 
-The active Certbot-managed file is `/etc/nginx/sites-available/marjad`.
-The tracked `nginx/marjad.conf` is the installation template; do not symlink
-Certbot directly into the Git working tree.
+The active Certbot-managed site is `/etc/nginx/sites-available/marjad`. It
+includes `/etc/nginx/snippets/marjad-app.conf`, which routine deploys update
+from the tracked application policy without overwriting Certbot TLS directives.
 
-The template only serves UUID-named WebP files under `/uploads/`, hides the
-Nginx version, bounds slow-client timeouts, and applies security headers. After
-copying template changes into the active Certbot-managed file, preserve its TLS
-certificate directives.
+The policy only serves UUID-named WebP files under `/uploads/`, hides the Nginx
+version, bounds slow-client timeouts, and applies security headers.
+
+For a server installed before the include-based layout, perform a one-time
+migration: preserve the Certbot certificate/HTTPS directives in the active site,
+remove the old MARJAD proxy/location directives, add the following line inside
+the HTTPS application `server` block, then test before reloading:
+
+```nginx
+include /etc/nginx/snippets/marjad-app.conf;
+```
+
+```bash
+install -m 644 /var/www/marjad/nginx/marjad-app.conf \
+  /etc/nginx/snippets/marjad-app.conf
+nginx -t && systemctl reload nginx
+```
 
 ```bash
 nginx -t

@@ -59,8 +59,36 @@ echo "$LOG_PREFIX ==> Running container-network deployment preflight..."
   -e DEPLOY_RUNTIME=docker \
   init npm run verify:deployment
 
+if ! grep -Fq 'include /etc/nginx/snippets/marjad-app.conf;' /etc/nginx/sites-available/marjad; then
+  echo "$LOG_PREFIX ERROR: Active Nginx site does not include marjad-app.conf."
+  echo "$LOG_PREFIX Follow the one-time migration in docs/OPERATIONS.md; preserve Certbot TLS."
+  exit 1
+fi
+
+echo "$LOG_PREFIX ==> Installing MARJAD Nginx application policy..."
+nginx_policy="/etc/nginx/snippets/marjad-app.conf"
+nginx_policy_backup="$(mktemp)"
+had_nginx_policy=false
+if [ -f "$nginx_policy" ]; then
+  cp "$nginx_policy" "$nginx_policy_backup"
+  had_nginx_policy=true
+fi
+install -m 644 nginx/marjad-app.conf /etc/nginx/snippets/marjad-app.conf
+
 echo "$LOG_PREFIX ==> Validating active Nginx configuration..."
-nginx -t
+if ! nginx -t; then
+  echo "$LOG_PREFIX ERROR: New Nginx policy is invalid; restoring previous policy."
+  if [ "$had_nginx_policy" = "true" ]; then
+    install -m 644 "$nginx_policy_backup" "$nginx_policy"
+  else
+    rm -f "$nginx_policy"
+  fi
+  rm -f "$nginx_policy_backup"
+  nginx -t
+  exit 1
+fi
+rm -f "$nginx_policy_backup"
+systemctl reload nginx
 
 echo "$LOG_PREFIX ==> Replacing the application container..."
 "${COMPOSE[@]}" up -d --no-deps --force-recreate app

@@ -38,6 +38,8 @@ mkdir -p public/uploads
 chmod 755 public/uploads
 
 echo "==> Installing Nginx configuration..."
+install -m 0755 -d /etc/nginx/snippets
+install -m 644 "$PROJECT_DIR/nginx/marjad-app.conf" /etc/nginx/snippets/marjad-app.conf
 install -m 644 "$PROJECT_DIR/nginx/marjad.conf" /etc/nginx/sites-available/marjad
 ln -sf /etc/nginx/sites-available/marjad /etc/nginx/sites-enabled/marjad
 rm -f /etc/nginx/sites-enabled/default

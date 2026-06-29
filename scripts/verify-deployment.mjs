@@ -250,8 +250,13 @@ async function validateFilesystemAndConfig() {
   }
 
   try {
-    const nginx = await readFile(nginxPath, 'utf8');
+    const [nginxSite, nginxApp] = await Promise.all([
+      readFile(nginxPath, 'utf8'),
+      readFile(path.join(projectRoot, 'nginx', 'marjad-app.conf'), 'utf8'),
+    ]);
+    const nginx = `${nginxSite}\n${nginxApp}`;
     const requiredNginxSnippets = [
+      'include /etc/nginx/snippets/marjad-app.conf;',
       'alias /var/www/marjad/public/uploads/',
       'proxy_set_header X-Real-IP $remote_addr',
       'proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for',
