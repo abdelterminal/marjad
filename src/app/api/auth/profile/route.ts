@@ -4,7 +4,7 @@ import { profileUpdateSchema } from '@/lib/validators';
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import { eq } from 'drizzle-orm';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 // PATCH /api/auth/profile — update the logged-in user's name and/or phone
 export async function PATCH(req: NextRequest) {
@@ -16,14 +16,10 @@ export async function PATCH(req: NextRequest) {
 
   const userId = Number(guard.user.id);
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 16 * 1024);
+  if (body.response) return body.response;
 
-  const parsed = profileUpdateSchema.safeParse(body);
+  const parsed = profileUpdateSchema.safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },

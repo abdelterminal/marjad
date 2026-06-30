@@ -3,7 +3,7 @@ import { requireAdminApi } from '@/lib/auth-guards';
 import { adminCategorySchema } from '@/lib/validators';
 import { updateCategory, deleteCategory } from '@/lib/queries/categories';
 import { slugify } from '@/lib/slug';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 // PATCH /api/admin/categories/[id]
 export async function PATCH(
@@ -19,14 +19,10 @@ export async function PATCH(
     return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 32 * 1024);
+  if (body.response) return body.response;
 
-  const parsed = adminCategorySchema.partial().safeParse(body);
+  const parsed = adminCategorySchema.partial().safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },

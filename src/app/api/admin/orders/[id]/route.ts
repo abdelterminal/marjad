@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
 import { orderStatusSchema } from '@/lib/validators';
 import { getOrderById, updateOrderStatus, InvalidTransitionError } from '@/lib/queries/orders';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 // GET /api/admin/orders/[id]
 export async function GET(
@@ -40,14 +40,10 @@ export async function PATCH(
     return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 8 * 1024);
+  if (body.response) return body.response;
 
-  const parsed = orderStatusSchema.safeParse(body);
+  const parsed = orderStatusSchema.safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Statut invalide.', fields: parsed.error.flatten().fieldErrors },

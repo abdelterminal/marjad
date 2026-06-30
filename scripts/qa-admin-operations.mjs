@@ -180,6 +180,15 @@ async function main() {
       'Restored admin access',
     );
 
+    log('rejecting oversized admin JSON bodies');
+    await expectStatus(
+      await api.post(url('/api/admin/products'), {
+        data: { padding: 'x'.repeat(193 * 1024) },
+      }),
+      413,
+      'Oversized admin product body',
+    );
+
     log('validating authenticated image uploads');
     await expectStatus(
       await api.post(url('/api/admin/uploads'), {

@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { trackOrder } from '@/lib/queries/orders';
 import { trackOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 export async function POST(req: NextRequest) {
   const limited = await checkRateLimit(req, {
@@ -12,14 +12,10 @@ export async function POST(req: NextRequest) {
   });
   if (limited) return limited;
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 8 * 1024);
+  if (body.response) return body.response;
 
-  const parsed = trackOrderSchema.safeParse(body);
+  const parsed = trackOrderSchema.safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },

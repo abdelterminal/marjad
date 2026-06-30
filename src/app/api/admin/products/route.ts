@@ -3,7 +3,7 @@ import { requireAdminApi } from '@/lib/auth-guards';
 import { adminProductSchema } from '@/lib/validators';
 import { adminListProducts, createProduct, isProductSlugTaken } from '@/lib/queries/products';
 import { slugify, ensureUniqueSlug } from '@/lib/slug';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 // GET /api/admin/products?q=&page=
 export async function GET(req: NextRequest) {
@@ -23,14 +23,10 @@ export async function POST(req: NextRequest) {
   const guard = await requireAdminApi();
   if (guard.response) return guard.response;
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 192 * 1024);
+  if (body.response) return body.response;
 
-  const parsed = adminProductSchema.safeParse(body);
+  const parsed = adminProductSchema.safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },

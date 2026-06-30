@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import { registerSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 function isUniqueViolation(error: unknown) {
   return (
@@ -24,15 +24,11 @@ export async function POST(req: NextRequest) {
   });
   if (limited) return limited;
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 16 * 1024);
+  if (body.response) return body.response;
 
   try {
-    const parsed = registerSchema.safeParse(body);
+    const parsed = registerSchema.safeParse(body.data);
     if (!parsed.success) {
       return noStoreJson(
         { error: 'Données invalides', fields: parsed.error.flatten().fieldErrors },

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
 import { adminProductSchema } from '@/lib/validators';
 import { updateProduct, deleteProduct } from '@/lib/queries/products';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 
 // PATCH /api/admin/products/[id]
 export async function PATCH(
@@ -18,15 +18,11 @@ export async function PATCH(
     return noStoreJson({ error: 'ID invalide.' }, { status: 400 });
   }
 
-  let body: unknown;
-  try {
-    body = await req.json();
-  } catch {
-    return noStoreJson({ error: 'Corps JSON invalide.' }, { status: 400 });
-  }
+  const body = await readJsonBody(req, 192 * 1024);
+  if (body.response) return body.response;
 
   // Partial validation — allow any subset of product fields
-  const parsed = adminProductSchema.partial().safeParse(body);
+  const parsed = adminProductSchema.partial().safeParse(body.data);
   if (!parsed.success) {
     return noStoreJson(
       { error: 'Données invalides.', fields: parsed.error.flatten().fieldErrors },

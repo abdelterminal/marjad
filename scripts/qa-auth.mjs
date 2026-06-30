@@ -11,6 +11,7 @@ const normalizedEmail = `${runId}@example.test`;
 const concurrentEmail = `${runId}-concurrent@example.test`;
 const password = `Qa-${Date.now()}-Secure`;
 const qaIp = `203.0.113.${(Date.now() % 250) + 1}`;
+const payloadQaIp = `198.51.100.${(Date.now() % 250) + 1}`;
 
 function url(path) {
   return new URL(path, baseURL).toString();
@@ -63,6 +64,34 @@ async function main() {
       if (error?.code !== '23514') {
         throw new Error(`Expected email check violation 23514, got ${error?.code ?? 'unknown'}.`);
       }
+    }
+
+    log('rejecting malformed and oversized registration bodies');
+    const malformedRegistration = await fetch(url('/api/auth/register'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-real-ip': payloadQaIp,
+      },
+      body: '{"email":',
+    });
+    if (malformedRegistration.status !== 400) {
+      throw new Error(
+        `Malformed registration JSON expected HTTP 400, got ${malformedRegistration.status}.`,
+      );
+    }
+    const oversizedRegistration = await fetch(url('/api/auth/register'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-real-ip': payloadQaIp,
+      },
+      body: JSON.stringify({ padding: 'x'.repeat(17 * 1024) }),
+    });
+    if (oversizedRegistration.status !== 413) {
+      throw new Error(
+        `Oversized registration body expected HTTP 413, got ${oversizedRegistration.status}.`,
+      );
     }
 
     log('rejecting weak customer passwords');
