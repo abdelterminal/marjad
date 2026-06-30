@@ -4,6 +4,7 @@ import { createOrder, getUserOrders, StockError } from '@/lib/queries/orders';
 import { createOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { noStoreJson } from '@/lib/http';
+import { getExistingUserId, requireUserApi } from '@/lib/auth-guards';
 
 // POST /api/orders — public (guests allowed); attach userId if session exists
 export async function POST(req: NextRequest) {
@@ -26,7 +27,9 @@ export async function POST(req: NextRequest) {
     }
 
     const session = await auth();
-    const userId = session?.user?.id ? parseInt(session.user.id, 10) : undefined;
+    const userId = session?.user?.id
+      ? (await getExistingUserId(session.user.id)) ?? undefined
+      : undefined;
 
     const orderData = parsed.data;
     const { orderId, total } = await createOrder({ ...orderData, userId });
@@ -53,13 +56,11 @@ export async function POST(req: NextRequest) {
 
 // GET /api/orders — requires session; returns own orders only
 export async function GET() {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return noStoreJson({ error: 'Authentification requise.' }, { status: 401 });
-  }
+  const guard = await requireUserApi();
+  if (guard.response) return guard.response;
 
   try {
-    const userId = parseInt(session.user.id, 10);
+    const userId = Number(guard.user.id);
     const userOrders = await getUserOrders(userId);
     return noStoreJson(userOrders);
   } catch {

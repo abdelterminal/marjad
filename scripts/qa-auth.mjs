@@ -44,6 +44,8 @@ async function main() {
 
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const browser = await chromium.launch({ headless: true });
+  let guestOrderId;
+  let guestProductId;
 
   try {
     log('enforcing normalized email at the database boundary');
@@ -115,6 +117,70 @@ async function main() {
     if (session?.user?.email !== normalizedEmail) {
       throw new Error('Mixed-case login did not create the expected customer session.');
     }
+    log('revoking a deleted customer session immediately');
+    await pool.query('DELETE FROM users WHERE email = $1', [normalizedEmail]);
+    const staleOrdersResponse = await context.request.get(url('/api/orders'));
+    if (staleOrdersResponse.status() !== 401) {
+      throw new Error(
+        `Deleted customer orders expected HTTP 401, got ${staleOrdersResponse.status()}.`,
+      );
+    }
+    const staleProfileResponse = await context.request.patch(url('/api/auth/profile'), {
+      data: { name: 'Deleted Customer' },
+    });
+    if (staleProfileResponse.status() !== 401) {
+      throw new Error(
+        `Deleted customer profile expected HTTP 401, got ${staleProfileResponse.status()}.`,
+      );
+    }
+    const staleAccountResponse = await context.request.get(url('/fr/account'), {
+      maxRedirects: 0,
+    });
+    if (
+      ![303, 307].includes(staleAccountResponse.status()) ||
+      new URL(staleAccountResponse.headers().location, baseURL).pathname !==
+        '/fr/account/login'
+    ) {
+      throw new Error(
+        `Deleted customer account expected a login redirect, got HTTP ${staleAccountResponse.status()}.`,
+      );
+    }
+
+    log('placing stale-session checkout as a guest');
+    const productFixture = await pool.query(
+      `INSERT INTO products (
+         name_fr, name_ar, slug, price, stock, images, is_published,
+         is_featured, created_at, updated_at
+       )
+       VALUES ('QA Auth Product', 'منتج اختبار', $1, '99.00', 1, '{}', true, false, NOW(), NOW())
+       RETURNING id`,
+      [`${runId}-product`],
+    );
+    guestProductId = productFixture.rows[0].id;
+    const guestOrderResponse = await context.request.post(url('/api/orders'), {
+      headers: { 'x-real-ip': qaIp },
+      data: {
+        customerName: 'QA Stale Customer',
+        customerPhone: '0612345678',
+        city: 'Casablanca',
+        address: 'QA temporary checkout address',
+        notes: runId,
+        items: [{ productId: guestProductId, quantity: 1 }],
+      },
+    });
+    if (guestOrderResponse.status() !== 201) {
+      throw new Error(
+        `Stale-session guest checkout expected HTTP 201, got ${guestOrderResponse.status()}.`,
+      );
+    }
+    const guestOrder = await guestOrderResponse.json();
+    guestOrderId = guestOrder.orderId;
+    const storedOrder = await pool.query('SELECT user_id FROM orders WHERE id = $1', [
+      guestOrderId,
+    ]);
+    if (storedOrder.rows[0]?.user_id !== null) {
+      throw new Error('Stale-session checkout was not stored as a guest order.');
+    }
     await context.close();
 
     log('racing duplicate registrations');
@@ -138,6 +204,8 @@ async function main() {
     log('all customer authentication checks passed');
   } finally {
     await browser.close();
+    if (guestOrderId) await pool.query('DELETE FROM orders WHERE id = $1', [guestOrderId]);
+    if (guestProductId) await pool.query('DELETE FROM products WHERE id = $1', [guestProductId]);
     await pool.query('DELETE FROM users WHERE email = ANY($1::text[])', [
       [normalizedEmail, concurrentEmail],
     ]);

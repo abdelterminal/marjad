@@ -15,30 +15,35 @@ const noStoreError = (error: string, status: 401 | 403) =>
     },
   );
 
-async function hasCurrentAdminRole(userId: string | undefined) {
+async function getCurrentUser(userId: string | undefined) {
   const id = Number(userId);
-  if (!Number.isInteger(id) || id <= 0) return false;
+  if (!Number.isInteger(id) || id <= 0) return null;
 
-  const user = await db.query.users.findFirst({
+  return db.query.users.findFirst({
     where: eq(users.id, id),
-    columns: { role: true },
+    columns: { id: true, role: true },
   });
+}
 
-  return user?.role === 'admin';
+export async function getExistingUserId(userId: string | undefined) {
+  return (await getCurrentUser(userId))?.id ?? null;
 }
 
 // ─── Page / Server Component guards (redirect on failure) ──────────────────────
 
 export async function requireUser(locale = 'fr') {
   const session = await auth();
-  if (!session?.user) redirect(`/${locale}/account/login`);
+  if (!session?.user || !(await getExistingUserId(session.user.id))) {
+    redirect(`/${locale}/account/login`);
+  }
   return session.user;
 }
 
 export const requireAdmin = cache(async () => {
   const session = await auth();
   if (!session?.user || session.user.role !== 'admin') redirect('/login');
-  if (!(await hasCurrentAdminRole(session.user.id))) redirect('/login');
+  const currentUser = await getCurrentUser(session.user.id);
+  if (currentUser?.role !== 'admin') redirect('/login');
   return session.user;
 });
 
@@ -46,7 +51,7 @@ export const requireAdmin = cache(async () => {
 
 export async function requireUserApi() {
   const session = await auth();
-  if (!session?.user) {
+  if (!session?.user || !(await getExistingUserId(session.user.id))) {
     return {
       user: null,
       response: noStoreError('Authentification requise.', 401),
@@ -57,10 +62,12 @@ export async function requireUserApi() {
 
 export async function requireAdminApi() {
   const session = await auth();
+  const currentUser =
+    session?.user?.role === 'admin' ? await getCurrentUser(session.user.id) : null;
   if (
     !session?.user ||
     session.user.role !== 'admin' ||
-    !(await hasCurrentAdminRole(session.user.id))
+    currentUser?.role !== 'admin'
   ) {
     return {
       user: null,
