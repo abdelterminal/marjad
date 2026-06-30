@@ -55,13 +55,15 @@ export async function POST(req: NextRequest) {
 }
 
 // GET /api/orders — requires session; returns own orders only
-export async function GET() {
+export async function GET(req: NextRequest) {
   const guard = await requireUserApi();
   if (guard.response) return guard.response;
 
   try {
     const userId = Number(guard.user.id);
-    const userOrders = await getUserOrders(userId);
+    const requestedPage =
+      Number.parseInt(req.nextUrl.searchParams.get('page') ?? '1', 10) || 1;
+    const userOrders = await getUserOrders(userId, requestedPage);
     return noStoreJson(userOrders);
   } catch {
     return noStoreJson({ error: 'Erreur serveur.' }, { status: 500 });

@@ -6,14 +6,24 @@ import { getUserOrders } from '@/lib/queries/orders';
 import { formatMAD } from '@/lib/money';
 import { OrderStatusBadge } from '@/components/ui/OrderStatusBadge';
 import { ShoppingBag } from 'lucide-react';
+import { Pagination } from '@/components/product/Pagination';
 
-export default async function AccountPage() {
+type AccountPageProps = {
+  searchParams: Promise<{ page?: string | string[] }>;
+};
+
+export default async function AccountPage({ searchParams }: AccountPageProps) {
   const locale = await getLocale();
   const user = await requireUser(locale);
   const isAr = locale === 'ar';
+  const rawPage = (await searchParams).page;
+  const requestedPage = Math.max(
+    1,
+    Number.parseInt(Array.isArray(rawPage) ? rawPage[0] : (rawPage ?? '1'), 10) || 1,
+  );
 
   const userId = parseInt(user.id, 10);
-  const orders = await getUserOrders(userId);
+  const { items: orders, page, totalPages } = await getUserOrders(userId, requestedPage);
 
   return (
     <main className="max-w-[var(--container-lg)] mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -144,6 +154,7 @@ export default async function AccountPage() {
               </Link>
             );
           })}
+          <Pagination currentPage={page} totalPages={totalPages} />
         </div>
       )}
     </main>

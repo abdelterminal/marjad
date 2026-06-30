@@ -114,10 +114,22 @@ export async function createOrder(data: CreateOrderInput): Promise<{ orderId: nu
   });
 }
 
-export async function getUserOrders(userId: number) {
-  return db.query.orders.findMany({
+const CUSTOMER_ORDER_PAGE_SIZE = 10;
+
+export async function getUserOrders(userId: number, requestedPage = 1) {
+  const [totalResult] = await db
+    .select({ count: count() })
+    .from(orders)
+    .where(eq(orders.userId, userId));
+  const total = Number(totalResult?.count ?? 0);
+  const totalPages = Math.max(1, Math.ceil(total / CUSTOMER_ORDER_PAGE_SIZE));
+  const page = Math.min(Math.max(1, requestedPage), totalPages);
+
+  const items = await db.query.orders.findMany({
     where: eq(orders.userId, userId),
     orderBy: (o, { desc }) => [desc(o.createdAt)],
+    limit: CUSTOMER_ORDER_PAGE_SIZE,
+    offset: (page - 1) * CUSTOMER_ORDER_PAGE_SIZE,
     with: {
       items: {
         with: {
@@ -128,6 +140,14 @@ export async function getUserOrders(userId: number) {
       },
     },
   });
+
+  return {
+    items,
+    total,
+    page,
+    pageSize: CUSTOMER_ORDER_PAGE_SIZE,
+    totalPages,
+  };
 }
 
 export async function getUserOrderById(userId: number, orderId: number) {

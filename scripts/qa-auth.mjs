@@ -95,7 +95,7 @@ async function main() {
     }
 
     const stored = await pool.query(
-      'SELECT name, email FROM users WHERE email = $1 LIMIT 1',
+      'SELECT id, name, email FROM users WHERE email = $1 LIMIT 1',
       [normalizedEmail],
     );
     if (stored.rows[0]?.email !== normalizedEmail || stored.rows[0]?.name !== 'QA Customer') {
@@ -117,6 +117,47 @@ async function main() {
     if (session?.user?.email !== normalizedEmail) {
       throw new Error('Mixed-case login did not create the expected customer session.');
     }
+
+    log('paginating customer order history');
+    await pool.query(
+      `INSERT INTO orders (
+         user_id, customer_name, customer_phone, city, address, total, notes,
+         status, payment_method, created_at, updated_at
+       )
+       SELECT $1, 'QA Customer', '0612345678', 'Casablanca', 'QA address',
+              '99.00', $2, 'pending', 'cod', NOW() - (n || ' minutes')::interval, NOW()
+       FROM generate_series(1, 11) AS n`,
+      [stored.rows[0].id, `${runId}-pagination`],
+    );
+    const firstOrdersPage = await context.request.get(url('/api/orders?page=1'));
+    const firstOrdersBody = await firstOrdersPage.json();
+    if (
+      firstOrdersPage.status() !== 200 ||
+      firstOrdersBody.items?.length !== 10 ||
+      firstOrdersBody.total !== 11 ||
+      firstOrdersBody.totalPages !== 2
+    ) {
+      throw new Error('Customer order history first page is not bounded to 10 of 11 orders.');
+    }
+    const secondOrdersPage = await context.request.get(url('/api/orders?page=2'));
+    const secondOrdersBody = await secondOrdersPage.json();
+    if (
+      secondOrdersPage.status() !== 200 ||
+      secondOrdersBody.items?.length !== 1 ||
+      secondOrdersBody.page !== 2
+    ) {
+      throw new Error('Customer order history second page did not contain the final order.');
+    }
+    const accountSecondPage = await context.request.get(url('/fr/account?page=2'));
+    const accountSecondPageHtml = await accountSecondPage.text();
+    if (
+      accountSecondPage.status() !== 200 ||
+      !accountSecondPageHtml.includes('Page 2 / 2')
+    ) {
+      throw new Error('Customer account page did not render localized page 2 navigation.');
+    }
+    await pool.query('DELETE FROM orders WHERE notes = $1', [`${runId}-pagination`]);
+
     log('revoking a deleted customer session immediately');
     await pool.query('DELETE FROM users WHERE email = $1', [normalizedEmail]);
     const staleOrdersResponse = await context.request.get(url('/api/orders'));
@@ -204,6 +245,7 @@ async function main() {
     log('all customer authentication checks passed');
   } finally {
     await browser.close();
+    await pool.query('DELETE FROM orders WHERE notes = $1', [`${runId}-pagination`]);
     if (guestOrderId) await pool.query('DELETE FROM orders WHERE id = $1', [guestOrderId]);
     if (guestProductId) await pool.query('DELETE FROM products WHERE id = $1', [guestProductId]);
     await pool.query('DELETE FROM users WHERE email = ANY($1::text[])', [
