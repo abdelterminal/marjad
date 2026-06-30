@@ -21,7 +21,8 @@ const EXPORT_PRESETS = {
 
 function csvCell(value: unknown) {
   const text = value === null || value === undefined ? '' : String(value);
-  return `"${text.replace(/"/g, '""')}"`;
+  const safeText = /^[\t\r ]*[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${safeText.replace(/"/g, '""')}"`;
 }
 
 function toCsv(rows: string[][]) {

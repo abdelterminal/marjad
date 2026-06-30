@@ -323,7 +323,7 @@ async function main() {
         'x-real-ip': '203.0.113.90',
       },
       body: JSON.stringify({
-        customerName: 'QA Admin Operations',
+        customerName: '=HYPERLINK("https://example.test","QA Admin Operations")',
         customerPhone: '0612345678',
         city: 'Casablanca',
         address: `Temporary address ${runId}`,
@@ -383,6 +383,12 @@ async function main() {
     const csv = await exportResponse.text();
     if (!contentType.includes('text/csv') || !csv.includes(String(order.orderId))) {
       throw new Error('Delivered-order export did not contain the QA order.');
+    }
+    if (
+      csv.includes('"=HYPERLINK') ||
+      !csv.includes(`"'=HYPERLINK(""https://example.test"",""QA Admin Operations"")"`)
+    ) {
+      throw new Error('Delivered-order export did not neutralize spreadsheet formulas.');
     }
 
     log('checking product update and safe deletion');
