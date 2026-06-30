@@ -93,6 +93,24 @@ async function main() {
         `Oversized registration body expected HTTP 413, got ${oversizedRegistration.status}.`,
       );
     }
+    const invalidIdentityFields = await fetch(url('/api/auth/register'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-real-ip': payloadQaIp,
+      },
+      body: JSON.stringify({
+        name: 'x'.repeat(121),
+        email: `${'x'.repeat(250)}@example.test`,
+        password,
+        phone: '12345',
+      }),
+    });
+    if (invalidIdentityFields.status !== 422) {
+      throw new Error(
+        `Overlong registration fields expected HTTP 422, got ${invalidIdentityFields.status}.`,
+      );
+    }
 
     log('rejecting weak customer passwords');
     const weakPasswordResponse = await fetch(url('/api/auth/register'), {

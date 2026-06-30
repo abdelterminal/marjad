@@ -3,8 +3,17 @@ import { z } from 'zod';
 // ─── Register ─────────────────────────────────────────────────────────────────
 
 export const registerSchema = z.object({
-  name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
-  email: z.string().trim().toLowerCase().pipe(z.email('Adresse e-mail invalide')),
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Le nom doit contenir au moins 2 caractères')
+    .max(120, 'Le nom ne doit pas dépasser 120 caractères'),
+  email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(254, "L'adresse e-mail est trop longue")
+    .pipe(z.email('Adresse e-mail invalide')),
   password: z
     .string()
     .min(10, 'Le mot de passe doit contenir au moins 10 caractères')
@@ -14,7 +23,18 @@ export const registerSchema = z.object({
       (value) => new TextEncoder().encode(value).length <= 72,
       'Le mot de passe ne doit pas dépasser 72 octets',
     ),
-  phone: z.string().optional(),
+  phone: z
+    .string()
+    .transform((value) => value.replace(/[\s\-.\(\)]/g, ''))
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^(0[67]\d{8}|\+212[67]\d{8})$/,
+          'Numéro de téléphone invalide (ex: 0612345678)',
+        ),
+    )
+    .optional(),
 });
 
 // ─── Morocco phone ─────────────────────────────────────────────────────────────

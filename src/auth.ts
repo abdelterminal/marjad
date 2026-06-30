@@ -11,6 +11,8 @@ class RateLimitedSignin extends CredentialsSignin {
 }
 
 const SESSION_MAX_AGE_SECONDS = 7 * 24 * 60 * 60;
+const DUMMY_PASSWORD_HASH =
+  '$2b$10$3rvdLKLBLrwrCCsL1CYmLuCeRZv1ARUSW.SFmyvf5olPtBkrMKgYq';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -27,15 +29,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         });
         if (limited) throw new RateLimitedSignin();
 
-        if (typeof credentials?.email !== 'string' || !credentials?.password) return null;
+        if (
+          typeof credentials?.email !== 'string' ||
+          typeof credentials?.password !== 'string'
+        ) {
+          return null;
+        }
         const email = credentials.email.trim().toLowerCase();
-        if (!email) return null;
+        const password = credentials.password;
+        if (
+          !email ||
+          email.length > 254 ||
+          !password ||
+          new TextEncoder().encode(password).length > 72
+        ) {
+          return null;
+        }
         const user = await db.query.users.findFirst({
           where: eq(users.email, email),
         });
-        if (!user || !user.password) return null;
-        const valid = await bcrypt.compare(credentials.password as string, user.password);
-        if (!valid) return null;
+        const valid = await bcrypt.compare(password, user?.password ?? DUMMY_PASSWORD_HASH);
+        if (!user?.password || !valid) return null;
         return { id: String(user.id), email: user.email, name: user.name, role: user.role };
       },
     }),

@@ -141,6 +141,7 @@ export function RegisterForm({ locale }: Props) {
               autoComplete="name"
               required
               minLength={2}
+              maxLength={120}
               disabled={loading}
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -158,6 +159,7 @@ export function RegisterForm({ locale }: Props) {
               type="email"
               autoComplete="email"
               required
+              maxLength={254}
               disabled={loading}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -201,6 +203,7 @@ export function RegisterForm({ locale }: Props) {
               id="reg-phone"
               type="tel"
               autoComplete="tel"
+              maxLength={17}
               disabled={loading}
               placeholder="0612345678"
               value={phone}
