@@ -187,6 +187,34 @@ async function main() {
       );
     }
 
+    log('rejecting malformed and oversized checkout bodies');
+    const malformedOrderResponse = await fetch(url('/api/orders'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-real-ip': qaIp,
+      },
+      body: '{"items":',
+    });
+    if (malformedOrderResponse.status !== 400) {
+      throw new Error(
+        `Malformed checkout JSON expected HTTP 400, got ${malformedOrderResponse.status}.`,
+      );
+    }
+    const oversizedOrderResponse = await fetch(url('/api/orders'), {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        'x-real-ip': qaIp,
+      },
+      body: JSON.stringify({ padding: 'x'.repeat(33 * 1024) }),
+    });
+    if (oversizedOrderResponse.status !== 413) {
+      throw new Error(
+        `Oversized checkout body expected HTTP 413, got ${oversizedOrderResponse.status}.`,
+      );
+    }
+
     log('placing stale-session checkout as a guest');
     const productFixture = await pool.query(
       `INSERT INTO products (

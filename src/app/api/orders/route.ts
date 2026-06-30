@@ -3,7 +3,7 @@ import { auth } from '@/auth';
 import { createOrder, getUserOrders, StockError } from '@/lib/queries/orders';
 import { createOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { noStoreJson } from '@/lib/http';
+import { noStoreJson, readJsonBody } from '@/lib/http';
 import { getExistingUserId, requireUserApi } from '@/lib/auth-guards';
 
 // POST /api/orders — public (guests allowed); attach userId if session exists
@@ -16,9 +16,10 @@ export async function POST(req: NextRequest) {
     });
     if (limited) return limited;
 
-    const body = await req.json();
+    const parsedBody = await readJsonBody(req, 32 * 1024);
+    if (parsedBody.response) return parsedBody.response;
 
-    const parsed = createOrderSchema.safeParse(body);
+    const parsed = createOrderSchema.safeParse(parsedBody.data);
     if (!parsed.success) {
       return noStoreJson(
         { error: 'Données invalides', fields: parsed.error.flatten().fieldErrors },
