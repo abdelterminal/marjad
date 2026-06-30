@@ -5,6 +5,7 @@ import { createOrderSchema } from '@/lib/validators';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { noStoreJson, readJsonBody } from '@/lib/http';
 import { getExistingUserId, requireUserApi } from '@/lib/auth-guards';
+import { pageQuerySchema } from '@/lib/validators';
 
 // POST /api/orders — public (guests allowed); attach userId if session exists
 export async function POST(req: NextRequest) {
@@ -62,9 +63,11 @@ export async function GET(req: NextRequest) {
 
   try {
     const userId = Number(guard.user.id);
-    const requestedPage =
-      Number.parseInt(req.nextUrl.searchParams.get('page') ?? '1', 10) || 1;
-    const userOrders = await getUserOrders(userId, requestedPage);
+    const page = pageQuerySchema.safeParse(req.nextUrl.searchParams.get('page') ?? '1');
+    if (!page.success) {
+      return noStoreJson({ error: 'Page invalide.' }, { status: 400 });
+    }
+    const userOrders = await getUserOrders(userId, page.data);
     return noStoreJson(userOrders);
   } catch {
     return noStoreJson({ error: 'Erreur serveur.' }, { status: 500 });

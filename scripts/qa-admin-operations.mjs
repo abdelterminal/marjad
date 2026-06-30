@@ -234,6 +234,31 @@ async function main() {
       'Invalid order status filter',
     );
     await expectStatus(
+      await api.get(url('/api/admin/orders?page=not-a-page')),
+      400,
+      'Invalid order page',
+    );
+    await expectStatus(
+      await api.get(url('/api/admin/products?page=1.5')),
+      400,
+      'Fractional product page',
+    );
+    await expectStatus(
+      await api.get(url(`/api/admin/products?q=${'x'.repeat(81)}`)),
+      400,
+      'Overlong product search',
+    );
+    await expectStatus(
+      await api.get(url('/api/admin/orders/export?status=not-a-status')),
+      400,
+      'Invalid export status',
+    );
+    await expectStatus(
+      await api.get(url('/api/admin/orders/export?preset=to-confirm&status=delivered')),
+      400,
+      'Conflicting export filters',
+    );
+    await expectStatus(
       await api.get(url('/api/admin/orders/999999999')),
       404,
       'Missing order',

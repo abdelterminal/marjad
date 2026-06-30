@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { requireAdminApi } from '@/lib/auth-guards';
-import { adminProductSchema } from '@/lib/validators';
+import { adminProductListQuerySchema, adminProductSchema } from '@/lib/validators';
 import { adminListProducts, createProduct, isProductSlugTaken } from '@/lib/queries/products';
 import { slugify, ensureUniqueSlug } from '@/lib/slug';
 import { noStoreJson, readJsonBody } from '@/lib/http';
@@ -11,10 +11,18 @@ export async function GET(req: NextRequest) {
   if (guard.response) return guard.response;
 
   const { searchParams } = req.nextUrl;
-  const q = searchParams.get('q') ?? undefined;
-  const page = Math.max(1, Number(searchParams.get('page') ?? '1'));
+  const query = adminProductListQuerySchema.safeParse({
+    q: searchParams.get('q') ?? undefined,
+    page: searchParams.get('page') ?? undefined,
+  });
+  if (!query.success) {
+    return noStoreJson(
+      { error: 'Paramètres invalides.', fields: query.error.flatten().fieldErrors },
+      { status: 400 },
+    );
+  }
 
-  const result = await adminListProducts(q, page);
+  const result = await adminListProducts(query.data.q, query.data.page);
   return noStoreJson(result);
 }
 

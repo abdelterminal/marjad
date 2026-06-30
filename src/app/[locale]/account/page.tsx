@@ -7,6 +7,7 @@ import { formatMAD } from '@/lib/money';
 import { OrderStatusBadge } from '@/components/ui/OrderStatusBadge';
 import { ShoppingBag } from 'lucide-react';
 import { Pagination } from '@/components/product/Pagination';
+import { pageQuerySchema } from '@/lib/validators';
 
 type AccountPageProps = {
   searchParams: Promise<{ page?: string | string[] }>;
@@ -17,10 +18,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const user = await requireUser(locale);
   const isAr = locale === 'ar';
   const rawPage = (await searchParams).page;
-  const requestedPage = Math.max(
-    1,
-    Number.parseInt(Array.isArray(rawPage) ? rawPage[0] : (rawPage ?? '1'), 10) || 1,
+  const parsedPage = pageQuerySchema.safeParse(
+    Array.isArray(rawPage) ? rawPage[0] : (rawPage ?? '1'),
   );
+  const requestedPage = parsedPage.success ? parsedPage.data : 1;
 
   const userId = parseInt(user.id, 10);
   const { items: orders, page, totalPages } = await getUserOrders(userId, requestedPage);

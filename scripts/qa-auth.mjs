@@ -148,6 +148,12 @@ async function main() {
     }
 
     log('paginating customer order history');
+    const invalidOrdersPage = await context.request.get(url('/api/orders?page=not-a-page'));
+    if (invalidOrdersPage.status() !== 400) {
+      throw new Error(
+        `Invalid customer order page expected HTTP 400, got ${invalidOrdersPage.status()}.`,
+      );
+    }
     await pool.query(
       `INSERT INTO orders (
          user_id, customer_name, customer_phone, city, address, total, notes,

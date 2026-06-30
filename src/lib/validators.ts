@@ -66,6 +66,20 @@ export const productsQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(24),
 });
 
+export const pageQuerySchema = z.coerce.number().int().min(1).max(10_000);
+
+export const adminProductListQuerySchema = z.object({
+  q: z.string().trim().max(80).optional(),
+  page: pageQuerySchema.optional().default(1),
+});
+
+export const adminOrderListQuerySchema = z.object({
+  status: z
+    .enum(['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'])
+    .optional(),
+  page: pageQuerySchema.optional().default(1),
+});
+
 // ─── Admin product create / update ────────────────────────────────────────────
 
 export const adminProductSchema = z.object({
