@@ -176,14 +176,17 @@ export function RegisterForm({ locale }: Props) {
               type="password"
               autoComplete="new-password"
               required
-              minLength={8}
+              minLength={10}
+              maxLength={72}
               disabled={loading}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="form-input"
             />
             <p className="form-help">
-              {isAr ? '٨ أحرف على الأقل' : '8 caractères minimum'}
+              {isAr
+                ? '١٠ أحرف على الأقل، مع حرف ورقم'
+                : '10 caractères minimum, avec une lettre et un chiffre'}
             </p>
           </div>
 

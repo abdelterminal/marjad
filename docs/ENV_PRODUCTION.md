@@ -28,7 +28,7 @@ AUTH_URL=https://marjad.ma
 NEXT_PUBLIC_SITE_URL=https://marjad.ma
 
 ADMIN_EMAIL=<private-admin-email>
-ADMIN_PASSWORD=<strong-unique-password>
+ADMIN_PASSWORD=<12+-character-password-with-letter-and-number>
 
 NEXT_PUBLIC_WHATSAPP_NUMBER=2126XXXXXXXX
 NEXT_PUBLIC_SUPPORT_PHONE=
@@ -63,6 +63,8 @@ openssl rand -hex 32
 - `NEXT_PUBLIC_WHATSAPP_NUMBER` uses Moroccan international format without `+`.
 - `UPLOADS_PATH` must resolve to the directory served by host Nginx.
 - `ADMIN_PASSWORD`, when configured, is applied by init during each deploy.
+- `ADMIN_PASSWORD` must contain at least 12 characters, a letter, and a number,
+  and must not exceed bcrypt's 72-byte input limit.
   Remove it after initial provisioning if automatic password rotation is not
   desired.
 - Public `NEXT_PUBLIC_*` variables are embedded into the image at build time.

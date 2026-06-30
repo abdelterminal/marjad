@@ -35,8 +35,15 @@ if (!email || !password) {
   process.exit(1);
 }
 
-if (password.length < 8) {
-  console.error('Password must be at least 8 characters.');
+if (
+  password.length < 12 ||
+  Buffer.byteLength(password, 'utf8') > 72 ||
+  !/\p{L}/u.test(password) ||
+  !/\p{N}/u.test(password)
+) {
+  console.error(
+    'Password must be 12+ characters with a letter and number, and at most 72 bytes.',
+  );
   process.exit(1);
 }
 

@@ -59,6 +59,7 @@ function validateEnvironment() {
   const redisURL = configured('REDIS_URL');
   const siteURL = configured('NEXT_PUBLIC_SITE_URL');
   const whatsapp = configured('NEXT_PUBLIC_WHATSAPP_NUMBER');
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
   if (authSecret) {
     if (
@@ -135,6 +136,20 @@ function validateEnvironment() {
     } else {
       pass('NEXT_PUBLIC_WHATSAPP_NUMBER format is valid.');
     }
+  }
+
+  const weakAdminPassword =
+    adminPassword &&
+    (adminPassword.length < 12 ||
+      Buffer.byteLength(adminPassword, 'utf8') > 72 ||
+      !/\p{L}/u.test(adminPassword) ||
+      !/\p{N}/u.test(adminPassword));
+  if (weakAdminPassword && environment !== 'development') {
+    fail('ADMIN_PASSWORD must be 12+ characters with a letter and number, and at most 72 bytes.');
+  } else if (weakAdminPassword) {
+    warn('ADMIN_PASSWORD is weak and is allowed only because APP_ENV=development.');
+  } else if (adminPassword) {
+    pass('ADMIN_PASSWORD meets the provisioning password policy.');
   }
 
   return { databaseURL, redisURL };

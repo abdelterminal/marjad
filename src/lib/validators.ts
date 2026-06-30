@@ -5,7 +5,15 @@ import { z } from 'zod';
 export const registerSchema = z.object({
   name: z.string().trim().min(2, 'Le nom doit contenir au moins 2 caractères'),
   email: z.string().trim().toLowerCase().pipe(z.email('Adresse e-mail invalide')),
-  password: z.string().min(8, 'Le mot de passe doit contenir au moins 8 caractères'),
+  password: z
+    .string()
+    .min(10, 'Le mot de passe doit contenir au moins 10 caractères')
+    .regex(/\p{L}/u, 'Le mot de passe doit contenir au moins une lettre')
+    .regex(/\p{N}/u, 'Le mot de passe doit contenir au moins un chiffre')
+    .refine(
+      (value) => new TextEncoder().encode(value).length <= 72,
+      'Le mot de passe ne doit pas dépasser 72 octets',
+    ),
   phone: z.string().optional(),
 });
 

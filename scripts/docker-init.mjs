@@ -50,6 +50,21 @@ const email = process.env.ADMIN_EMAIL?.trim().toLowerCase();
 const password = process.env.ADMIN_PASSWORD;
 
 if (email && password) {
+  const passwordIsWeak =
+    password.length < 12 ||
+    Buffer.byteLength(password, 'utf8') > 72 ||
+    !/\p{L}/u.test(password) ||
+    !/\p{N}/u.test(password);
+  if (passwordIsWeak) {
+    const message =
+      'ADMIN_PASSWORD must be 12+ characters with a letter and number, and at most 72 bytes';
+    if (process.env.APP_ENV !== 'development') {
+      console.error(`[init] ${message}`);
+      await pool.end();
+      process.exit(1);
+    }
+    console.warn(`[init] ${message}; allowed only because APP_ENV=development`);
+  }
   const hash = await bcrypt.hash(password, 10);
   await pool.query(
     `INSERT INTO users (name, email, password, role, created_at)

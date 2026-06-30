@@ -63,6 +63,26 @@ async function main() {
       }
     }
 
+    log('rejecting weak customer passwords');
+    const weakPasswordResponse = await fetch(url('/api/auth/register'), {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        'x-real-ip': qaIp,
+      },
+      body: JSON.stringify({
+        name: 'QA Weak Password',
+        email: `${runId}-weak@example.test`,
+        password: 'onlyletters',
+      }),
+    });
+    if (weakPasswordResponse.status !== 422) {
+      throw new Error(
+        `Weak password registration expected HTTP 422, got ${weakPasswordResponse.status}.`,
+      );
+    }
+
     log('registering normalized customer identity');
     const registration = await register(`  ${normalizedEmail.toUpperCase()}  `);
     const registrationBody = await registration.json();
