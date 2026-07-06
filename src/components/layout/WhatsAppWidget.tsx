@@ -1,18 +1,27 @@
 'use client';
 
+import { usePathname } from '@/i18n/navigation';
 import { useIsClient } from '@/lib/use-is-client';
 import { getWhatsAppHref } from '@/lib/contact';
 
 const messageFr = encodeURIComponent('Bonjour MARJAD, je souhaite avoir des informations sur un produit.');
 const messageAr = encodeURIComponent('مرحباً مرجاد، أود الاستفسار عن منتج.');
 
+// The sticky mobile buy bar (StickyMobileCTA) only renders on product detail
+// pages, so the widget only needs to clear it there — elsewhere the extra
+// offset just eats into page content (e.g. it clipped the products search button).
+const PRODUCT_DETAIL_PATTERN = /^\/products\/[^/]+$/;
+
 export function WhatsAppWidget() {
   const isClient = useIsClient();
+  const pathname = usePathname();
   if (!isClient) return null;
 
   const isAr = typeof document !== 'undefined' && document.documentElement.lang === 'ar';
   const href = getWhatsAppHref(isAr ? decodeURIComponent(messageAr) : decodeURIComponent(messageFr));
   if (!href) return null;
+
+  const isProductDetail = PRODUCT_DETAIL_PATTERN.test(pathname);
 
   return (
     <a
@@ -21,15 +30,15 @@ export function WhatsAppWidget() {
       rel="noopener noreferrer"
       title={isAr ? 'تواصل معنا على واتساب' : 'Contactez-nous sur WhatsApp'}
       aria-label={isAr ? 'تواصل معنا على واتساب' : 'Contactez-nous sur WhatsApp'}
-      className="
-        fixed bottom-[82px] lg:bottom-6 end-6 z-50
+      className={`
+        fixed ${isProductDetail ? 'bottom-[82px] lg:bottom-6' : 'bottom-6'} end-6 z-50
         flex h-14 w-14 items-center justify-center
         rounded-full
         bg-[#25D366] hover:bg-[#1ebe5d]
         shadow-[var(--shadow-lg)]
         transition-colors duration-[var(--transition-base)]
         focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366] focus-visible:ring-offset-2
-      "
+      `}
     >
       {/* WhatsApp SVG logo */}
       <svg

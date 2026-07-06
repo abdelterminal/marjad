@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react';
+import { getLocale } from 'next-intl/server';
 import './globals.css';
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const locale = await getLocale();
+
   return (
-    <html suppressHydrationWarning>
+    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
       <body>{children}</body>
     </html>
   );
