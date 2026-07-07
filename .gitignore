@@ -28,6 +28,7 @@
 .agents/
 .codex/
 .hallmark/
+/graphify-out/
 
 # debug
 npm-debug.log*

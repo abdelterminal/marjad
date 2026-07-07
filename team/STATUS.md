@@ -1,7 +1,7 @@
 # Status Board
 
 **Current phase:** Phase 5 — Ship + storefront conversion polish
-**Last updated:** 2026-06-22 — Homepage luxury concept adaptation added; TypeScript, lint, and build green
+**Last updated:** 2026-07-06 — Live browser visual QA pass complete (storefront + admin, fr/ar, mobile/tablet/desktop)
 
 ## Phase overview
 
@@ -50,7 +50,13 @@ None.
 - Polished admin order detail with a COD ops summary, clearer next action guidance, stronger contact actions, and responsive status scanning.
 - Strengthened checkout trust copy around no-payment-now COD, phone confirmation, address quality, delivery timing, and non-shipment without confirmation.
 - Adapted the homepage toward the generated luxury editorial MARJAD direction with a stronger hero, category buying paths, curated product rhythm, editorial craft story, and gift-ready band.
+- Added a production QA and scale-readiness plan covering E2E, concurrency, load, Redis rate limits, queues, observability, backups, and launch gates.
+- Added a production readiness review that flags Redis-backed rate limits, checkout concurrency tests, health/alerting, queues, load tests, and restore rehearsal as the next serious hardening slice.
+- Added design verification gates to the production QA plan and logged current design-trust findings: stale contact routes, placeholder phone link, unconfirmed homepage proof stats, missing About journal route, and ContactForm design-system drift.
+- Fixed the design-trust findings in code: contact support links, guarded phone/WhatsApp actions, About collection CTA, non-numeric homepage trust statements, and ContactForm form-system alignment.
 - Verification: `npx tsc --noEmit`, `npm run lint`, and `npm run build` all pass.
+- Completed a live Playwright browser visual QA pass across fr/ar locales, mobile/tablet/desktop viewports, all storefront routes, and the full admin panel.
+- Fixed root `<html>` missing `lang`/`dir` attributes, and a WhatsApp-widget/search-button click-overlap on Arabic mobile products page.
 
 ## Ticket board
 

@@ -429,8 +429,8 @@ export async function updateOrderStatus(id: number, newStatus: string) {
  * Aggregate dashboard metrics.
  */
 export async function getDashboardStats() {
-  const [countRows, needsActionRows, recentRows] = await Promise.all([
-    // Per-status counts in one query using conditional aggregation
+  const [countRows, topCitiesRows, needsActionRows, recentRows, riskStats] = await Promise.all([
+    // Per-status counts + operational metrics in one query using conditional aggregation
     db.execute(sql`
       SELECT
         COUNT(*)::int                                                                    AS total_orders,
@@ -443,7 +443,36 @@ export async function getDashboardStats() {
         COALESCE(SUM(total) FILTER (WHERE status = ANY(ARRAY['confirmed','shipped','delivered']::order_status[])), 0) AS total_revenue
         ,COALESCE(SUM(total) FILTER (WHERE status = 'delivered'::order_status), 0)      AS delivered_revenue
         ,COALESCE(SUM(total) FILTER (WHERE created_at >= CURRENT_DATE), 0)              AS today_revenue
+        ,COALESCE(SUM(total) FILTER (WHERE status = 'shipped'::order_status), 0)        AS cash_in_transit
+        ,COUNT(*) FILTER (WHERE status = 'pending'::order_status AND created_at <= NOW() - INTERVAL '24 hours')::int AS aging_orders
+        ,COUNT(*) FILTER (
+          WHERE status = ANY(ARRAY['pending','confirmed']::order_status[])
+          AND (
+            EXISTS (
+              SELECT 1 FROM orders o2
+              WHERE o2.id <> orders.id
+              AND regexp_replace(o2.customer_phone, '[^0-9+]', '', 'g') = regexp_replace(orders.customer_phone, '[^0-9+]', '', 'g')
+            )
+            OR EXISTS (
+              SELECT 1 FROM orders o3
+              WHERE o3.id <> orders.id
+              AND lower(trim(o3.city)) = lower(trim(orders.city))
+              AND lower(regexp_replace(trim(o3.address), '\\s+', ' ', 'g')) = lower(regexp_replace(trim(orders.address), '\\s+', ' ', 'g'))
+            )
+          )
+        )::int AS risky_orders
       FROM orders
+    `),
+    // Top cities by order volume, with cancellation counts (delivery-zone performance)
+    db.execute(sql`
+      SELECT
+        city,
+        COUNT(*)::int AS order_count,
+        COUNT(*) FILTER (WHERE status = 'cancelled'::order_status)::int AS cancelled_count
+      FROM orders
+      GROUP BY city
+      ORDER BY order_count DESC
+      LIMIT 6
     `),
     // Operational queue: orders that should be touched first
     db.query.orders.findMany({
@@ -471,6 +500,7 @@ export async function getDashboardStats() {
         user: { columns: { id: true, name: true, email: true } },
       },
     }),
+    getOrderRiskStats(),
   ]);
 
   const row = (countRows.rows as Record<string, unknown>[])[0] ?? {};
@@ -486,7 +516,16 @@ export async function getDashboardStats() {
     totalRevenue: String(row.total_revenue ?? '0.00'),
     deliveredRevenue: String(row.delivered_revenue ?? '0.00'),
     todayRevenue: String(row.today_revenue ?? '0.00'),
-    needsActionOrders: needsActionRows,
+    cashInTransit: String(row.cash_in_transit ?? '0.00'),
+    agingOrders: Number(row.aging_orders ?? 0),
+    riskyOrders: Number(row.risky_orders ?? 0),
+    topCities: (topCitiesRows.rows as Array<{ city: string; order_count: number; cancelled_count: number }>).map(
+      (r) => ({ city: r.city, orderCount: Number(r.order_count), cancelledCount: Number(r.cancelled_count) }),
+    ),
+    needsActionOrders: needsActionRows.map((order) => ({
+      ...order,
+      riskHints: buildRiskHints(order, riskStats),
+    })),
     recentOrders: recentRows,
   };
 }

@@ -1,11 +1,13 @@
 import Link from 'next/link';
-import { AlertTriangle, Download, MessageCircle, Phone, ShoppingBag } from 'lucide-react';
+import { Download, MessageCircle, Phone, ShoppingBag } from 'lucide-react';
 import { adminListOrders } from '@/lib/queries/orders';
 import { DataTable } from '@/components/admin/DataTable';
 import { AdminPagination } from '@/components/admin/AdminPagination';
 import { AdminStatusBadge } from '@/components/admin/AdminStatusBadge';
 import { OrderQuickActions } from '@/components/admin/OrderQuickActions';
+import { RiskHints } from '@/components/admin/RiskHints';
 import { formatMAD } from '@/lib/money';
+import { normalizePhone, getWhatsappPhone, getWhatsappMessage } from '@/lib/whatsapp';
 import { StatusTabs } from '@/components/admin/StatusTabs';
 import { requireAdmin } from '@/lib/auth-guards';
 
@@ -50,58 +52,6 @@ const COURIER_PRESETS = [
     cta: 'Voir livrées',
   },
 ];
-
-function normalizePhone(phone: string) {
-  return phone.replace(/[^\d+]/g, '');
-}
-
-function getWhatsappPhone(phone: string) {
-  const normalized = normalizePhone(phone);
-  return normalized.startsWith('0') ? `212${normalized.slice(1)}` : normalized.replace(/^\+/, '');
-}
-
-function getWhatsappMessage(order: Awaited<ReturnType<typeof adminListOrders>>['items'][number]) {
-  const total = formatMAD(parseFloat(order.total));
-  const firstItem = order.items[0]?.product?.nameFr ?? 'votre commande';
-
-  if (order.status === 'confirmed') {
-    return `Bonjour ${order.customerName}, votre commande MARJAD #${order.id} (${total}) est confirmée. Nous la préparons avec soin et vous informerons dès son expédition.`;
-  }
-
-  if (order.status === 'shipped') {
-    return `Bonjour ${order.customerName}, votre commande MARJAD #${order.id} est en route vers ${order.city}. Paiement à la livraison : ${total}. Merci de garder votre téléphone disponible.`;
-  }
-
-  if (order.status === 'cancelled') {
-    return `Bonjour ${order.customerName}, nous vous contactons au sujet de votre commande MARJAD #${order.id}. Dites-nous si vous souhaitez la réactiver ou modifier les informations.`;
-  }
-
-  return `Bonjour ${order.customerName}, c'est MARJAD. Nous vous contactons pour confirmer votre commande #${order.id} : ${firstItem} (${total}), livraison à ${order.city}. Pouvez-vous confirmer l'adresse : ${order.address} ?`;
-}
-
-function RiskHints({ hints }: { hints: Awaited<ReturnType<typeof adminListOrders>>['items'][number]['riskHints'] }) {
-  if (hints.length === 0) return null;
-
-  const toneClasses = {
-    danger: 'border-red-200 bg-red-50 text-red-700',
-    warning: 'border-amber-200 bg-amber-50 text-amber-800',
-    info: 'border-blue-200 bg-blue-50 text-blue-700',
-  };
-
-  return (
-    <div className="mt-3 flex max-w-[240px] flex-wrap gap-1.5">
-      {hints.map((hint) => (
-        <span
-          key={`${hint.type}-${hint.label}`}
-          className={`inline-flex items-center gap-1 rounded-full border px-2 py-1 text-[10px] font-semibold leading-none ${toneClasses[hint.tone]}`}
-        >
-          <AlertTriangle className="size-3" />
-          {hint.label}
-        </span>
-      ))}
-    </div>
-  );
-}
 
 interface PageProps {
   searchParams: Promise<{ status?: string; page?: string }>;

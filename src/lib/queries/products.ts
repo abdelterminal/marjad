@@ -1,7 +1,9 @@
 import { db } from '@/db';
-import { products, categories, orderItems } from '@/db/schema';
-import { and, eq, gte, lte, asc, desc, count, ilike, or, SQL } from 'drizzle-orm';
+import { products, categories, orderItems, orders } from '@/db/schema';
+import { and, eq, gte, lte, asc, desc, count, ilike, or, sql, SQL } from 'drizzle-orm';
 import type { AdminProductInput } from '@/lib/validators';
+
+const LOW_STOCK_THRESHOLD = 5;
 
 export interface ProductFilters {
   q?: string;
@@ -204,4 +206,44 @@ export async function isProductSlugTaken(slug: string): Promise<boolean> {
     .from(products)
     .where(eq(products.slug, slug));
   return Number(result[0]?.count ?? 0) > 0;
+}
+
+/**
+ * Published products at or below the low-stock threshold, lowest first.
+ * Surfaced on the admin dashboard so orders aren't confirmed for stock that's run out.
+ */
+export async function getLowStockProducts(limit: number = 5) {
+  const where = and(lte(products.stock, LOW_STOCK_THRESHOLD), eq(products.isPublished, true));
+
+  const [items, totalResult] = await Promise.all([
+    db.query.products.findMany({
+      where,
+      orderBy: asc(products.stock),
+      limit,
+      columns: { id: true, nameFr: true, stock: true, slug: true },
+    }),
+    db.select({ count: count() }).from(products).where(where),
+  ]);
+
+  return { items, total: Number(totalResult[0]?.count ?? 0) };
+}
+
+/**
+ * Best-selling products by units sold across non-cancelled orders.
+ */
+export async function getTopSellingProducts(limit: number = 5) {
+  return db
+    .select({
+      id: products.id,
+      nameFr: products.nameFr,
+      slug: products.slug,
+      qtySold: sql<number>`COALESCE(SUM(${orderItems.quantity}), 0)::int`,
+    })
+    .from(products)
+    .innerJoin(orderItems, eq(orderItems.productId, products.id))
+    .innerJoin(orders, eq(orders.id, orderItems.orderId))
+    .where(sql`${orders.status} != 'cancelled'`)
+    .groupBy(products.id, products.nameFr, products.slug)
+    .orderBy(desc(sql`SUM(${orderItems.quantity})`))
+    .limit(limit);
 }

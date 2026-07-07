@@ -2,6 +2,30 @@
 
 ---
 
+### [UI/QA] Design verification update — 2026-06-23
+- Did: ran a code-based design verification pass across the current public website and updated the production QA plan with explicit design gates.
+- Wrote: `docs/PRODUCTION_QA_PLAN.md`, `team/reviews/DESIGN-VERIFICATION-2026-06-23.md`, `team/STATUS.md`.
+- Handoff: Design-trust findings are now fixed in code; next pass should be browser visual QA before final design approval.
+- Flags: No screenshots/browser pass taken; this was code-based to preserve tokens. Browser visual QA is still needed before final design approval.
+
+---
+
+### [FRONTEND] Design-trust fixes — 2026-06-23
+- Did: fixed contact support routes, removed placeholder phone/WhatsApp fallbacks, replaced About journal CTA, swapped unconfirmed homepage metrics for trust statements, and aligned ContactForm to MARJAD form utilities.
+- Wrote: `src/app/[locale]/contact/page.tsx`, `src/components/contact/ContactForm.tsx`, `src/lib/contact.ts`, `.env.local.example`, homepage/about/messages updates, `team/reviews/DESIGN-VERIFICATION-2026-06-23.md`.
+- Handoff: Run browser visual QA when acceptable; set `NEXT_PUBLIC_SUPPORT_PHONE` only when a real public phone number should show.
+- Flags: `npx tsc --noEmit`, `npm run lint`, and `npm run build` should be rerun after this note.
+
+---
+
+### [QA/SECURITY/DEVOPS] Production readiness plan — Phase 5
+- Did: added a T2 production QA/scale plan for COD traffic, checkout concurrency, load testing, Redis rate limits, queues, observability, backups, and launch gates.
+- Wrote: `docs/PRODUCTION_QA_PLAN.md`, `team/reviews/PRODUCTION-READINESS-2026-06-22.md`, `team/STATUS.md`.
+- Handoff: Next implementation slice should be critical Playwright E2E, checkout concurrency test, Redis-backed rate limiting, and a health endpoint.
+- Flags: Controlled launch remains possible after normal smoke checks; paid traffic should wait for the P0 production-readiness items.
+
+---
+
 ### [UI/FRONTEND] Homepage luxury concept adaptation — Phase 5
 - Did: adapted the homepage toward the generated world-class MARJAD concept with immersive hero composition, earlier visual category paths, curated product section, editorial craft imagery, and a dark gift-ready product band.
 - Wrote: `src/app/[locale]/page.tsx`, `team/STATUS.md`.
