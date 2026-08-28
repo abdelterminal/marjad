@@ -9,7 +9,18 @@ PROJECT_DIR="${PROJECT_DIR:-/var/www/marjad}"
 
 echo "==> Installing system prerequisites..."
 apt-get update -y
-apt-get install -y ca-certificates curl gnupg git nginx certbot python3-certbot-nginx
+apt-get install -y ca-certificates curl gnupg git nginx certbot python3-certbot-nginx ufw
+
+echo "==> Configuring firewall (SSH, HTTP, HTTPS)..."
+ufw allow OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+# This VPS also runs bazaarstyle, whose containers publish directly on
+# 0.0.0.0:3000 and 0.0.0.0:5002 (bypassing nginx). Preserve that existing
+# exposure rather than silently closing it while deploying an unrelated site.
+ufw allow 3000/tcp
+ufw allow 5002/tcp
+ufw --force enable
 
 echo "==> Installing Docker Engine and Compose plugin..."
 install -m 0755 -d /etc/apt/keyrings
