@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
+import Image from 'next/image';
 import Link from 'next/link';
 import { MessageCircle, Phone } from 'lucide-react';
 import { getWhatsAppHref, getSupportPhoneHref, getPublicSupportPhoneNumber } from '@/lib/contact';
@@ -20,9 +21,13 @@ export async function Footer() {
 
           {/* Brand column — spans 5 on md */}
           <div className="md:col-span-5 space-y-4">
-            <p className="font-[var(--font-display)] text-2xl font-bold text-[var(--color-brand-secondary)] tracking-wide">
-              MARJAD
-            </p>
+            <Image
+              src="/brand/marjad-logo-horizontal.svg"
+              alt="MARJAD"
+              width={860}
+              height={189}
+              className="h-9 w-auto"
+            />
             <p className="text-white/60 text-sm leading-relaxed max-w-[300px]">
               {t('footer.tagline')}
             </p>

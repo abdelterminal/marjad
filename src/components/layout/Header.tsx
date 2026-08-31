@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { getLocale } from 'next-intl/server';
+import Image from 'next/image';
 import Link from 'next/link';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { CartIcon } from './CartIcon';
@@ -51,11 +52,16 @@ export async function Header() {
           <Link
             href={`/${locale}`}
             aria-label={isAr ? `${t('common.brand')} - الصفحة الرئيسية` : `${t('common.brand')} - Accueil`}
-            className="shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 rounded"
+            className="shrink-0 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand-primary)] focus-visible:ring-offset-2 rounded transition-opacity hover:opacity-85"
           >
-            <span className="font-['Playfair_Display',Georgia,serif] text-[1.35rem] font-bold tracking-widest text-[var(--color-brand-text)] hover:text-[var(--color-brand-primary)] transition-colors">
-              MARJAD
-            </span>
+            <Image
+              src="/brand/marjad-logo-horizontal.svg"
+              alt="MARJAD"
+              width={860}
+              height={189}
+              priority
+              className="h-8 lg:h-9 w-auto"
+            />
           </Link>
 
           {/* ── Desktop nav — centered ── */}

@@ -29,6 +29,14 @@ export default function GlobalError({
           }}
         >
           <div style={{ width: '100%', maxWidth: '560px' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element -- this is the root error boundary, outside next/image's rendering path */}
+            <img
+              src="/brand/marjad-mark.svg"
+              alt=""
+              width={32}
+              height={32}
+              style={{ display: 'block', marginBottom: '14px' }}
+            />
             <p
               style={{
                 margin: '0 0 18px',

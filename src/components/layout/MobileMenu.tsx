@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { ChevronDown, Menu, Package, User, X } from 'lucide-react';
 import { Link, usePathname } from '@/i18n/navigation';
 import { useLocale, useTranslations } from 'next-intl';
@@ -74,11 +75,20 @@ export function MobileMenu({ categories = [], locale: localeProp }: Props) {
           {/* Header */}
           <SheetHeader className="border-b border-[var(--color-brand-border)] px-5 py-5 bg-[var(--color-brand-surface-alt)]">
             <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">MARJAD</p>
-                <SheetTitle className="mt-0.5 font-['Playfair_Display',Georgia,serif] text-xl font-bold text-[var(--color-brand-text)]">
-                  {isAr ? 'القائمة' : 'Menu'}
-                </SheetTitle>
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/brand/marjad-mark.svg"
+                  alt=""
+                  width={368}
+                  height={368}
+                  className="h-9 w-9 shrink-0"
+                />
+                <div>
+                  <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--color-brand-primary)]">MARJAD</p>
+                  <SheetTitle className="mt-0.5 font-['Playfair_Display',Georgia,serif] text-xl font-bold text-[var(--color-brand-text)]">
+                    {isAr ? 'القائمة' : 'Menu'}
+                  </SheetTitle>
+                </div>
               </div>
               <button
                 type="button"

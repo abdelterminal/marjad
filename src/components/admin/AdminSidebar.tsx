@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, LogOut, Package, ShoppingCart, Tag, X } from 'lucide-react';
@@ -34,13 +35,22 @@ export function AdminSidebar({ open, onClose }: Props) {
     >
       {/* Logo */}
       <div className="flex items-center justify-between border-b border-gray-100 px-5 py-5">
-        <div>
-          <p className="font-['Playfair_Display',Georgia,serif] text-[1.05rem] font-bold tracking-[0.18em] text-gray-950">
-            MARJAD
-          </p>
-          <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-gray-400">
-            Administration
-          </p>
+        <div className="flex items-center gap-2.5">
+          <Image
+            src="/brand/marjad-mark.svg"
+            alt=""
+            width={368}
+            height={368}
+            className="h-8 w-8 shrink-0"
+          />
+          <div>
+            <p className="font-['Playfair_Display',Georgia,serif] text-[1.05rem] font-bold tracking-[0.18em] text-gray-950">
+              MARJAD
+            </p>
+            <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-gray-400">
+              Administration
+            </p>
+          </div>
         </div>
         <button
           type="button"

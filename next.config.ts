@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   images: {
     formats: ['image/webp'],
+    // Our own trusted SVGs in public/brand/ (logo lockups) — Next.js blocks SVG
+    // optimization by default as an XSS precaution against *untrusted* sources.
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 };
 
