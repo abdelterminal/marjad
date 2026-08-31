@@ -16,7 +16,7 @@ export default async function AProposPage() {
       {/* ━━━ 1 · Hero — full-bleed photo + left-anchored text overlay ━━━━━━━━━━ */}
       <section className="relative isolate h-[70vh] min-h-[560px] overflow-hidden">
         <Image
-          src="/images/hero-bg.png"
+          src="/images/hero-bg.webp"
           alt=""
           fill
           priority
@@ -115,7 +115,7 @@ export default async function AProposPage() {
           {/* Photo */}
           <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-sm">
             <Image
-              src="/images/about-story.png"
+              src="/images/about-story.webp"
               alt={t('regardPhotoAlt')}
               fill
               className="object-cover object-center"
@@ -130,13 +130,13 @@ export default async function AProposPage() {
         {(
           [
             {
-              src: '/images/marjad-hero-detail.png',
+              src: '/images/marjad-hero-detail.webp',
               Icon: Leaf,
               title: t('artisanTitle'),
               body: t('artisanBody'),
             },
             {
-              src: '/images/marjad-hero-product.png',
+              src: '/images/marjad-hero-product.webp',
               Icon: Flower2,
               title: t('matiereTitle'),
               body: t('matiereBody'),
@@ -249,7 +249,7 @@ export default async function AProposPage() {
           }}
         >
           <Image
-            src="/images/brand-story.png"
+            src="/images/brand-story.webp"
             alt=""
             fill
             className="object-cover object-left-top"

@@ -61,7 +61,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps): Prom
     path: `/${locale}/products/${product.slug}`,
     title: name,
     description,
-    image: product.images?.[0] ?? '/images/brand-story.png',
+    image: product.images?.[0] ?? '/images/brand-story.webp',
   });
 }
 
@@ -410,7 +410,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
             <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-[var(--radius-md)]">
               <Image
-                src="/images/marjad-hero-detail.png"
+                src="/images/marjad-hero-detail.webp"
                 alt={isAr ? 'حرف مغربية' : 'Artisanat marocain'}
                 fill
                 className="object-cover"
@@ -455,7 +455,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             </div>
             <div className="relative h-[160px] w-[120px] shrink-0 overflow-hidden rounded-[var(--radius-md)]">
               <Image
-                src="/images/hero-bg.png"
+                src="/images/hero-bg.webp"
                 alt={isAr ? 'توصيل مرجاد' : 'Livraison MARJAD'}
                 fill
                 className="object-cover"

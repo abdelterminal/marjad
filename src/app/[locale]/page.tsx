@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
     description: isAr
       ? 'اكتشف قطع ديكور مغربية مختارة بعناية مع التوصيل داخل المغرب والدفع عند الاستلام.'
       : 'Découvrez tableaux, lampes, tables et objets décoratifs marocains avec livraison partout au Maroc et paiement à la livraison.',
-    image: '/images/marjad-hero-lifestyle.png',
+    image: '/images/marjad-hero-lifestyle.webp',
   });
 }
 
@@ -109,7 +109,7 @@ export default async function HomePage() {
         <div
           className="absolute inset-0 bg-cover"
           style={{
-            backgroundImage: "url('/images/marjad-hero-lifestyle.png')",
+            backgroundImage: "url('/images/marjad-hero-lifestyle.webp')",
             backgroundPosition: isAr ? 'left center' : 'right center',
           }}
         />
@@ -209,7 +209,7 @@ export default async function HomePage() {
                 <div className="mt-8 flex items-center gap-3 lg:hidden">
                   <div
                     className="h-20 w-20 shrink-0 rounded-[var(--radius-md)] border border-white/24 bg-cover bg-center shadow-[0_12px_28px_rgba(0,0,0,0.22)]"
-                    style={{ backgroundImage: "url('/images/marjad-hero-product.png')" }}
+                    style={{ backgroundImage: "url('/images/marjad-hero-product.webp')" }}
                   />
                   <div className="border-s border-white/22 ps-4 text-white/78">
                     <p className="font-[var(--font-display)] text-base font-semibold text-white">
@@ -235,7 +235,7 @@ export default async function HomePage() {
                     <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-brand-surface-alt)]">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.035]"
-                        style={{ backgroundImage: "url('/images/marjad-hero-product.png')" }}
+                        style={{ backgroundImage: "url('/images/marjad-hero-product.webp')" }}
                       />
                       {/* À la une badge */}
                       <span className="absolute top-3 start-3 rounded-full bg-[var(--color-brand-secondary)] px-3 py-1 text-[11px] font-semibold text-white shadow-sm">
@@ -278,7 +278,7 @@ export default async function HomePage() {
                   >
                     <div
                       className="aspect-[4/3] bg-cover bg-center"
-                      style={{ backgroundImage: "url('/images/marjad-hero-detail.png')" }}
+                      style={{ backgroundImage: "url('/images/marjad-hero-detail.webp')" }}
                     />
                     <div className="bg-white px-3 py-2">
                       <p className="text-[11px] font-semibold text-[var(--color-brand-text)]">

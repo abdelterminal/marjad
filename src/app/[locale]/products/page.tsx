@@ -54,7 +54,7 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
     path: `/${locale}/products${sp.category ? `?category=${sp.category}` : ''}`,
     title,
     description,
-    image: '/images/brand-story.png',
+    image: '/images/brand-story.webp',
   });
 }
 

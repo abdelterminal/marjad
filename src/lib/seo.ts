@@ -6,7 +6,7 @@ export const siteConfig = {
     process.env.NEXT_PUBLIC_SITE_URL ??
     process.env.AUTH_URL ??
     'http://localhost:3000',
-  defaultImage: '/images/hero-bg.png',
+  defaultImage: '/images/hero-bg.webp',
   locales: ['fr', 'ar'] as const,
   defaultLocale: 'fr',
 };

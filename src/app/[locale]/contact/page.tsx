@@ -85,7 +85,7 @@ export default async function ContactPage() {
         {/* Left column: photo with cream wash + dark text */}
         <div className="relative flex min-h-[540px] items-end overflow-hidden lg:min-h-[640px]">
           <Image
-            src="/images/marjad-hero-lifestyle.png"
+            src="/images/marjad-hero-lifestyle.webp"
             alt=""
             fill
             priority
