@@ -6,7 +6,12 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   const locale = await getLocale();
 
   return (
-    <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
+    <html
+      lang={locale}
+      dir={locale === 'ar' ? 'rtl' : 'ltr'}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );
