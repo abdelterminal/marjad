@@ -486,6 +486,20 @@
   animation-play-state: paused;
 }
 
+@keyframes logo-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.75;
+  }
+}
+.animate-logo-pulse {
+  animation: logo-pulse 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
