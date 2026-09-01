@@ -500,6 +500,17 @@
   animation: logo-pulse 1.6s cubic-bezier(0.45, 0, 0.55, 1) infinite;
 }
 
+/* Delayed fade-in for Suspense/loading fallbacks: stays invisible for the
+   first ~180ms so a fast route swap never flashes the loading state, then
+   eases in gently for genuinely slow loads. */
+@keyframes loading-fade-in {
+  0%, 36% { opacity: 0; }
+  100%    { opacity: 1; }
+}
+.animate-loading-fade-in {
+  animation: loading-fade-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 /* ── Reduced motion ──────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {

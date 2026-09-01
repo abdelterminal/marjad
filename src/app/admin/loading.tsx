@@ -5,7 +5,7 @@ export default function Loading() {
     <div
       role="status"
       aria-label="Loading"
-      className="flex min-h-[50vh] w-full items-center justify-center"
+      className="flex min-h-[50vh] w-full items-center justify-center animate-loading-fade-in"
     >
       <Image
         src="/brand/marjad-mark.svg"

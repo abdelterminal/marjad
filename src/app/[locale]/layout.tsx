@@ -6,6 +6,7 @@ import { Playfair_Display, Inter, Amiri, Cairo } from 'next/font/google';
 import { routing } from '@/i18n/routing';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { PageTransition } from '@/components/layout/PageTransition';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { AuthProvider } from '@/components/auth/AuthProvider';
 import { CartToastProvider } from '@/components/ui/cart-toast';
@@ -111,7 +112,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <CartToastProvider>
             <Header />
             <main id="main-content" className="flex-1" tabIndex={-1}>
-              {children}
+              <PageTransition>{children}</PageTransition>
             </main>
             <Footer />
             <CartProvider />
